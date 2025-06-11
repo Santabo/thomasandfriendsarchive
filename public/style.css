@@ -20,19 +20,33 @@ main {
   margin: auto;
 }
 
+#episode-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  padding: 0;
+  margin: 0;
+}
+
 .episode {
   background: white;
   border-radius: 12px;
   padding: 1rem;
-  margin-bottom: 1.5rem;
+  /* Remove margin-bottom since grid gap handles spacing */
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .episode img {
   width: 100%;
-  max-width: 400px;
+  height: auto;
+  max-width: 220px;
   border-radius: 8px;
   margin-bottom: 1rem;
+  object-fit: cover;
 }
 
 footer {
