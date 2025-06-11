@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Video modal handler with autoplay
+// Video modal handler with autoplay only for YouTube
 document.body.addEventListener('click', function (e) {
   if (e.target.closest('.video-link')) {
     e.preventDefault();
@@ -50,7 +50,8 @@ document.body.addEventListener('click', function (e) {
     } else if (url.includes('drive.google.com')) {
       const match = url.match(/\/d\/(.+?)\//);
       if (match && match[1]) {
-        embedUrl = `https://drive.google.com/file/d/${match[1]}/preview?autoplay=1`;
+        // DO NOT add autoplay for Google Drive
+        embedUrl = `https://drive.google.com/file/d/${match[1]}/preview`;
       }
     }
 
