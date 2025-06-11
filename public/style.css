@@ -26,48 +26,42 @@ main {
 /* EPISODE SECTIONS */
 #episode-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* narrower items for more per row */
+  gap: 1rem;
   padding: 0;
   margin: 0;
 }
 
 .episode {
   background: white;
-  border-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 0.5rem;
+  box-shadow: 0 0 6px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  transition: box-shadow 0.3s ease;
-  cursor: pointer;
-}
-
-.episode:hover {
-  box-shadow: 0 6px 20px rgba(0, 102, 204, 0.3);
 }
 
 .episode img {
   width: 100%;
-  max-width: 180px;
-  height: 180px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 0.75rem;
-  flex-shrink: 0;
+  height: auto;  /* preserve aspect ratio */
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  object-fit: contain; /* just in case */
 }
 
 .episode h3 {
+  font-size: 0.85rem;  /* smaller font */
   margin: 0;
-  font-size: 1rem;
-  line-height: 1.3;
-  color: #004a99;
-  white-space: normal;
-  word-wrap: break-word;
-  max-width: 180px;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
+
 
 /* FAN CONTENT SHOWCASE */
 #fan-showcase {

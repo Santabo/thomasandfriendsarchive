@@ -1,5 +1,3 @@
-
-
 document.addEventListener('DOMContentLoaded', () => {
   fetch('/data/season1.json')
     .then(response => response.json())
@@ -14,10 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
           const div = document.createElement('div');
           div.className = 'episode';
           div.innerHTML = `
-            <h3>Episode ${ep.episode_number}: ${ep.uk_title}</h3>
             <a href="#" class="video-link" data-url="${ep.link}">
-              <img src="${ep.cover}" alt="Episode ${ep.episode_number} cover" style="width:150px;cursor:pointer;">
+              <img src="${ep.cover}" alt="Episode ${ep.episode_number} cover" />
             </a>
+            <h3>Episode ${ep.episode_number}: ${ep.uk_title}</h3>
           `;
           container.appendChild(div);
         });
@@ -29,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// Video modal handler remains unchanged
 document.body.addEventListener('click', function (e) {
   if (e.target.closest('.video-link')) {
     e.preventDefault();
