@@ -1,32 +1,34 @@
-fetch('data/episodes.json')
-  .then(response => response.json())
-  .then(data => {
-    const container = document.getElementById('episodes-container');
+// public/js/episodes.js
+async function loadEpisodes() {
+  try {
+    const response = await fetch('/data/season1.json');
+    const data = await response.json();
 
-    Object.entries(data).forEach(([seasonKey, seasonData]) => {
-      const seasonDiv = document.createElement('div');
-      seasonDiv.className = 'season-block';
+    const episodesContainer = document.getElementById('episodes-list');
+    episodesContainer.innerHTML = '';
 
-      const title = document.createElement('h3');
-      title.textContent = seasonKey.replace('season', 'Season ');
-      seasonDiv.appendChild(title);
+    if (!data.season1 || !data.season1.episodes) {
+      episodesContainer.innerHTML = '<p>No episodes found.</p>';
+      return;
+    }
 
-      seasonData.episodes.forEach(ep => {
-        const card = document.createElement('div');
-        card.className = 'episode-card';
+    const sortedEpisodes = data.season1.episodes.sort(
+      (a, b) => a.episode_number - b.episode_number
+    );
 
-        card.innerHTML = `
-          <h4>${ep.episode_number}. ${ep.uk_title}</h4>
-          <img src="${ep.image}" alt="${ep.uk_title}" width="300">
-          <p>${ep.summary}</p>
-          <p><strong>Air Date:</strong> ${ep.air_date}</p>
-          <p><a href="${ep.link}" target="_blank">Watch UK Version</a></p>
-        `;
-
-        seasonDiv.appendChild(card);
-      });
-
-      container.appendChild(seasonDiv);
+    sortedEpisodes.forEach(episode => {
+      const episodeEl = document.createElement('div');
+      episodeEl.className = 'episode-entry';
+      episodeEl.innerHTML = `
+        <h4>Episode ${episode.episode_number}: ${episode.uk_title}</h4>
+        <p><a href="${episode.link}" target="_blank">Watch (UK Dub)</a></p>
+      `;
+      episodesContainer.appendChild(episodeEl);
     });
-  })
-  .catch(err => console.error("Failed to load episodes:", err));
+  } catch (error) {
+    console.error('Error loading episodes:', error);
+    document.getElementById('episodes-list').innerHTML = '<p>Failed to load episodes.</p>';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', loadEpisodes);
