@@ -43,12 +43,19 @@ document.body.addEventListener('click', function (e) {
     const modal = document.getElementById('video-modal');
     const iframe = document.getElementById('modal-video');
 
-    // Determine embed format
     let embedUrl = url;
 
     if (url.includes('youtube.com')) {
-      const videoId = new URL(url).searchParams.get('v');
-      embedUrl = `https://www.youtube.com/embed/${videoId}`;
+      // If URL already contains /embed/, use as is
+      if (url.includes('/embed/')) {
+        embedUrl = url;
+      } else {
+        // Otherwise extract video ID and build embed URL
+        const videoId = new URL(url).searchParams.get('v');
+        if (videoId) {
+          embedUrl = `https://www.youtube.com/embed/${videoId}`;
+        }
+      }
     } else if (url.includes('drive.google.com')) {
       const match = url.match(/\/d\/(.+?)\//);
       if (match && match[1]) {
