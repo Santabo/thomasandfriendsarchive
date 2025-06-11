@@ -49,6 +49,18 @@ main {
   object-fit: cover;
 }
 
+.episode h3 {
+  max-width: 220px; /* same as image max-width */
+  margin: 0 auto 0.5rem;
+  font-size: 1.2rem; /* base font size */
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: font-size 0.3s ease;
+}
+
+
 footer {
   background: #eee;
   text-align: center;
