@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .sort((a, b) => a.episode_number - b.episode_number)
         .forEach(ep => {
           const div = document.createElement('div');
-          div.className = 'episode-card';
+          div.className = 'episode';
           div.innerHTML = `
             <h3>Episode ${ep.episode_number}: ${ep.uk_title}</h3>
             <a href="#" class="video-link" data-url="${ep.link}">
