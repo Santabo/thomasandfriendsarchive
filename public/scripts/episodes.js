@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <a href="#" class="video-link" data-url="${ep.link}">
               <img src="${ep.cover}" alt="E${ep.episode_number} cover" />
             </a>
-            <h3>Episode ${ep.episode_number}: ${ep.uk_title}</h3>
+            <h3>E${ep.episode_number}: ${ep.uk_title}</h3>
           `;
           container.appendChild(div);
         });
