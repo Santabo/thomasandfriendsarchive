@@ -1,29 +1,32 @@
-// episodes.js
-// This file dynamically loads episodes from the episodes folder and displays them.
-
-const episodeContainer = document.getElementById("episode-list");
-
-fetch("/data/season1.json")
-  .then(res => res.json())
+fetch('data/episodes.json')
+  .then(response => response.json())
   .then(data => {
-    const seasonHeader = document.createElement("h3");
-    seasonHeader.textContent = "Season 1";
-    episodeContainer.appendChild(seasonHeader);
+    const container = document.getElementById('episodes-container');
 
-    data.episodes.forEach(episode => {
-      const episodeEl = document.createElement("div");
-      episodeEl.className = "episode";
+    Object.entries(data).forEach(([seasonKey, seasonData]) => {
+      const seasonDiv = document.createElement('div');
+      seasonDiv.className = 'season-block';
 
-      episodeEl.innerHTML = `
-        <img src="${episode.image}" alt="${episode.uk_title}">
-        <h4>${episode.episode_number}. ${episode.uk_title}</h4>
-        <p>${episode.summary}</p>
-        <p><strong>Air Date:</strong> ${episode.air_date}</p>
-        <p><strong>Audio Tracks:</strong> ${episode.audio_tracks.join(", ")}</p>
-        <p><a href="${episode.link.uk}" target="_blank">Watch UK</a> | 
-           <a href="${episode.link.us}" target="_blank">Watch US</a></p>
-      `;
+      const title = document.createElement('h3');
+      title.textContent = seasonKey.replace('season', 'Season ');
+      seasonDiv.appendChild(title);
 
-      episodeContainer.appendChild(episodeEl);
+      seasonData.episodes.forEach(ep => {
+        const card = document.createElement('div');
+        card.className = 'episode-card';
+
+        card.innerHTML = `
+          <h4>${ep.episode_number}. ${ep.uk_title}</h4>
+          <img src="${ep.image}" alt="${ep.uk_title}" width="300">
+          <p>${ep.summary}</p>
+          <p><strong>Air Date:</strong> ${ep.air_date}</p>
+          <p><a href="${ep.link}" target="_blank">Watch UK Version</a></p>
+        `;
+
+        seasonDiv.appendChild(card);
+      });
+
+      container.appendChild(seasonDiv);
     });
-  });
+  })
+  .catch(err => console.error("Failed to load episodes:", err));
