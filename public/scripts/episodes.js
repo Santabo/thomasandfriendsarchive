@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
-  fetch('/episodes/season1.json')
+  fetch('/data/season1.json')  // updated path here
     .then(response => response.json())
     .then(data => {
       const episodes = data.season1.episodes;
-      const container = document.getElementById('episode-list'); // match this ID exactly
+      const container = document.getElementById('episode-list');
       container.innerHTML = '';
 
       episodes
