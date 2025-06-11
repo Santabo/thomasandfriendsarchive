@@ -20,7 +20,9 @@ async function loadFanContent() {
 
       card.innerHTML = `
         <h3>${item.title}</h3>
-        <p><a href="#" class="video-link" data-url="${item.video_url}">Watch Video</a></p>
+        <a href="#" class="video-link" data-url="${item.video_url}">
+          <img src="${item.cover}" alt="Cover for ${item.title}" style="width: 100%; max-width: 400px; cursor: pointer; border-radius: 8px;" />
+        </a>
         <p>By <a href="${item.author_url}" target="_blank" rel="noopener noreferrer">${item.author_name}</a></p>
       `;
 
@@ -37,20 +39,21 @@ window.addEventListener('DOMContentLoaded', loadFanContent);
 
 // Shared modal click handler
 document.body.addEventListener('click', function (e) {
-  if (e.target.classList.contains('video-link')) {
+  if (e.target.classList.contains('video-link') || e.target.closest('.video-link')) {
     e.preventDefault();
-    const url = e.target.dataset.url;
+    const link = e.target.closest('.video-link');
+    const url = link.dataset.url;
     const modal = document.getElementById('video-modal');
     const iframe = document.getElementById('modal-video');
 
     let embedUrl = url;
 
     if (url.includes('youtube.com')) {
-      // If URL already contains /embed/, use as is
       if (url.includes('/embed/')) {
+        // Use embed URL as-is
         embedUrl = url;
       } else {
-        // Otherwise extract video ID and build embed URL
+        // Extract video ID and build embed URL
         const videoId = new URL(url).searchParams.get('v');
         if (videoId) {
           embedUrl = `https://www.youtube.com/embed/${videoId}`;
