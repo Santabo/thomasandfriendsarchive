@@ -1,4 +1,4 @@
-import { fitTitlesToImages } from '.fitTitleSizes.js';
+
 
 document.addEventListener('DOMContentLoaded', () => {
   fetch('/data/season1.json')
