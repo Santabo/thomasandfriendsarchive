@@ -51,7 +51,7 @@ document.body.addEventListener('click', function (e) {
       const match = url.match(/\/d\/(.+?)\//);
       if (match && match[1]) {
         // DO NOT add autoplay for Google Drive
-        embedUrl = `https://drive.google.com/file/d/${match[1]}/preview`;
+        embedUrl = `https://drive.google.com/file/d/${match[1]}`;
       }
     }
 
