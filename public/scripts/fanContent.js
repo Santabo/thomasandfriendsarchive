@@ -50,19 +50,19 @@ document.body.addEventListener('click', function (e) {
 
     if (url.includes('youtube.com')) {
       if (url.includes('/embed/')) {
-        // Use embed URL as-is
-        embedUrl = url;
+        // If it's already an embed URL, just add autoplay
+        embedUrl = url.includes('?') ? `${url}&autoplay=1` : `${url}?autoplay=1`;
       } else {
-        // Extract video ID and build embed URL
+        // Extract video ID and build embed URL with autoplay
         const videoId = new URL(url).searchParams.get('v');
         if (videoId) {
-          embedUrl = `https://www.youtube.com/embed/${videoId}`;
+          embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
         }
       }
     } else if (url.includes('drive.google.com')) {
       const match = url.match(/\/d\/(.+?)\//);
       if (match && match[1]) {
-        embedUrl = `https://drive.google.com/file/d/${match[1]}/preview`;
+        embedUrl = `https://drive.google.com/file/d/${match[1]}/preview?autoplay=1`;
       }
     }
 

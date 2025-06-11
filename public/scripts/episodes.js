@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Video modal handler remains unchanged
+// Video modal handler with autoplay
 document.body.addEventListener('click', function (e) {
   if (e.target.closest('.video-link')) {
     e.preventDefault();
@@ -39,12 +39,18 @@ document.body.addEventListener('click', function (e) {
     let embedUrl = url;
 
     if (url.includes('youtube.com')) {
-      const videoId = new URL(url).searchParams.get('v');
-      embedUrl = `https://www.youtube.com/embed/${videoId}`;
+      if (url.includes('/embed/')) {
+        embedUrl = url.includes('?') ? `${url}&autoplay=1` : `${url}?autoplay=1`;
+      } else {
+        const videoId = new URL(url).searchParams.get('v');
+        if (videoId) {
+          embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+        }
+      }
     } else if (url.includes('drive.google.com')) {
       const match = url.match(/\/d\/(.+?)\//);
       if (match && match[1]) {
-        embedUrl = `https://drive.google.com/file/d/${match[1]}/preview`;
+        embedUrl = `https://drive.google.com/file/d/${match[1]}/preview?autoplay=1`;
       }
     }
 
