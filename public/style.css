@@ -1,6 +1,7 @@
 /* style.css */
 body {
-  font-family: sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   margin: 0;
   padding: 0;
   background: #f2f2f2;
@@ -10,19 +11,22 @@ body {
 header {
   background: #0066cc;
   color: white;
-  padding: 2rem;
+  padding: 2rem 1rem;
   text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 main {
-  padding: 2rem;
-  max-width: 900px;
-  margin: auto;
+  padding: 2rem 1rem;
+  max-width: 960px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
+/* EPISODE SECTIONS */
 #episode-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 1.5rem;
   padding: 0;
   margin: 0;
@@ -32,51 +36,109 @@ main {
   background: white;
   border-radius: 12px;
   padding: 1rem;
-  /* Remove margin-bottom since grid gap handles spacing */
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  transition: box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.episode:hover {
+  box-shadow: 0 6px 20px rgba(0, 102, 204, 0.3);
 }
 
 .episode img {
   width: 100%;
-  height: auto;
-  max-width: 220px;
-  border-radius: 8px;
-  margin-bottom: 1rem;
+  max-width: 180px;
+  height: 180px;
   object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  flex-shrink: 0;
 }
 
 .episode h3 {
-  max-width: 220px; /* same as image max-width */
-  margin: 0 auto 0.5rem;
-  font-size: 1.2rem; /* base font size */
-  line-height: 1.2;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  transition: font-size 0.3s ease;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.3;
+  color: #004a99;
+  white-space: normal;
+  word-wrap: break-word;
+  max-width: 180px;
 }
 
+/* FAN CONTENT SHOWCASE */
+#fan-showcase {
+  background: #fff4cc;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 3rem;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+}
 
+.fan-item {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+}
+
+.fan-item h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+  color: #333;
+}
+
+.fan-item a.video-link {
+  display: block;
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.fan-item a.video-link img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+}
+
+.fan-item a.video-link img:hover {
+  transform: scale(1.03);
+}
+
+.fan-item p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.fan-item p a {
+  color: #0066cc;
+  text-decoration: underline;
+}
+
+.fan-item p a:hover {
+  color: #004a99;
+}
+
+/* FOOTER */
 footer {
   background: #eee;
   text-align: center;
   padding: 1rem;
   font-size: 0.9rem;
-  margin-top: 2rem;
+  margin-top: 4rem;
+  color: #666;
 }
 
-#fan-showcase {
-  background: #fff4cc;
-  padding: 1rem;
-  border-radius: 10px;
-  margin-bottom: 2rem;
-  box-shadow: 0 0 5px rgba(0,0,0,0.05);
-}
-
+/* MODAL */
 .modal {
   position: fixed;
   top: 0;
@@ -102,20 +164,49 @@ footer {
   padding: 0;
   border-radius: 8px;
   overflow: hidden;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
 }
 
 #modal-close {
   position: absolute;
-  top: 5px;
-  right: 10px;
+  top: 8px;
+  right: 12px;
   font-size: 28px;
   color: white;
   cursor: pointer;
   z-index: 10000;
+  user-select: none;
 }
 
 #modal-video {
   width: 100%;
   height: 450px;
+  display: block;
+  border: none;
+  background: black;
 }
 
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  main {
+    padding: 1rem;
+  }
+  #episode-list {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+  }
+  .episode img {
+    max-width: 140px;
+    height: 140px;
+  }
+  .episode h3 {
+    max-width: 140px;
+    font-size: 0.9rem;
+  }
+  .fan-item {
+    max-width: 100%;
+  }
+  .fan-item a.video-link img {
+    height: 180px;
+  }
+}
