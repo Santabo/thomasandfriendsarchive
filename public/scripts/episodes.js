@@ -1,29 +1,25 @@
-// episodes.js
-// This file dynamically loads episodes from the episodes folder and displays them.
+document.addEventListener('DOMContentLoaded', () => {
+  fetch('/data/season1.json')  // updated path here
+    .then(response => response.json())
+    .then(data => {
+      const episodes = data.season1.episodes;
+      const container = document.getElementById('episode-list');
+      container.innerHTML = '';
 
-const episodeContainer = document.getElementById("episode-list");
-
-fetch("/data/season1.json")
-  .then(res => res.json())
-  .then(data => {
-    const seasonHeader = document.createElement("h3");
-    seasonHeader.textContent = "Season 1";
-    episodeContainer.appendChild(seasonHeader);
-
-    data.episodes.forEach(episode => {
-      const episodeEl = document.createElement("div");
-      episodeEl.className = "episode";
-
-      episodeEl.innerHTML = `
-        <img src="${episode.image}" alt="${episode.uk_title}">
-        <h4>${episode.episode_number}. ${episode.uk_title}</h4>
-        <p>${episode.summary}</p>
-        <p><strong>Air Date:</strong> ${episode.air_date}</p>
-        <p><strong>Audio Tracks:</strong> ${episode.audio_tracks.join(", ")}</p>
-        <p><a href="${episode.link.uk}" target="_blank">Watch UK</a> | 
-           <a href="${episode.link.us}" target="_blank">Watch US</a></p>
-      `;
-
-      episodeContainer.appendChild(episodeEl);
+      episodes
+        .sort((a, b) => a.episode_number - b.episode_number)
+        .forEach(ep => {
+          const div = document.createElement('div');
+          div.innerHTML = `
+            <h3>Episode ${ep.episode_number}: ${ep.uk_title}</h3>
+            <p><a href="${ep.link}" target="_blank" rel="noopener noreferrer">Watch on Google Drive</a></p>
+          `;
+          container.appendChild(div);
+        });
+    })
+    .catch(err => {
+      console.error('Error loading episodes:', err);
+      const container = document.getElementById('episode-list');
+      container.innerHTML = 'Failed to load episodes.';
     });
-  });
+});
