@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  fetch('/data/season1.json')  // updated path here
+  fetch('/data/season1.json')
     .then(response => response.json())
     .then(data => {
       const episodes = data.season1.episodes;
@@ -10,9 +10,12 @@ document.addEventListener('DOMContentLoaded', () => {
         .sort((a, b) => a.episode_number - b.episode_number)
         .forEach(ep => {
           const div = document.createElement('div');
+          div.className = 'episode-card';
           div.innerHTML = `
             <h3>Episode ${ep.episode_number}: ${ep.uk_title}</h3>
-            <p><a href="#" class="video-link" data-url="${ep.link}">Watch</a></p>
+            <a href="#" class="video-link" data-url="${ep.link}">
+              <img src="${ep.cover}" alt="Episode ${ep.episode_number} cover" style="width:150px;cursor:pointer;">
+            </a>
           `;
           container.appendChild(div);
         });
@@ -25,13 +28,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 document.body.addEventListener('click', function (e) {
-  if (e.target.classList.contains('video-link')) {
+  if (e.target.closest('.video-link')) {
     e.preventDefault();
-    const url = e.target.dataset.url;
+    const link = e.target.closest('.video-link');
+    const url = link.dataset.url;
     const modal = document.getElementById('video-modal');
     const iframe = document.getElementById('modal-video');
 
-    // Determine embed format
     let embedUrl = url;
 
     if (url.includes('youtube.com')) {
