@@ -20,11 +20,7 @@ async function loadFanContent() {
 
       card.innerHTML = `
         <h3>${item.title}</h3>
-        <iframe width="560" height="315"
-          src="${item.video_url}"
-          title="YouTube video player" frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen></iframe>
+        <p><a href="#" class="video-link" data-url="${item.video_url}">Watch Video</a></p>
         <p>By <a href="${item.author_url}" target="_blank" rel="noopener noreferrer">${item.author_name}</a></p>
       `;
 
@@ -38,3 +34,36 @@ async function loadFanContent() {
 }
 
 window.addEventListener('DOMContentLoaded', loadFanContent);
+
+// Shared modal click handler
+document.body.addEventListener('click', function (e) {
+  if (e.target.classList.contains('video-link')) {
+    e.preventDefault();
+    const url = e.target.dataset.url;
+    const modal = document.getElementById('video-modal');
+    const iframe = document.getElementById('modal-video');
+
+    // Determine embed format
+    let embedUrl = url;
+
+    if (url.includes('youtube.com')) {
+      const videoId = new URL(url).searchParams.get('v');
+      embedUrl = `https://www.youtube.com/embed/${videoId}`;
+    } else if (url.includes('drive.google.com')) {
+      const match = url.match(/\/d\/(.+?)\//);
+      if (match && match[1]) {
+        embedUrl = `https://drive.google.com/file/d/${match[1]}/preview`;
+      }
+    }
+
+    iframe.src = embedUrl;
+    modal.classList.remove('hidden');
+  }
+
+  if (e.target.id === 'modal-close') {
+    const modal = document.getElementById('video-modal');
+    const iframe = document.getElementById('modal-video');
+    iframe.src = '';
+    modal.classList.add('hidden');
+  }
+});
