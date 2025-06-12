@@ -7,17 +7,31 @@
     "cover": "https://img.youtube.com/vi/CS197bQnAmE/maxresdefault.jpg"
   },
   {
-   "title": "Thomas' Odyssey",
-   "video_url": "https://www.youtube.com/watch?v=tnJXtiSDMbM",
-   "author_name": "The Unlucky Tug",
-   "author_url": "https://www.youtube.com/@TheUnluckyTug_official",
-   "cover": "https://img.youtube.com/vi/tnJXtiSDMbM/maxresdefault.jpg"
+    "title": "Thomas' Odyssey",
+    "video_url": "https://www.youtube.com/watch?v=tnJXtiSDMbM",
+    "author_name": "The Unlucky Tug",
+    "author_url": "https://www.youtube.com/@TheUnluckyTug_official",
+    "cover": "https://img.youtube.com/vi/tnJXtiSDMbM/maxresdefault.jpg"
   },
   {
-   "title": "Thomas & Friends: Season 14 & Misty Island Rescue (2010) in Retrospect — The Thomas Retrospective",
-   "video_url": "https://www.youtube.com/watch?v=bHtPvuPK9wI",
-   "author_name": "The Unlucky Tug",
-   "author_url": "https://www.youtube.com/@TheUnluckyTug_official",
-   "cover": "https://img.youtube.com/vi/bHtPvuPK9wI/maxresdefault.jpg"
+    "title": "Thomas & Friends: Season 14 & Misty Island Rescue (2010) in Retrospect — The Thomas Retrospective",
+    "video_url": "https://www.youtube.com/watch?v=bHtPvuPK9wI",
+    "author_name": "The Unlucky Tug",
+    "author_url": "https://www.youtube.com/@TheUnluckyTug_official",
+    "cover": "https://img.youtube.com/vi/bHtPvuPK9wI/maxresdefault.jpg"
+  },
+  {
+    "title": "The COMPLETE History of Hiro, the Master of the Railway — Sodor's Finest",
+    "video_url": "https://www.youtube.com/watch?v=kSZieqPGrOw",
+    "author_name": "The Unlucky Tug",
+    "author_url": "https://www.youtube.com/@TheUnluckyTug_official",
+    "cover": "https://img.youtube.com/vi/kSZieqPGrOw/maxresdefault.jpg"
+  },
+  {
+    "title": "Thomas the Train - UNHINGED VERSION",
+    "video_url": "https://www.youtube.com/watch?v=e8imLTa8UCM",
+    "author_name": "Landon’s Animation Wheelhouse",
+    "author_url": "https://www.youtube.com/@LandonsAnimationWheelhouse",
+    "cover": "https://img.youtube.com/vi/e8imLTa8UCM/maxresdefault.jpg"
   }
 ]
