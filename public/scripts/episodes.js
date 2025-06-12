@@ -1,68 +1,47 @@
 document.addEventListener('DOMContentLoaded', () => {
-  fetch('/data/season1.json')
-    .then(response => response.json())
-    .then(data => {
-      const episodes = data.season1.episodes;
-      const container = document.getElementById('episode-list');
-      container.innerHTML = '';
+  const seasons = ['season1', 'season2']; // Add more as needed
+  const container = document.getElementById('episode-list');
+  container.innerHTML = '';
 
-      episodes
-        .sort((a, b) => a.episode_number - b.episode_number)
-        .forEach(ep => {
-          const div = document.createElement('div');
-          div.className = 'episode';
-          div.innerHTML = `
-            <a href="#" class="video-link" data-url="${ep.link}">
-              <img src="${ep.cover}" alt="E${ep.episode_number} cover" />
-            </a>
-            <h3>E${ep.episode_number}: ${ep.uk_title}</h3>
-          `;
-          container.appendChild(div);
-        });
-    })
-    .catch(err => {
-      console.error('Error loading episodes:', err);
-      const container = document.getElementById('episode-list');
-      container.innerHTML = 'Failed to load episodes.';
-    });
-});
+  seasons.forEach(seasonKey => {
+    fetch(`/data/${seasonKey}.json`)
+      .then(response => response.json())
+      .then(data => {
+        const episodes = data[seasonKey].episodes;
 
-// Video modal handler with autoplay only for YouTube
-document.body.addEventListener('click', function (e) {
-  if (e.target.closest('.video-link')) {
-    e.preventDefault();
-    const link = e.target.closest('.video-link');
-    const url = link.dataset.url;
-    const modal = document.getElementById('video-modal');
-    const iframe = document.getElementById('modal-video');
+        // Create a season section
+        const seasonSection = document.createElement('section');
+        seasonSection.className = 'season-section';
 
-    let embedUrl = url;
+        const seasonTitle = document.createElement('h2');
+        seasonTitle.textContent = seasonKey.replace('season', 'Season ');
+        seasonSection.appendChild(seasonTitle);
 
-    if (url.includes('youtube.com')) {
-      if (url.includes('/embed/')) {
-        embedUrl = url.includes('?') ? `${url}&autoplay=1` : `${url}?autoplay=1`;
-      } else {
-        const videoId = new URL(url).searchParams.get('v');
-        if (videoId) {
-          embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-        }
-      }
-    } else if (url.includes('drive.google.com')) {
-      const match = url.match(/\/d\/(.+?)\//);
-      if (match && match[1]) {
-        // DO NOT add autoplay for Google Drive
-        embedUrl = `https://drive.google.com/file/d/${match[1]}/preview`;
-      }
-    }
+        const episodeGrid = document.createElement('div');
+        episodeGrid.className = 'season-episode-grid';
 
-    iframe.src = embedUrl;
-    modal.classList.remove('hidden');
-  }
+        episodes
+          .sort((a, b) => a.episode_number - b.episode_number)
+          .forEach(ep => {
+            const div = document.createElement('div');
+            div.className = 'episode';
+            div.innerHTML = `
+              <a href="#" class="video-link" data-url="${ep.link}">
+                <img src="${ep.cover}" alt="E${ep.episode_number} cover" />
+              </a>
+              <h3>E${ep.episode_number}: ${ep.uk_title}</h3>
+            `;
+            episodeGrid.appendChild(div);
+          });
 
-  if (e.target.id === 'modal-close') {
-    const modal = document.getElementById('video-modal');
-    const iframe = document.getElementById('modal-video');
-    iframe.src = '';
-    modal.classList.add('hidden');
-  }
+        seasonSection.appendChild(episodeGrid);
+        container.appendChild(seasonSection);
+      })
+      .catch(err => {
+        console.error(`Error loading ${seasonKey}:`, err);
+        const errorMsg = document.createElement('p');
+        errorMsg.textContent = `Failed to load ${seasonKey}.`;
+        container.appendChild(errorMsg);
+      });
+  });
 });
