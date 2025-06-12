@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const seasons = ['season1', 'season2']; // Add more as you add JSON files
+  const seasons = ['season1', 'season2']; // Add more as needed
   const container = document.getElementById('episode-list');
   container.innerHTML = '';
 
@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
       .then(data => {
         const episodes = data[seasonKey].episodes;
 
-        // Create season container
         const seasonContainer = document.createElement('div');
         seasonContainer.className = 'season';
 
@@ -53,4 +52,43 @@ document.addEventListener('DOMContentLoaded', () => {
         container.appendChild(errorMsg);
       });
   });
+});
+
+// Unified video modal logic
+document.addEventListener('click', function (e) {
+  const link = e.target.closest('.video-link');
+  if (link) {
+    e.preventDefault();
+    const url = link.dataset.url;
+    const modal = document.getElementById('video-modal');
+    const iframe = document.getElementById('modal-video');
+
+    let embedUrl = url;
+
+    if (url.includes('youtube.com')) {
+      if (url.includes('/embed/')) {
+        embedUrl = url.includes('?') ? `${url}&autoplay=1` : `${url}?autoplay=1`;
+      } else {
+        const videoId = new URL(url).searchParams.get('v');
+        if (videoId) {
+          embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+        }
+      }
+    } else if (url.includes('drive.google.com')) {
+      const match = url.match(/\/d\/(.+?)\//);
+      if (match && match[1]) {
+        embedUrl = `https://drive.google.com/file/d/${match[1]}/preview`;
+      }
+    }
+
+    iframe.src = embedUrl;
+    modal.classList.remove('hidden');
+  }
+
+  if (e.target.id === 'modal-close') {
+    const modal = document.getElementById('video-modal');
+    const iframe = document.getElementById('modal-video');
+    iframe.src = '';
+    modal.classList.add('hidden');
+  }
 });
