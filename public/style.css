@@ -22,11 +22,42 @@ main {
 
 /* EPISODE SECTION */
 #episode-list {
+  margin: 0;
+  padding: 0;
+}
+
+.season {
+  margin-bottom: 1em;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  overflow: hidden;
+  background: white;
+}
+
+.season-toggle {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: #005eb8;
+  color: white;
+  padding: 0.75em 1em;
+  font-size: 1.2em;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.season-toggle:hover {
+  background: #004e9c;
+}
+
+.season-content {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 1rem;
-  margin: 0;
-  padding: 0;
+  padding: 1em;
+  background: #f9f9f9;
 }
 
 .episode {
@@ -192,5 +223,10 @@ footer {
 
   #modal-video {
     height: 250px;
+  }
+
+  .season-toggle {
+    font-size: 1rem;
+    padding: 0.6em 0.8em;
   }
 }

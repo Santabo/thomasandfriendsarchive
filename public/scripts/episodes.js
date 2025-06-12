@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const seasons = ['season1', 'season2']; // Add more as needed
+  const seasons = ['season1', 'season2']; // Add more as you add JSON files
   const container = document.getElementById('episode-list');
   container.innerHTML = '';
 
@@ -9,16 +9,18 @@ document.addEventListener('DOMContentLoaded', () => {
       .then(data => {
         const episodes = data[seasonKey].episodes;
 
-        // Create a season section
-        const seasonSection = document.createElement('section');
-        seasonSection.className = 'season-section';
+        // Create season container
+        const seasonContainer = document.createElement('div');
+        seasonContainer.className = 'season';
 
-        const seasonTitle = document.createElement('h2');
-        seasonTitle.textContent = seasonKey.replace('season', 'Season ');
-        seasonSection.appendChild(seasonTitle);
+        const toggleButton = document.createElement('button');
+        toggleButton.className = 'season-toggle';
+        toggleButton.textContent = seasonKey.replace('season', 'Season ');
+        toggleButton.setAttribute('aria-expanded', 'false');
 
-        const episodeGrid = document.createElement('div');
-        episodeGrid.className = 'season-episode-grid';
+        const content = document.createElement('div');
+        content.className = 'season-content';
+        content.hidden = true;
 
         episodes
           .sort((a, b) => a.episode_number - b.episode_number)
@@ -31,11 +33,18 @@ document.addEventListener('DOMContentLoaded', () => {
               </a>
               <h3>E${ep.episode_number}: ${ep.uk_title}</h3>
             `;
-            episodeGrid.appendChild(div);
+            content.appendChild(div);
           });
 
-        seasonSection.appendChild(episodeGrid);
-        container.appendChild(seasonSection);
+        toggleButton.addEventListener('click', () => {
+          const expanded = toggleButton.getAttribute('aria-expanded') === 'true';
+          toggleButton.setAttribute('aria-expanded', String(!expanded));
+          content.hidden = expanded;
+        });
+
+        seasonContainer.appendChild(toggleButton);
+        seasonContainer.appendChild(content);
+        container.appendChild(seasonContainer);
       })
       .catch(err => {
         console.error(`Error loading ${seasonKey}:`, err);
