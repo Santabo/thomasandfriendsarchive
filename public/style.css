@@ -143,6 +143,7 @@ main {
   flex-direction: column;
   text-align: center;
   overflow: hidden;
+  object-fit: cover;
 }
 
 .fan-item a.video-link {
