@@ -3,54 +3,60 @@ document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('episode-list');
   container.innerHTML = '';
 
-  seasons.forEach(seasonKey => {
+  // Fetch all seasons in parallel and render in defined order
+  const fetchPromises = seasons.map(seasonKey =>
     fetch(`/data/${seasonKey}.json`)
       .then(response => response.json())
-      .then(data => {
-        const episodes = data[seasonKey].episodes;
+      .then(data => ({ seasonKey, episodes: data[seasonKey].episodes }))
+      .catch(error => ({ seasonKey, error }))
+  );
 
-        const seasonContainer = document.createElement('div');
-        seasonContainer.className = 'season';
-
-        const toggleButton = document.createElement('button');
-        toggleButton.className = 'season-toggle';
-        toggleButton.textContent = seasonKey.replace('season', 'Season ');
-        toggleButton.setAttribute('aria-expanded', 'false');
-
-        const content = document.createElement('div');
-        content.className = 'season-content';
-        content.hidden = true;
-
-        episodes
-          .sort((a, b) => a.episode_number - b.episode_number)
-          .forEach(ep => {
-            const div = document.createElement('div');
-            div.className = 'episode';
-            div.innerHTML = `
-              <a href="#" class="video-link" data-url="${ep.link}">
-                <img src="${ep.cover}" alt="E${ep.episode_number} cover" />
-              </a>
-              <h3>E${ep.episode_number}: ${ep.uk_title}</h3>
-            `;
-            content.appendChild(div);
-          });
-
-        toggleButton.addEventListener('click', () => {
-          const expanded = toggleButton.getAttribute('aria-expanded') === 'true';
-          toggleButton.setAttribute('aria-expanded', String(!expanded));
-          content.hidden = expanded;
-        });
-
-        seasonContainer.appendChild(toggleButton);
-        seasonContainer.appendChild(content);
-        container.appendChild(seasonContainer);
-      })
-      .catch(err => {
-        console.error(`Error loading ${seasonKey}:`, err);
+  Promise.all(fetchPromises).then(results => {
+    results.forEach(({ seasonKey, episodes, error }) => {
+      if (error) {
+        console.error(`Error loading ${seasonKey}:`, error);
         const errorMsg = document.createElement('p');
         errorMsg.textContent = `Failed to load ${seasonKey}.`;
         container.appendChild(errorMsg);
+        return;
+      }
+
+      const seasonContainer = document.createElement('div');
+      seasonContainer.className = 'season';
+
+      const toggleButton = document.createElement('button');
+      toggleButton.className = 'season-toggle';
+      toggleButton.textContent = seasonKey.replace('season', 'Season ');
+      toggleButton.setAttribute('aria-expanded', 'false');
+
+      const content = document.createElement('div');
+      content.className = 'season-content';
+      content.hidden = true;
+
+      episodes
+        .sort((a, b) => a.episode_number - b.episode_number)
+        .forEach(ep => {
+          const div = document.createElement('div');
+          div.className = 'episode';
+          div.innerHTML = `
+            <a href="#" class="video-link" data-url="${ep.link}">
+              <img src="${ep.cover}" alt="E${ep.episode_number} cover" />
+            </a>
+            <h3>E${ep.episode_number}: ${ep.uk_title}</h3>
+          `;
+          content.appendChild(div);
+        });
+
+      toggleButton.addEventListener('click', () => {
+        const expanded = toggleButton.getAttribute('aria-expanded') === 'true';
+        toggleButton.setAttribute('aria-expanded', String(!expanded));
+        content.hidden = expanded;
       });
+
+      seasonContainer.appendChild(toggleButton);
+      seasonContainer.appendChild(content);
+      container.appendChild(seasonContainer);
+    });
   });
 });
 
