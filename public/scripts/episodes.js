@@ -1,18 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
   const seasons = ['season1', 'season2', 'season3']; // Add more as needed
   const container = document.getElementById('episode-list');
+  const modal = document.getElementById('video-modal');
+  const iframe = document.getElementById('modal-video');
+
   container.innerHTML = '';
 
-  // Fetch all seasons in parallel and render in defined order
-  const fetchPromises = seasons.map(seasonKey =>
+  const fetchPromises = seasons.map((seasonKey, index) =>
     fetch(`/data/${seasonKey}.json`)
       .then(response => response.json())
-      .then(data => ({ seasonKey, episodes: data[seasonKey].episodes }))
+      .then(data => ({
+        seasonKey,
+        seasonNumber: index + 1,
+        episodes: data[seasonKey].episodes,
+      }))
       .catch(error => ({ seasonKey, error }))
   );
 
   Promise.all(fetchPromises).then(results => {
-    results.forEach(({ seasonKey, episodes, error }) => {
+    results.forEach(({ seasonKey, seasonNumber, episodes, error }) => {
       if (error) {
         console.error(`Error loading ${seasonKey}:`, error);
         const errorMsg = document.createElement('p');
@@ -36,10 +42,12 @@ document.addEventListener('DOMContentLoaded', () => {
       episodes
         .sort((a, b) => a.episode_number - b.episode_number)
         .forEach(ep => {
+          const epId = `${String(seasonNumber).padStart(2, '0')}${String(ep.episode_number).padStart(2, '0')}`;
           const div = document.createElement('div');
           div.className = 'episode';
+          div.setAttribute('data-epid', epId);
           div.innerHTML = `
-            <a href="#" class="video-link" data-url="${ep.link}">
+            <a href="?ep=${epId}" class="video-link" data-url="${ep.link}" data-epid="${epId}">
               <img src="${ep.cover}" alt="E${ep.episode_number} cover" />
             </a>
             <h3>E${ep.episode_number}: ${ep.uk_title}</h3>
@@ -57,18 +65,19 @@ document.addEventListener('DOMContentLoaded', () => {
       seasonContainer.appendChild(content);
       container.appendChild(seasonContainer);
     });
+
+    // Auto-open episode modal if ep param is in URL
+    const params = new URLSearchParams(window.location.search);
+    const requestedId = params.get('ep');
+    if (requestedId) {
+      const episodeEl = document.querySelector(`[data-epid="${requestedId}"] .video-link`);
+      if (episodeEl) {
+        openVideoModal(episodeEl.dataset.url, requestedId);
+      }
+    }
   });
-});
 
-// Unified video modal logic
-document.addEventListener('click', function (e) {
-  const link = e.target.closest('.video-link');
-  if (link) {
-    e.preventDefault();
-    const url = link.dataset.url;
-    const modal = document.getElementById('video-modal');
-    const iframe = document.getElementById('modal-video');
-
+  function openVideoModal(url, epId) {
     let embedUrl = url;
 
     if (url.includes('youtube.com')) {
@@ -89,12 +98,29 @@ document.addEventListener('click', function (e) {
 
     iframe.src = embedUrl;
     modal.classList.remove('hidden');
+
+    const currentUrl = new URL(window.location);
+    currentUrl.searchParams.set('ep', epId);
+    window.history.replaceState({}, '', currentUrl.toString());
   }
 
-  if (e.target.id === 'modal-close') {
-    const modal = document.getElementById('video-modal');
-    const iframe = document.getElementById('modal-video');
-    iframe.src = '';
-    modal.classList.add('hidden');
-  }
+  document.addEventListener('click', function (e) {
+    const link = e.target.closest('.video-link');
+    if (link) {
+      e.preventDefault();
+      const url = link.dataset.url;
+      const epId = link.dataset.epid;
+      openVideoModal(url, epId);
+    }
+
+    if (e.target.id === 'modal-close') {
+      iframe.src = '';
+      modal.classList.add('hidden');
+
+      // Remove ?ep from URL
+      const currentUrl = new URL(window.location);
+      currentUrl.searchParams.delete('ep');
+      window.history.replaceState({}, '', currentUrl.toString());
+    }
+  });
 });
