@@ -6,19 +6,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
   container.innerHTML = '';
 
-  const fetchPromises = seasons.map((seasonKey, index) =>
+  const fetchSeasonData = seasons.map((seasonKey, index) =>
     fetch(`/data/${seasonKey}.json`)
       .then(response => response.json())
       .then(data => ({
+        type: 'season',
         seasonKey,
         seasonNumber: index + 1,
         episodes: data[seasonKey].episodes,
       }))
-      .catch(error => ({ seasonKey, error }))
+      .catch(error => ({ type: 'season', seasonKey, error }))
   );
 
-  Promise.all(fetchPromises).then(results => {
-    results.forEach(({ seasonKey, seasonNumber, episodes, error }) => {
+  const fetchFanData = fetch(`/data/fan.json`)
+    .then(response => response.json())
+    .then(data => ({
+      type: 'fan',
+      seasonKey: 'fan',
+      episodes: data.fan.episodes,
+    }))
+    .catch(error => ({ type: 'fan', seasonKey: 'fan', error }));
+
+  Promise.all([...fetchSeasonData, fetchFanData]).then(results => {
+    results.forEach(({ type, seasonKey, seasonNumber, episodes, error }) => {
       if (error) {
         console.error(`Error loading ${seasonKey}:`, error);
         const errorMsg = document.createElement('p');
@@ -32,7 +42,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const toggleButton = document.createElement('button');
       toggleButton.className = 'season-toggle';
-      toggleButton.textContent = seasonKey.replace('season', 'Season ');
+
+      if (type === 'fan') {
+        toggleButton.textContent = 'Fan Episodes';
+      } else {
+        toggleButton.textContent = seasonKey.replace('season', 'Season ');
+      }
+
       toggleButton.setAttribute('aria-expanded', 'false');
 
       const content = document.createElement('div');
@@ -40,17 +56,26 @@ document.addEventListener('DOMContentLoaded', () => {
       content.hidden = true;
 
       episodes
-        .sort((a, b) => a.episode_number - b.episode_number)
-        .forEach(ep => {
-          const epId = `${String(seasonNumber).padStart(2, '0')}${String(ep.episode_number).padStart(2, '0')}`;
+        .sort((a, b) => {
+          if (type === 'fan') return 0; // preserve original order
+          return a.episode_number - b.episode_number;
+        })
+        .forEach((ep, i) => {
+          let epId;
+          if (type === 'fan') {
+            epId = `F0${String(i).padStart(2, '0')}`;
+          } else {
+            epId = `${String(seasonNumber).padStart(2, '0')}${String(ep.episode_number).padStart(2, '0')}`;
+          }
+
           const div = document.createElement('div');
           div.className = 'episode';
           div.setAttribute('data-epid', epId);
           div.innerHTML = `
             <a href="?ep=${epId}" class="video-link" data-url="${ep.link}" data-epid="${epId}">
-              <img src="${ep.cover}" alt="E${ep.episode_number} cover" />
+              <img src="${ep.cover}" alt="E${ep.episode_number || i + 1} cover" />
             </a>
-            <h3>E${ep.episode_number}: ${ep.uk_title}</h3>
+            <h3>E${ep.episode_number || i + 1}: ${ep.uk_title}</h3>
           `;
           content.appendChild(div);
         });
