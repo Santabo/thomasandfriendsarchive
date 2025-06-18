@@ -1,46 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thomas Archive</title>
-  <link rel="stylesheet" href="/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thomas the Tank Engine Archive</title>
+  <meta name="description" content="Complete collection of Thomas the Tank Engine episodes, specials, and fan-made content. Explore by season or enjoy curated fan creations." />
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
 </head>
 <body>
   <header>
-    <h1>Thomas the Tank Engine Archive</h1>
-    <p>Complete collection of episodes, specials, and fan creations</p>
+    <div class="container">
+      <h1>Thomas the Tank Engine Archive</h1>
+      <p>Complete collection of episodes, specials, and fan creations</p>
+    </div>
   </header>
 
   <main>
-<section id="fan-showcase">
-  <h2>Fan Content Showcase</h2>
-  <div class="fan-content" id="fan-content-container">
-    <!-- Fan content cards will be inserted here by script -->
-  </div>
-</section>
+    <section id="fan-showcase" aria-labelledby="fan-content-heading">
+      <div class="container">
+        <h2 id="fan-content-heading">Fan Content Showcase</h2>
+        <div class="fan-content" id="fan-content-container">
+          <!-- Fan content cards will be inserted here by script -->
+        </div>
+      </div>
+    </section>
 
-
-<section id="episodes">
-  <h2>Episodes by Season</h2>
-  <div id="episode-list" class="season-accordion"></div>
-</section>
+    <section id="episodes" aria-labelledby="episodes-heading">
+      <div class="container">
+        <h2 id="episodes-heading">Episodes by Season</h2>
+        <div id="episode-list" class="season-accordion">
+          <!-- Episodes will be loaded here dynamically -->
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer>
-    <p>&copy; 2025 Thomas Archive. This is a fan-made site and is not affiliated with the official franchise.</p>
+    <div class="container">
+      <p>&copy; 2025 Thomas Archive. This is a fan-made site and is not affiliated with the official franchise.</p>
+    </div>
   </footer>
 
-  <script src="/scripts/episodes.js"></script>
-  <script src="/scripts/fanContent.js"></script>
-  <script src="/scripts/fixTitleSize.js"></script>
-
-<div id="video-modal" class="modal hidden">
-  <div class="modal-content">
-    <span id="modal-close">&times;</span>
-    <iframe id="modal-video" frameborder="0" allowfullscreen></iframe>
+  <div id="video-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="video-title">
+    <div class="modal-content">
+      <button id="modal-close" aria-label="Close video modal">&times;</button>
+      <iframe id="modal-video" title="Video player" frameborder="0" allowfullscreen></iframe>
+    </div>
   </div>
-</div>
 
+  <script src="/scripts/episodes.js" defer></script>
+  <script src="/scripts/fanContent.js" defer></script>
+  <script src="/scripts/fixTitleSize.js" defer></script>
 </body>
 </html>
