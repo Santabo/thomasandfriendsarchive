@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const seasons = ['season1', 'season2', 'season3', 'season4']; // Add more as needed
+  const seasons = ['season1', 'season2', 'season3', 'season4', 'season5']; // Add more as needed
   const container = document.getElementById('episode-list');
   const modal = document.getElementById('video-modal');
   const iframe = document.getElementById('modal-video');
