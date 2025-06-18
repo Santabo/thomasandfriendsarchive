@@ -1,12 +1,18 @@
-/* GENERAL */
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+/* BASE RESET + BODY */
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  background: #f2f2f2;
-  color: #333;
 }
 
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  background: #f2f2f2;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* HEADER + MAIN + FOOTER */
 header {
   background: #0066cc;
   color: white;
@@ -18,6 +24,30 @@ header {
 main {
   padding: 2rem 4vw;
   box-sizing: border-box;
+}
+
+footer {
+  background: #eee;
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.9rem;
+  margin-top: 4rem;
+  color: #666;
+}
+
+/* SHARED STYLES */
+section {
+  margin-bottom: 3rem;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 /* EPISODE SECTION */
@@ -70,6 +100,11 @@ main {
   align-items: center;
   text-align: center;
   overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.episode:hover {
+  transform: translateY(-2px);
 }
 
 .episode img {
@@ -94,7 +129,7 @@ main {
   max-width: 100%;
 }
 
-/* FAN CONTENT SECTION (REVISED TO MATCH SEASON STYLE) */
+/* FAN CONTENT SECTION */
 #fan-showcase {
   margin: 0;
   padding: 0;
@@ -144,6 +179,11 @@ main {
   text-align: center;
   overflow: hidden;
   object-fit: cover;
+  transition: transform 0.2s ease;
+}
+
+.fan-item:hover {
+  transform: translateY(-2px);
 }
 
 .fan-item a.video-link {
@@ -195,16 +235,6 @@ main {
   color: #004a99;
 }
 
-/* FOOTER */
-footer {
-  background: #eee;
-  text-align: center;
-  padding: 1rem;
-  font-size: 0.9rem;
-  margin-top: 4rem;
-  color: #666;
-}
-
 /* VIDEO MODAL */
 .modal {
   position: fixed;
@@ -212,7 +242,7 @@ footer {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.85);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -234,38 +264,41 @@ footer {
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
 }
 
+#modal-video {
+  width: 100%;
+  height: 450px;
+  display: block;
+  background: black;
+  border: none;
+}
+
 #modal-close {
   position: absolute;
   top: 8px;
   right: 12px;
   font-size: 28px;
   color: white;
+  background: none;
+  border: none;
   cursor: pointer;
   z-index: 10000;
   user-select: none;
 }
 
-#modal-video {
-  width: 100%;
-  height: 450px;
-  display: block;
-  border: none;
-  background: black;
-}
-
 /* RESPONSIVE TWEAKS */
 @media (max-width: 600px) {
-  .episode h3 {
+  .season-toggle,
+  .fan-toggle {
+    font-size: 1rem;
+    padding: 0.6em 0.8em;
+  }
+
+  .episode h3,
+  .fan-item h3 {
     font-size: 0.8rem;
   }
 
   #modal-video {
     height: 250px;
-  }
-
-  .season-toggle,
-  .fan-toggle {
-    font-size: 1rem;
-    padding: 0.6em 0.8em;
   }
 }
