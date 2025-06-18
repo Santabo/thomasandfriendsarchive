@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const seasons = ['season1', 'season2']; // Add more as needed
+  const seasons = ['season1', 'season2', 'season3']; // Add more as needed
   const container = document.getElementById('episode-list');
   container.innerHTML = '';
 
