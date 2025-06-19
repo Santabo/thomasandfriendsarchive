@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (type === 'fan') {
         toggleButton.textContent = 'Fan Episodes';
       } else {
-        toggleButton.textContent = seasonKey.replace('season', 'Season ');
+        toggleButton.textContent = seasonKey.replace('season', 'Series ');
       }
 
       toggleButton.setAttribute('aria-expanded', 'false');
