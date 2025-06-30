@@ -9,73 +9,52 @@
   <link rel="icon" href="https://i.imgur.com/vwr6rpo.png" type="image/png" />
 </head>
 
-
-<!-- Terms of Use Modal -->
-<div id="terms-modal" class="modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.8); display: flex; align-items: center; justify-content: center; z-index: 9999;">
-  <div style="background: white; padding: 2rem; border-radius: 12px; max-width: 500px; text-align: center;">
-    <h2>Welcome to the Thomas Archive</h2>
-    <p style="margin: 1rem 0;">
-      Before entering, you must agree to our 
-      <a href="/terms-of-use.html" target="_blank" rel="noopener">Terms of Use</a>.
-    </p>
-    <button id="accept-terms" style="padding: 0.5rem 1.5rem; font-size: 1rem; border: none; border-radius: 6px; background: #007bff; color: white; cursor: pointer;">
-      I Accept
-    </button>
-  </div>
-</div>
-
-<script>
-  // Check if user has accepted terms
-  const accepted = localStorage.getItem("acceptedTerms");
-  const modal = document.getElementById("terms-modal");
-  if (!accepted) {
-    document.body.style.overflow = "hidden"; // prevent scrolling
-    modal.style.display = "flex";
-  } else {
-    modal.remove();
-  }
-
-  document.getElementById("accept-terms").addEventListener("click", () => {
-    localStorage.setItem("acceptedTerms", "yes");
-    modal.remove();
-    document.body.style.overflow = "";
-  });
-</script>
-
-
 <body>
+  <!-- Terms of Use Modal -->
+  <div id="terms-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="terms-heading" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.8); display: none; align-items: center; justify-content: center; z-index: 9999;">
+    <div style="background: white; padding: 2rem; border-radius: 12px; max-width: 500px; text-align: center;">
+      <h2 id="terms-heading">Welcome to the Thomas Archive</h2>
+      <p style="margin: 1rem 0;">
+        Before entering, you must agree to our 
+        <a href="/terms-of-use.html" target="_blank" rel="noopener">Terms of Use</a>.
+      </p>
+      <button id="accept-terms" style="padding: 0.5rem 1.5rem; font-size: 1rem; border: none; border-radius: 6px; background: #007bff; color: white; cursor: pointer;">
+        I Accept
+      </button>
+    </div>
+  </div>
+
   <header>
     <div class="container">
       <h1>Thomas the Tank Engine Archive</h1>
-      <p>Soon to be complete collection of episodes, specials, and a few spotlight fan creations</p>
+      <p>A soon-to-be complete collection of episodes, specials, and select fan creations</p>
     </div>
   </header>
 
   <main>
     <section id="fan-showcase" aria-labelledby="fan-content-heading">
       <div class="container">
-        <h2 id="fan-content-heading"></h2>
+        <h2 id="fan-content-heading">Fan Creations</h2>
         <div class="fan-content" id="fan-content-container">
-          <!-- Fan content cards will be inserted here by script -->
+          <!-- Fan content cards inserted dynamically -->
         </div>
       </div>
     </section>
 
     <section id="episodes" aria-labelledby="episodes-heading">
       <div class="container">
-        <h2 id="episodes-heading"></h2>
+        <h2 id="episodes-heading">Episodes</h2>
         <div id="episode-list" class="season-accordion">
-          <!-- Episodes will be loaded here dynamically -->
+          <!-- Episodes inserted dynamically -->
         </div>
       </div>
     </section>
 
-    <!-- ✅ Discord Embed Section -->
     <section id="join-discord" aria-labelledby="discord-heading">
       <div class="container" style="text-align: center; margin-top: 2rem;">
         <h2 id="discord-heading">Join the Thomas Archive Discord</h2>
-        <p>Access exclusive content, talk with other fans, and help grow the archive!</p>
+        <p>Access exclusive content, chat with other fans, and help grow the archive!</p>
         <iframe
           src="https://discord.com/widget?id=859512547379118120&theme=dark"
           width="350"
@@ -92,19 +71,38 @@
   <footer>
     <div class="container">
       <p>
-        &copy; 2025 Thomas Archive. This is a fan-made site and is not affiliated with the official franchise. 
+        &copy; 2025 Thomas Archive. This fan-made site is not affiliated with the official franchise. 
         <a href="/terms-of-use.html" style="margin-left: 1em;">Terms of Use</a>
       </p>
     </div>
   </footer>
 
-
+  <!-- Video Modal -->
   <div id="video-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="video-title">
     <div class="modal-content">
       <button id="modal-close" aria-label="Close video modal">&times;</button>
       <iframe id="modal-video" title="Video player" frameborder="0" allowfullscreen></iframe>
     </div>
   </div>
+
+  <script>
+    // Terms modal logic
+    window.addEventListener("DOMContentLoaded", () => {
+      const modal = document.getElementById("terms-modal");
+      const acceptBtn = document.getElementById("accept-terms");
+
+      if (!localStorage.getItem("acceptedTerms") && modal && acceptBtn) {
+        modal.style.display = "flex";
+        document.body.style.overflow = "hidden";
+
+        acceptBtn.addEventListener("click", () => {
+          localStorage.setItem("acceptedTerms", "yes");
+          modal.remove();
+          document.body.style.overflow = "";
+        });
+      }
+    });
+  </script>
 
   <script src="/scripts/episodes.js" defer></script>
   <script src="/scripts/fanContent.js" defer></script>
