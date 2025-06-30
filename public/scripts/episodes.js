@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(response => response.json())
     .then(data => ({
       type: 'fan',
-      seasonKey: 'fan',
+      seasonKey: 'fanContent',
       episodes: data.fan.episodes,
     }))
     .catch(error => ({ type: 'fan', seasonKey: 'fan', error }));
