@@ -100,48 +100,10 @@
     });
   </script>
 
-  <!-- Discord Widget Script -->
-  <script>
-    async function loadDiscordWidget() {
-      try {
-        const res = await fetch("https://discord.com/api/guilds/859512547379118120/widget.json");
-        if (!res.ok) throw new Error("Failed to fetch Discord data");
-        const data = await res.json();
-
-        // Update invite button
-        const inviteBtn = document.getElementById("discord-invite");
-        inviteBtn.href = data.instant_invite;
-
-        // Update stats text
-        const stats = document.getElementById("discord-stats");
-        stats.textContent = `🎉 ${data.presence_count} members online right now!`;
-
-        // Display member avatars (up to 8)
-        const avatarsContainer = document.getElementById("discord-avatars");
-        data.members.slice(0, 8).forEach(member => {
-          const img = document.createElement("img");
-          img.src = member.avatar_url;
-          img.alt = `${member.username}'s avatar`;
-          img.title = member.username;
-          img.style.width = "40px";
-          img.style.height = "40px";
-          img.style.borderRadius = "50%";
-          avatarsContainer.appendChild(img);
-        });
-
-      } catch (error) {
-        console.error("Discord widget error:", error);
-        const stats = document.getElementById("discord-stats");
-        stats.textContent = "⚠️ Unable to load Discord info right now.";
-      }
-    }
-
-    window.addEventListener("DOMContentLoaded", loadDiscordWidget);
-  </script>
-
   <!-- Site Scripts -->
   <script src="/scripts/episodes.js" defer></script>
   <script src="/scripts/fanContent.js" defer></script>
   <script src="/scripts/fixTitleSize.js" defer></script>
+  <script src="/scripts/discordWidget.js" defer></script>
 </body>
 </html>
