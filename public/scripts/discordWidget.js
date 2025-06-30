@@ -17,51 +17,39 @@ async function loadDiscordWidget() {
       "TTS Bot"
     ];
 
-    // Filter real human members only
-    const realMembers = (data.members || []).filter(
-      member => member.username && !botUsernames.includes(member.username)
+    // Filter out bot members
+    const realMembers = data.members.filter(
+      member => !botUsernames.includes(member.username)
     );
 
-    // Update Discord invite button
+    // Update invite link
     const inviteBtn = document.getElementById("discord-invite");
-    if (inviteBtn && data.instant_invite) {
-      inviteBtn.href = data.instant_invite;
-    }
+    if (inviteBtn) inviteBtn.href = data.instant_invite;
 
-    // Update stats text
+    // Update online stats with real users only
     const stats = document.getElementById("discord-stats");
     if (stats) {
       const count = realMembers.length;
-      stats.textContent =
-        count > 0
-          ? `🎉 ${count} real member${count !== 1 ? "s" : ""} online right now!`
-          : `🔍 No human members online at the moment.`;
+      stats.textContent = `🎉 ${count} real member${count !== 1 ? "s" : ""} online right now!`;
     }
 
-    // Show real member avatars
+    // Show avatars (up to 8 real members)
     const avatarsContainer = document.getElementById("discord-avatars");
     if (avatarsContainer) {
-      avatarsContainer.innerHTML = ""; // Clear existing
-
-      const fragment = document.createDocumentFragment();
-
+      avatarsContainer.innerHTML = ""; // Clear existing avatars
       realMembers.slice(0, 8).forEach(member => {
-        if (!member.avatar_url) return;
-
         const img = document.createElement("img");
-        img.src = member.avatar_url;
+        img.src = member.avatar_url || "https://cdn.discordapp.com/embed/avatars/0.png"; // default avatar fallback
         img.alt = `${member.username}'s avatar`;
         img.title = member.username;
-        img.style.width = "40px";
-        img.style.height = "40px";
+        img.style.width = "24px";
+        img.style.height = "24px";
         img.style.borderRadius = "50%";
-        img.style.margin = "0 4px";
-
-        fragment.appendChild(img);
+        img.style.marginRight = "4px";
+        avatarsContainer.appendChild(img);
       });
-
-      avatarsContainer.appendChild(fragment);
     }
+
   } catch (error) {
     console.error("Discord widget error:", error);
     const stats = document.getElementById("discord-stats");
