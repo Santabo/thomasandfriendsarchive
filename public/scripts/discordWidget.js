@@ -17,26 +17,37 @@ async function loadDiscordWidget() {
       "TTS Bot"
     ];
 
-    // Filter out bot members
-    const realMembers = data.members.filter(
-      member => !botUsernames.includes(member.username)
+    // Filter real human members only
+    const realMembers = (data.members || []).filter(
+      member => member.username && !botUsernames.includes(member.username)
     );
 
-    // Update invite link
+    // Update Discord invite button
     const inviteBtn = document.getElementById("discord-invite");
-    if (inviteBtn) inviteBtn.href = data.instant_invite;
+    if (inviteBtn && data.instant_invite) {
+      inviteBtn.href = data.instant_invite;
+    }
 
-    // Update online stats with real users only
+    // Update stats text
     const stats = document.getElementById("discord-stats");
     if (stats) {
       const count = realMembers.length;
-      stats.textContent = `🎉 ${count} real member${count !== 1 ? "s" : ""} online right now!`;
+      stats.textContent =
+        count > 0
+          ? `🎉 ${count} real member${count !== 1 ? "s" : ""} online right now!`
+          : `🔍 No human members online at the moment.`;
     }
 
-    // Show avatars (up to 8 real members)
+    // Show real member avatars
     const avatarsContainer = document.getElementById("discord-avatars");
     if (avatarsContainer) {
+      avatarsContainer.innerHTML = ""; // Clear existing
+
+      const fragment = document.createDocumentFragment();
+
       realMembers.slice(0, 8).forEach(member => {
+        if (!member.avatar_url) return;
+
         const img = document.createElement("img");
         img.src = member.avatar_url;
         img.alt = `${member.username}'s avatar`;
@@ -45,10 +56,12 @@ async function loadDiscordWidget() {
         img.style.height = "40px";
         img.style.borderRadius = "50%";
         img.style.margin = "0 4px";
-        avatarsContainer.appendChild(img);
-      });
-    }
 
+        fragment.appendChild(img);
+      });
+
+      avatarsContainer.appendChild(fragment);
+    }
   } catch (error) {
     console.error("Discord widget error:", error);
     const stats = document.getElementById("discord-stats");
