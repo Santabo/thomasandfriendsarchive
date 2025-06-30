@@ -51,19 +51,15 @@
       </div>
     </section>
 
-    <section id="join-discord" aria-labelledby="discord-heading">
-      <div class="container" style="text-align: center; margin-top: 2rem;">
-        <h2 id="discord-heading">Join the Thomas Archive Discord</h2>
-        <p>Access exclusive content, chat with other fans, and help grow the archive!</p>
-        <iframe
-          src="https://discord.com/widget?id=859512547379118120&theme=dark"
-          width="350"
-          height="500"
-          allowtransparency="true"
-          frameborder="0"
-          sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
-          style="margin-top: 1rem; border-radius: 8px;">
-        </iframe>
+    <!-- ✅ Live Discord Widget Section -->
+    <section id="join-discord" aria-labelledby="discord-heading" style="background: #2c2f33; color: white; padding: 2rem 1rem; text-align: center; border-radius: 12px; margin: 3rem auto; max-width: 800px;">
+      <div class="container">
+        <h2 id="discord-heading" style="font-size: 2rem; margin-bottom: 0.5rem;">Join the Thomas Archive Discord</h2>
+        <p id="discord-stats" style="margin-bottom: 1.5rem;">Loading Discord server info...</p>
+        <div id="discord-avatars" style="margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem;"></div>
+        <a id="discord-invite" href="https://discord.gg/aCv2QVtP" target="_blank" rel="noopener" style="display: inline-block; padding: 0.75rem 1.5rem; background: #5865F2; color: white; border-radius: 8px; font-size: 1rem; text-decoration: none;">
+          🚂 Join Now
+        </a>
       </div>
     </section>
   </main>
@@ -85,8 +81,8 @@
     </div>
   </div>
 
+  <!-- Terms Modal Logic -->
   <script>
-    // Terms modal logic
     window.addEventListener("DOMContentLoaded", () => {
       const modal = document.getElementById("terms-modal");
       const acceptBtn = document.getElementById("accept-terms");
@@ -104,6 +100,46 @@
     });
   </script>
 
+  <!-- Discord Widget Script -->
+  <script>
+    async function loadDiscordWidget() {
+      try {
+        const res = await fetch("https://discord.com/api/guilds/859512547379118120/widget.json");
+        if (!res.ok) throw new Error("Failed to fetch Discord data");
+        const data = await res.json();
+
+        // Update invite button
+        const inviteBtn = document.getElementById("discord-invite");
+        inviteBtn.href = data.instant_invite;
+
+        // Update stats text
+        const stats = document.getElementById("discord-stats");
+        stats.textContent = `🎉 ${data.presence_count} members online right now!`;
+
+        // Display member avatars (up to 8)
+        const avatarsContainer = document.getElementById("discord-avatars");
+        data.members.slice(0, 8).forEach(member => {
+          const img = document.createElement("img");
+          img.src = member.avatar_url;
+          img.alt = `${member.username}'s avatar`;
+          img.title = member.username;
+          img.style.width = "40px";
+          img.style.height = "40px";
+          img.style.borderRadius = "50%";
+          avatarsContainer.appendChild(img);
+        });
+
+      } catch (error) {
+        console.error("Discord widget error:", error);
+        const stats = document.getElementById("discord-stats");
+        stats.textContent = "⚠️ Unable to load Discord info right now.";
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", loadDiscordWidget);
+  </script>
+
+  <!-- Site Scripts -->
   <script src="/scripts/episodes.js" defer></script>
   <script src="/scripts/fanContent.js" defer></script>
   <script src="/scripts/fixTitleSize.js" defer></script>
