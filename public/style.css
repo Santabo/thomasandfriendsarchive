@@ -302,3 +302,55 @@ h2 {
     height: 250px;
   }
 }
+
+/* Discord banner - slim and inline */
+#join-discord {
+  color: white;
+  padding: 0.2rem 1rem; /* less vertical padding */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow-x: auto;
+  font-size: 0.9rem;
+  margin-bottom: 0; /* no extra bottom margin */
+}
+
+#discord-avatars {
+  display: flex;
+  gap: 0.4rem;
+  flex-shrink: 1;
+  overflow-x: auto;
+  max-height: 36px; /* limit vertical size */
+  align-items: center;
+}
+
+#discord-avatars img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+#discord-invite {
+  background: #5865f2; /* Discord blurple */
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: auto;
+  font-size: 0.9rem;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s ease;
+}
+
+#discord-invite:hover,
+#discord-invite:focus {
+  background: #4752c4; /* slightly darker on hover/focus */
+  outline: none;
+}
+
