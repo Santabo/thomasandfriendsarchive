@@ -16,7 +16,8 @@ async function loadDiscordWidget() {
       "Sapphire",
       "TTS Bot",
       "DSMonitoring",
-      "Keto"
+      "Keto",
+      "DTools"
     ];
 
     // Filter out bot members
