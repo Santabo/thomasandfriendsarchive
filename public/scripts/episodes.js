@@ -61,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const wrapper = document.createElement('div');
       wrapper.className = 'season';
       wrapper.dataset.series = seasonKey;
+      wrapper.style.display = seasonKey === 'season1' ? 'block' : 'none';
 
       const content = document.createElement('div');
       content.className = type === 'fan' ? 'fan-content' : 'season-content';
@@ -84,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       } else {
         episodes.sort((a, b) => a.episode_number - b.episode_number);
-        episodes.forEach((ep, i) => {
+        episodes.forEach(ep => {
           const epId = `${String(seasonNumber).padStart(2, '0')}${String(ep.episode_number).padStart(2, '0')}`;
           const div = document.createElement('div');
           div.className = 'episode';
@@ -100,7 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       wrapper.appendChild(content);
-      wrapper.style.display = seasonKey === 'season1' ? 'block' : 'none';
       container.appendChild(wrapper);
     });
 
@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Optional: close modal if clicking outside iframe
+  // Close modal if clicking outside iframe content
   modal.addEventListener('click', e => {
     if (e.target === modal) {
       iframe.src = '';
