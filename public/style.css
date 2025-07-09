@@ -195,9 +195,9 @@ h2 {
   color: white;
 }
 
-/* DISCORD BAR - Merged and adjusted colors */
+/* DISCORD BAR - Transparent background */
 #join-discord {
-  background: #c62828; /* From your preferred colors */
+  background: transparent;
   color: #fff;
   padding: 0.4rem 1rem;
   display: flex;
