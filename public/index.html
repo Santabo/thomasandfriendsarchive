@@ -1,13 +1,20 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Thomas the Tank Engine Archive</title>
+  <title>Thomas Archive | Watch & Explore</title>
   <meta name="description" content="Complete collection of Thomas the Tank Engine episodes, specials, and fan-made content. Explore by season or enjoy curated fan creations." />
   <link rel="stylesheet" href="/style.css" />
   <link rel="icon" href="https://i.imgur.com/vwr6rpo.png" type="image/png" />
+  <style>
+    @font-face {
+      font-family: 'Flange BQ Bold';
+      src: url('/flangebq_bold.ttf') format('truetype');
+      font-weight: bold;
+      font-style: normal;
+    }
+  </style>
 </head>
 
 <body>
@@ -26,34 +33,19 @@
     </div>
   </div>
 
-<header>
-  <div class="container">
-    <h1>Thomas the Tank Engine Archive</h1>
-    <p>A soon-to-be complete collection of episodes, specials, and select fan creations</p>
-  </div>
-
-  <section id="join-discord" 
-    style="color: white; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 1rem; overflow-x: auto;">
-
-    <div id="discord-avatars" 
-      style="display: flex; gap: 0.5rem; flex-shrink: 1; overflow-x: auto;">
+  <header>
+    <div class="container">
+      <h1>Thomas the Tank Engine Archive</h1>
+      <p>A soon-to-be complete collection of episodes, specials, and select fan creations</p>
     </div>
 
-    <a id="discord-invite" href="https://discord.gg/" target="_blank" rel="noopener" 
-      style="background: #005eb8; color: white; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-weight: bold; white-space: nowrap; flex-shrink: 0; margin-left: auto;">
-      🚂 Join The Discord
-    </a>
-
-<a class="like-button" href="https://discordserver.info/859512547379118120/like" 
-   onClick="like(this); return false;" 
-   target="_blank" rel="noopener">
-  ❤️ Like Server
-</a>
-<script src="https://discordserver.info/like.js"></script>
-</section>
-</header>
-
-
+    <section id="join-discord">
+      <div id="discord-avatars"></div>
+      <a id="discord-invite" href="https://discord.gg/" target="_blank" rel="noopener">🚂 Join The Discord</a>
+      <a class="like-button" href="https://discordserver.info/859512547379118120/like" onClick="like(this); return false;" target="_blank" rel="noopener">❤️ Like Server</a>
+      <script src="https://discordserver.info/like.js"></script>
+    </section>
+  </header>
 
   <main>
     <section id="fan-showcase" aria-labelledby="fan-content-heading">
@@ -73,14 +65,16 @@
         </div>
       </div>
     </section>
-
   </main>
 
   <footer>
     <div class="container">
       <p>
-        &copy; 2025 Thomas Archive. This fan-made site is not affiliated with the official franchise. 
-        <a href="/terms-of-use.html" style="margin-left: 1em;">Terms of Use</a>
+        &copy; 2025 Thomas Archive. Fan-made and unaffiliated with the official franchise.
+        <br />
+        Font: Flange BQ Bold – (c) COPYRIGHT H. BERTHOLD AG 1992 Alle Rechte vorbehalten.
+        <br />
+        <a href="/terms-of-use.html">Terms of Use</a>
       </p>
     </div>
   </footer>
