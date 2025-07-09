@@ -8,6 +8,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const selector = document.createElement('div');
   selector.className = 'series-selector';
 
+  const modal = document.getElementById('video-modal');
+  const iframe = document.getElementById('modal-video');
+
+  if (!modal || !iframe) {
+    console.error('Modal or iframe element not found in DOM!');
+    return;
+  }
+
   sections.forEach((key, i) => {
     const label = key === 'fan' ? 'Fan Creations' : `Series ${i + 1}`;
     const button = document.createElement('button');
@@ -20,22 +28,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   container.before(selector);
 
-  const modal = document.getElementById('video-modal');
-  const iframe = document.getElementById('modal-video');
-
-  if (!modal || !iframe) {
-    console.error('Modal or iframe element not found in DOM!');
-    return;
-  }
-
   const fetchSeasonData = sections.map((key, index) => {
     if (key === 'fan') {
       return fetch(`/data/fanContent.json`)
         .then(res => res.json())
-        .then(items => ({
+        .then(data => ({
           type: 'fan',
           seasonKey: key,
-          items
+          seasonNumber: null,
+          episodes: data.fan.episodes
         }))
         .catch(err => ({ seasonKey: key, error: err }));
     } else {
@@ -52,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   Promise.all(fetchSeasonData).then(results => {
-    results.forEach(({ type, seasonKey, seasonNumber, episodes, items, error }) => {
+    results.forEach(({ type, seasonKey, seasonNumber, episodes, error }) => {
       if (error) {
         console.error(`Error loading ${seasonKey}:`, error);
         return;
@@ -66,39 +67,28 @@ document.addEventListener('DOMContentLoaded', () => {
       const content = document.createElement('div');
       content.className = type === 'fan' ? 'fan-content' : 'season-content';
 
-      if (type === 'fan') {
-        if (!items || items.length === 0) {
-          content.innerHTML = '<p>No fan content yet. Submit yours to be featured here!</p>';
-        } else {
-          items.forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'fan-item';
-            card.innerHTML = `
-              <h3>${item.title}</h3>
-              <a href="#" class="video-link" data-url="${item.video_url}" data-epid="fan-${item.title.replace(/\s+/g, '-')}" >
-                <img src="${item.cover}" alt="Cover for ${item.title}" />
-              </a>
-              <p>By <a href="${item.author_url}" target="_blank" rel="noopener noreferrer">${item.author_name}</a></p>
-            `;
-            content.appendChild(card);
-          });
-        }
-      } else {
-        episodes.sort((a, b) => a.episode_number - b.episode_number);
-        episodes.forEach(ep => {
-          const epId = `${String(seasonNumber).padStart(2, '0')}${String(ep.episode_number).padStart(2, '0')}`;
-          const div = document.createElement('div');
-          div.className = 'episode';
-          div.setAttribute('data-epid', epId);
-          div.innerHTML = `
-            <a href="?ep=${epId}" class="video-link" data-url="${ep.link}" data-epid="${epId}">
-              <img src="${ep.cover}" alt="E${ep.episode_number} cover" />
-            </a>
-            <h3>E${ep.episode_number}: ${ep.uk_title}</h3>
-          `;
-          content.appendChild(div);
-        });
-      }
+      episodes.sort((a, b) => {
+        if (type === 'fan') return 0;
+        return a.episode_number - b.episode_number;
+      });
+
+      episodes.forEach((ep, i) => {
+        const epId =
+          type === 'fan'
+            ? `F0${String(i).padStart(2, '0')}`
+            : `${String(seasonNumber).padStart(2, '0')}${String(ep.episode_number).padStart(2, '0')}`;
+
+        const div = document.createElement('div');
+        div.className = 'episode';
+        div.setAttribute('data-epid', epId);
+        div.innerHTML = `
+          <a href="?ep=${epId}" class="video-link" data-url="${ep.link}" data-epid="${epId}">
+            <img src="${ep.cover}" alt="E${ep.episode_number || i + 1} cover" />
+          </a>
+          <h3>E${ep.episode_number || i + 1}: ${ep.uk_title}</h3>
+        `;
+        content.appendChild(div);
+      });
 
       wrapper.appendChild(content);
       container.appendChild(wrapper);
@@ -115,12 +105,14 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Open modal if URL param ep= is present
+    // Handle autoplay if ep param is in URL
     const params = new URLSearchParams(window.location.search);
     const requestedId = params.get('ep');
     if (requestedId) {
       const episodeEl = document.querySelector(`[data-epid="${requestedId}"] .video-link`);
-      if (episodeEl) openVideoModal(episodeEl.dataset.url, requestedId);
+      if (episodeEl) {
+        openVideoModal(episodeEl.dataset.url, requestedId);
+      }
     }
   });
 
@@ -137,7 +129,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       } else if (url.includes('drive.google.com')) {
         const match = url.match(/\/d\/(.+?)\//);
-        if (match && match[1]) embedUrl = `https://drive.google.com/file/d/${match[1]}/preview`;
+        if (match && match[1]) {
+          embedUrl = `https://drive.google.com/file/d/${match[1]}/preview`;
+        }
       }
     } catch (err) {
       console.error('Error parsing video URL:', err);
@@ -170,7 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Close modal if clicking outside iframe content
   modal.addEventListener('click', e => {
     if (e.target === modal) {
       iframe.src = '';
