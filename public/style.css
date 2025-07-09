@@ -128,6 +128,9 @@ h2 {
   font-size: 1rem;
   color: #222;
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* FAN SECTION — Styled identically to episodes */
@@ -165,6 +168,9 @@ h2 {
   font-size: 1rem;
   color: #222;
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .fan-item p {
@@ -172,6 +178,9 @@ h2 {
   font-size: 0.85rem;
   color: #666;
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .fan-item p a {
@@ -243,6 +252,18 @@ h2 {
   font-weight: bold;
   text-decoration: none;
   margin-left: auto;
+  color: white;
+  transition: background 0.3s ease;
+}
+
+#discord-invite:hover {
+  background: #4752c4;
+  color: white;
+}
+
+#discord-invite:active {
+  background: #363d99;
+  color: white;
 }
 
 /* VIDEO MODAL */
