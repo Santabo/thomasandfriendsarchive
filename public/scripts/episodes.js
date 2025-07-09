@@ -1,5 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const sections = [...Array.from({ length: 19 }, (_, i) => `season${i + 1}`), 'fan'];
+  const sections = [
+    ...Array.from({ length: 19 }, (_, i) => `season${i + 1}`),
+    'fan'
+  ];
+
   const container = document.getElementById('episode-list');
   const selector = document.createElement('div');
   selector.className = 'series-selector';
@@ -19,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     button.className = 'selector-btn';
     button.textContent = label;
     button.dataset.target = key;
+    if (i === 0) button.classList.add('active');
     selector.appendChild(button);
   });
   container.before(selector);
@@ -30,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(items => ({
           type: 'fan',
           seasonKey: key,
-          seasonNumber: 0,
+          seasonNumber: null,
           episodes: items
         }))
         .catch(err => ({ seasonKey: key, error: err }));
@@ -57,17 +62,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const wrapper = document.createElement('div');
       wrapper.className = 'season';
       wrapper.dataset.series = seasonKey;
-      wrapper.style.display = 'none';
+      wrapper.style.display = seasonKey === 'season1' ? 'block' : 'none';
 
       const content = document.createElement('div');
       content.className = type === 'fan' ? 'fan-content' : 'season-content';
 
-      if (type === 'season') episodes.sort((a, b) => a.episode_number - b.episode_number);
+      if (type === 'season') {
+        episodes.sort((a, b) => a.episode_number - b.episode_number);
+      }
 
       episodes.forEach((ep, i) => {
-        const epId = type === 'fan'
-          ? `F0${String(i).padStart(2, '0')}`
-          : `${String(seasonNumber).padStart(2, '0')}${String(ep.episode_number).padStart(2, '0')}`;
+        const epId =
+          type === 'fan'
+            ? `F0${String(i).padStart(2, '0')}`
+            : `${String(seasonNumber).padStart(2, '0')}${String(ep.episode_number).padStart(2, '0')}`;
 
         const url = type === 'fan' ? ep.video_url : ep.link;
         const title = type === 'fan' ? ep.title : `E${ep.episode_number}: ${ep.uk_title}`;
@@ -81,9 +89,11 @@ document.addEventListener('DOMContentLoaded', () => {
             <img src="${cover}" alt="${title} cover" />
           </a>
           <h3>${title}</h3>
-          ${type === 'fan' && ep.author_name
-            ? `<p>By <a href="${ep.author_url}" target="_blank">${ep.author_name}</a></p>`
-            : ''}
+          ${
+            type === 'fan' && ep.author_name
+              ? `<p>By <a href="${ep.author_url}" target="_blank">${ep.author_name}</a></p>`
+              : ''
+          }
         `;
         content.appendChild(div);
       });
@@ -92,67 +102,57 @@ document.addEventListener('DOMContentLoaded', () => {
       container.appendChild(wrapper);
     });
 
-    const param = new URLSearchParams(window.location.search).get('ep');
-    const episodeId = param && param.length === 4 ? param : null;
-    const seasonHint = param && param.length === 2 ? param : param?.substring(0, 2);
-    const targetSeason = seasonHint === '00' ? 'fan' : `season${parseInt(seasonHint, 10)}`;
-
-    // Select correct tab
-    document.querySelectorAll('.selector-btn').forEach(btn => {
-      const match = btn.dataset.target === targetSeason;
-      btn.classList.toggle('active', match);
-    });
-    document.querySelectorAll('.season').forEach(s => {
-      s.style.display = s.dataset.series === targetSeason ? 'block' : 'none';
-    });
-
-    // Open modal if full episode ID is given
-    if (episodeId) {
-      const el = document.querySelector(`[data-epid="${episodeId}"] .video-link`);
-      if (el) openVideoModal(el.dataset.url, episodeId);
-    }
-
     document.querySelectorAll('.selector-btn').forEach(btn => {
       btn.addEventListener('click', () => {
+        const target = btn.dataset.target;
         document.querySelectorAll('.selector-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        const target = btn.dataset.target;
         document.querySelectorAll('.season').forEach(s => {
           s.style.display = s.dataset.series === target ? 'block' : 'none';
         });
-
-        const url = new URL(window.location);
-        url.searchParams.delete('ep');
-        window.history.replaceState({}, '', url);
       });
     });
+
+    const params = new URLSearchParams(window.location.search);
+    const requestedId = params.get('ep');
+    if (requestedId) {
+      const episodeEl = document.querySelector(`[data-epid="${requestedId}"] .video-link`);
+      if (episodeEl) {
+        openVideoModal(episodeEl.dataset.url, requestedId);
+      }
+    }
   });
 
   function openVideoModal(url, epId) {
     let embedUrl = url;
+
     try {
       if (url.includes('youtube.com')) {
         if (url.includes('/embed/')) {
           embedUrl = url.includes('?') ? `${url}&autoplay=1` : `${url}?autoplay=1`;
         } else {
           const videoId = new URL(url).searchParams.get('v');
-          if (videoId) embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+          if (videoId) {
+            embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+          }
         }
       } else if (url.includes('drive.google.com')) {
         const match = url.match(/\/d\/(.+?)\//);
-        if (match && match[1]) embedUrl = `https://drive.google.com/file/d/${match[1]}/preview`;
+        if (match && match[1]) {
+          embedUrl = `https://drive.google.com/file/d/${match[1]}/preview`;
+        }
       }
-    } catch (e) {
-      console.error('Failed to parse video URL:', e);
+    } catch (err) {
+      console.error('Error parsing video URL:', err);
     }
 
     iframe.src = embedUrl;
     modal.classList.remove('hidden');
     modal.style.display = 'flex';
 
-    const url = new URL(window.location);
-    url.searchParams.set('ep', epId);
-    window.history.replaceState({}, '', url);
+    const currentUrl = new URL(window.location);
+    currentUrl.searchParams.set('ep', epId);
+    window.history.replaceState({}, '', currentUrl.toString());
   }
 
   document.addEventListener('click', e => {
@@ -162,14 +162,26 @@ document.addEventListener('DOMContentLoaded', () => {
       openVideoModal(link.dataset.url, link.dataset.epid);
     }
 
-    if (e.target.id === 'modal-close' || e.target === modal) {
+    if (e.target.id === 'modal-close') {
       iframe.src = '';
       modal.classList.add('hidden');
       modal.style.display = 'none';
 
-      const url = new URL(window.location);
-      url.searchParams.delete('ep');
-      window.history.replaceState({}, '', url);
+      const currentUrl = new URL(window.location);
+      currentUrl.searchParams.delete('ep');
+      window.history.replaceState({}, '', currentUrl.toString());
+    }
+  });
+
+  modal.addEventListener('click', e => {
+    if (e.target === modal) {
+      iframe.src = '';
+      modal.classList.add('hidden');
+      modal.style.display = 'none';
+
+      const currentUrl = new URL(window.location);
+      currentUrl.searchParams.delete('ep');
+      window.history.replaceState({}, '', currentUrl.toString());
     }
   });
 });
