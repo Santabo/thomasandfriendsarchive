@@ -23,6 +23,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const modal = document.getElementById('video-modal');
   const iframe = document.getElementById('modal-video');
 
+  if (!modal || !iframe) {
+    console.error('Modal or iframe element not found in DOM!');
+    return;
+  }
+
   const fetchSeasonData = sections.map((key, index) => {
     if (key === 'fan') {
       return fetch(`/data/fanContent.json`)
@@ -69,10 +74,10 @@ document.addEventListener('DOMContentLoaded', () => {
             card.className = 'fan-item';
             card.innerHTML = `
               <h3>${item.title}</h3>
-              <a href="#" class="video-link" data-url="${item.video_url}">
+              <a href="#" class="video-link" data-url="${item.video_url}" data-epid="fan-${item.title.replace(/\s+/g, '-')}" >
                 <img src="${item.cover}" alt="Cover for ${item.title}" />
               </a>
-              <p>By <a href="${item.author_url}" target="_blank">${item.author_name}</a></p>
+              <p>By <a href="${item.author_url}" target="_blank" rel="noopener noreferrer">${item.author_name}</a></p>
             `;
             content.appendChild(card);
           });
@@ -110,6 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
+    // Open modal if URL param ep= is present
     const params = new URLSearchParams(window.location.search);
     const requestedId = params.get('ep');
     if (requestedId) {
@@ -121,20 +127,25 @@ document.addEventListener('DOMContentLoaded', () => {
   function openVideoModal(url, epId) {
     let embedUrl = url;
 
-    if (url.includes('youtube.com')) {
-      if (url.includes('/embed/')) {
-        embedUrl = url.includes('?') ? `${url}&autoplay=1` : `${url}?autoplay=1`;
-      } else {
-        const videoId = new URL(url).searchParams.get('v');
-        if (videoId) embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+    try {
+      if (url.includes('youtube.com')) {
+        if (url.includes('/embed/')) {
+          embedUrl = url.includes('?') ? `${url}&autoplay=1` : `${url}?autoplay=1`;
+        } else {
+          const videoId = new URL(url).searchParams.get('v');
+          if (videoId) embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+        }
+      } else if (url.includes('drive.google.com')) {
+        const match = url.match(/\/d\/(.+?)\//);
+        if (match && match[1]) embedUrl = `https://drive.google.com/file/d/${match[1]}/preview`;
       }
-    } else if (url.includes('drive.google.com')) {
-      const match = url.match(/\/d\/(.+?)\//);
-      if (match && match[1]) embedUrl = `https://drive.google.com/file/d/${match[1]}/preview`;
+    } catch (err) {
+      console.error('Error parsing video URL:', err);
     }
 
     iframe.src = embedUrl;
     modal.classList.remove('hidden');
+    modal.style.display = 'flex';
 
     const currentUrl = new URL(window.location);
     currentUrl.searchParams.set('ep', epId);
@@ -151,6 +162,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target.id === 'modal-close') {
       iframe.src = '';
       modal.classList.add('hidden');
+      modal.style.display = 'none';
+
+      const currentUrl = new URL(window.location);
+      currentUrl.searchParams.delete('ep');
+      window.history.replaceState({}, '', currentUrl.toString());
+    }
+  });
+
+  // Optional: close modal if clicking outside iframe
+  modal.addEventListener('click', e => {
+    if (e.target === modal) {
+      iframe.src = '';
+      modal.classList.add('hidden');
+      modal.style.display = 'none';
+
       const currentUrl = new URL(window.location);
       currentUrl.searchParams.delete('ep');
       window.history.replaceState({}, '', currentUrl.toString());
