@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
+  // Create selector buttons
   sections.forEach((key, i) => {
     const label = key === 'fan' ? 'Fan Creations' : `Series ${i + 1}`;
     const button = document.createElement('button');
@@ -25,18 +26,17 @@ document.addEventListener('DOMContentLoaded', () => {
     if (i === 0) button.classList.add('active');
     selector.appendChild(button);
   });
-
   container.before(selector);
 
   const fetchSeasonData = sections.map((key, index) => {
     if (key === 'fan') {
-      return fetch(`/data/fanContent.json`)
+      return fetch('/data/fanContent.json')
         .then(res => res.json())
-        .then(data => ({
+        .then(items => ({
           type: 'fan',
           seasonKey: key,
           seasonNumber: null,
-          episodes: data.fan.episodes
+          episodes: items
         }))
         .catch(err => ({ seasonKey: key, error: err }));
     } else {
@@ -67,10 +67,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const content = document.createElement('div');
       content.className = type === 'fan' ? 'fan-content' : 'season-content';
 
-      episodes.sort((a, b) => {
-        if (type === 'fan') return 0;
-        return a.episode_number - b.episode_number;
-      });
+      if (type === 'season') {
+        episodes.sort((a, b) => a.episode_number - b.episode_number);
+      }
 
       episodes.forEach((ep, i) => {
         const epId =
@@ -78,14 +77,23 @@ document.addEventListener('DOMContentLoaded', () => {
             ? `F0${String(i).padStart(2, '0')}`
             : `${String(seasonNumber).padStart(2, '0')}${String(ep.episode_number).padStart(2, '0')}`;
 
+        const url = type === 'fan' ? ep.video_url : ep.link;
+        const title = type === 'fan' ? ep.title : `E${ep.episode_number}: ${ep.uk_title}`;
+        const cover = ep.cover;
+
         const div = document.createElement('div');
         div.className = 'episode';
         div.setAttribute('data-epid', epId);
         div.innerHTML = `
-          <a href="?ep=${epId}" class="video-link" data-url="${ep.link}" data-epid="${epId}">
-            <img src="${ep.cover}" alt="E${ep.episode_number || i + 1} cover" />
+          <a href="?ep=${epId}" class="video-link" data-url="${url}" data-epid="${epId}">
+            <img src="${cover}" alt="${title} cover" />
           </a>
-          <h3>E${ep.episode_number || i + 1}: ${ep.uk_title}</h3>
+          <h3>${title}</h3>
+          ${
+            type === 'fan' && ep.author_name
+              ? `<p>By <a href="${ep.author_url}" target="_blank">${ep.author_name}</a></p>`
+              : ''
+          }
         `;
         content.appendChild(div);
       });
@@ -105,7 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Handle autoplay if ep param is in URL
     const params = new URLSearchParams(window.location.search);
     const requestedId = params.get('ep');
     if (requestedId) {
@@ -125,7 +132,9 @@ document.addEventListener('DOMContentLoaded', () => {
           embedUrl = url.includes('?') ? `${url}&autoplay=1` : `${url}?autoplay=1`;
         } else {
           const videoId = new URL(url).searchParams.get('v');
-          if (videoId) embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+          if (videoId) {
+            embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+          }
         }
       } else if (url.includes('drive.google.com')) {
         const match = url.match(/\/d\/(.+?)\//);
