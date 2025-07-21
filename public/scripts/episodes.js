@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const sections = [
     ...Array.from({ length: 22 }, (_, i) => `season${i + 1}`),
+    'specials',
     'fan'
   ];
 
@@ -16,9 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // Create selector buttons
   sections.forEach((key, i) => {
-    const label = key === 'fan' ? 'Fan Creations' : `Series ${i + 1}`;
+    const label =
+      key === 'fan' ? 'Fan Creations'
+      : key === 'specials' ? 'Specials'
+      : `Series ${i + 1}`;
     const button = document.createElement('button');
     button.className = 'selector-btn';
     button.textContent = label;
@@ -37,6 +40,16 @@ document.addEventListener('DOMContentLoaded', () => {
           seasonKey: key,
           seasonNumber: null,
           episodes: items
+        }))
+        .catch(err => ({ seasonKey: key, error: err }));
+    } else if (key === 'specials') {
+      return fetch('/data/specials.json')
+        .then(res => res.json())
+        .then(data => ({
+          type: 'specials',
+          seasonKey: key,
+          seasonNumber: null,
+          episodes: data.specials
         }))
         .catch(err => ({ seasonKey: key, error: err }));
     } else {
@@ -75,10 +88,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const epId =
           type === 'fan'
             ? `F0${String(i).padStart(2, '0')}`
-            : `${String(seasonNumber).padStart(2, '0')}${String(ep.episode_number).padStart(2, '0')}`;
+            : type === 'specials'
+              ? `SPL${String(ep.number).padStart(2, '0')}`
+              : `${String(seasonNumber).padStart(2, '0')}${String(ep.episode_number).padStart(2, '0')}`;
 
         const url = type === 'fan' ? ep.video_url : ep.link;
-        const title = type === 'fan' ? ep.title : `E${ep.episode_number}: ${ep.uk_title}`;
+        const title =
+          type === 'fan'
+            ? ep.title
+            : type === 'specials'
+              ? `Special ${ep.number}: ${ep.uk_title}`
+              : `E${ep.episode_number}: ${ep.uk_title}`;
         const cover = ep.cover;
 
         const div = document.createElement('div');
