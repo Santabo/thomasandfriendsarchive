@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const sections = [
-    ...Array.from({ length: 21 }, (_, i) => `season${i + 1}`),
+    ...Array.from({ length: 22 }, (_, i) => `season${i + 1}`),
     'fan'
   ];
 
