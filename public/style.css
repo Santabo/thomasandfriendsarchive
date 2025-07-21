@@ -135,7 +135,7 @@ h2 {
 
 /* FAN SECTION — Styled identically to episodes */
 .fan-content {
-  background: #f8faff; /* same as .season-content */
+  background: #f8faff;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 1rem;
@@ -220,6 +220,32 @@ h2 {
 .selector-btn.active {
   background: #005eb8;
   color: white;
+}
+
+/* COMPLETION BARS */
+#completion-stats {
+  margin-top: 2rem;
+}
+
+.completion-item {
+  margin-bottom: 1rem;
+}
+
+.progress-bar {
+  background: #ddd;
+  border-radius: 20px;
+  overflow: hidden;
+  height: 24px;
+}
+
+.progress-fill {
+  background: #007bff;
+  color: white;
+  text-align: center;
+  line-height: 24px;
+  height: 100%;
+  width: 0%;
+  transition: width 0.5s ease-in-out;
 }
 
 /* DISCORD BAR - Transparent background */
