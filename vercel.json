@@ -1,10 +1,19 @@
 {
-  "rewrites": [
-    { "source": "/en-gb", "destination": "/en-gb/index.html" },
-    { "source": "/en-gb/", "destination": "/en-gb/index.html" },
-    { "source": "/en-gb/:path*", "destination": "/en-gb/index.html" }
-  ],
   "redirects": [
     { "source": "/", "destination": "/en-gb", "permanent": true }
+  ],
+  "rewrites": [
+    {
+      "source": "/en-gb/data/:path*",
+      "destination": "/data/en-gb/:path*"
+    },
+    {
+      "source": "/en-gb/:path*",
+      "destination": "/en-gb/index.html"
+    },
+    {
+      "source": "/en-gb",
+      "destination": "/en-gb/index.html"
+    }
   ]
 }
