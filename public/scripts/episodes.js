@@ -202,7 +202,8 @@ document.addEventListener('DOMContentLoaded', () => {
     modal.style.display = 'flex';
 
     const currentUrl = new URL(window.location);
-    currentUrl.pathname = `/${lang}/episodes/${epId.slice(0, 2)}/${parseInt(epId.slice(2), 10)}`;
+    // FIX: zero-pad episode number instead of parseInt
+    currentUrl.pathname = `/${lang}/episodes/${epId.slice(0, 2)}/${String(epId.slice(2)).padStart(2, '0')}`;
     currentUrl.search = '';
     window.history.replaceState({}, '', currentUrl.toString());
   }
