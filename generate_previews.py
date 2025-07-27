@@ -4,7 +4,7 @@ import html
 
 DATA_DIR = "public/data/en-gb"
 OUTPUT_BASE_DIR = "public/en-gb/episodes"
-BASE_EPISODE_URL = "https://thomasarchive.vercel.app/en-gb/episodes"
+BASE_EPISODE_URL = "https://thomasarchive.vercel.app/en-gb"
 
 SITE_TITLE = "Thomas the Tank Engine Archive"
 SITE_DESC = "Complete collection of Thomas the Tank Engine episodes, specials, and fan-made content."
@@ -18,9 +18,8 @@ def generate_redirect_html(ep_code, title, cover_url, season_num, episode_num):
     title_esc = html.escape(title)
     desc = f"Watch '{title}' from Series {season_num} on the Thomas Archive."
     desc_esc = html.escape(desc)
-    url = f"{BASE_EPISODE_URL}/{str(season_num).zfill(2)}/{str(episode_num).zfill(2)}"
-    cover_esc = html.escape(cover_url)
-    redirect_url = url  # Redirect target URL (main site episode page)
+    # Redirect to main language root page (modal opens there)
+    redirect_url = f"{BASE_EPISODE_URL}/"
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -34,24 +33,25 @@ def generate_redirect_html(ep_code, title, cover_url, season_num, episode_num):
   <meta property="og:type" content="video.other" />
   <meta property="og:title" content="{title_esc} (UK)" />
   <meta property="og:description" content="{desc_esc}" />
-  <meta property="og:image" content="{cover_esc}" />
-  <meta property="og:url" content="{html.escape(redirect_url)}" />
+  <meta property="og:image" content="{html.escape(cover_url)}" />
+  <meta property="og:url" content="{redirect_url}" />
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="{title_esc} (UK)" />
   <meta name="twitter:description" content="{desc_esc}" />
-  <meta name="twitter:image" content="{cover_esc}" />
+  <meta name="twitter:image" content="{html.escape(cover_url)}" />
 
   <link rel="icon" href="{SITE_FAVICON}" type="image/png" />
 
   <script>
-    // Redirect immediately after page load
-    window.location.replace("{html.escape(redirect_url)}");
+    // Save episode ID to sessionStorage and redirect
+    sessionStorage.setItem('openEpisode', '{season_num.zfill(2)}{episode_num.zfill(2)}');
+    window.location.replace("{redirect_url}");
   </script>
 </head>
 <body>
-  <p>Redirecting to <a href="{html.escape(redirect_url)}">{html.escape(redirect_url)}</a>…</p>
+  <p>Redirecting to <a href="{redirect_url}">{redirect_url}</a>…</p>
 </body>
 </html>
 """
@@ -81,7 +81,6 @@ def main():
             ep_code = f"{season_str}{ep_num_str}"
             title = ep.get("uk_title", f"Episode {ep_num_str}")
             cover = ep.get("cover", "")
-            # video_url not needed here because no embed on redirect page
 
             html_content = generate_redirect_html(
                 ep_code, title, cover, season_str, ep_num_str
