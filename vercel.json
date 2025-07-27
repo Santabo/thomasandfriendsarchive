@@ -10,9 +10,6 @@
     },
     {
       "source": "/en-gb/:path*",
-      "has": [
-        { "type": "missing", "key": "filesystem" }
-      ],
       "destination": "/index.html"
     }
   ]
