@@ -3,6 +3,8 @@
     { "source": "/", "destination": "/en-gb", "permanent": true }
   ],
   "rewrites": [
-    { "source": "/terms-of-use", "destination": "/terms-of-use.html" }
+    { "source": "/terms-of-use", "destination": "/terms-of-use.html" },
+    { "source": "/en-gb", "destination": "/index.html" },
+    { "source": "/en-gb/", "destination": "/index.html" }
   ]
 }
