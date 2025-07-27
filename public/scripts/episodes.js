@@ -171,7 +171,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     }
-
   });
 
   function openVideoModal(url, epId) {
@@ -202,7 +201,6 @@ document.addEventListener('DOMContentLoaded', () => {
     modal.style.display = 'flex';
 
     const currentUrl = new URL(window.location);
-    // FIX: zero-pad episode number instead of parseInt
     currentUrl.pathname = `/${lang}/episodes/${epId.slice(0, 2)}/${String(epId.slice(2)).padStart(2, '0')}`;
     currentUrl.search = '';
     window.history.replaceState({}, '', currentUrl.toString());
@@ -212,8 +210,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('click', e => {
     const link = e.target.closest('.video-link');
     if (link) {
-      e.preventDefault();
-      openVideoModal(link.dataset.url, link.dataset.epid);
+      // Removed e.preventDefault() and modal opening here
+      // Allow normal navigation when clicking episode links
     }
 
     if (e.target.id === 'modal-close') {
