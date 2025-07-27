@@ -71,18 +71,7 @@
 </style>
 </head>
 <body>
-  <header>
-    <div class="container">
-      <h1>A Scarf for Percy</h1>
-      <p>Season 3 Episode 1</p>
-      <p><a href="/en-gb/">← Back to Archive</a></p>
-    </div>
-  </header>
-
-  <main class="container">
-    <img id="play-video-btn" src="https://artworks.thetvdb.com/banners/episodes/78949/300127.jpg" alt="A Scarf for Percy cover" style="cursor:pointer; max-width:100%; max-width: 400px;" data-url="https://drive.google.com/file/d/1JAnKNHjahyDaVT2JDoFHgi1ifWmmVL1BkQ/view?usp=sharing" />
-    <p>Watch &#x27;A Scarf for Percy&#x27; from Series 3 on the Thomas Archive.</p>
-  </main>
+  <!-- Removed episode title and image from body -->
 
   <!-- Video Modal -->
   <div id="video-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="video-title">
@@ -96,7 +85,6 @@
     const modal = document.getElementById('video-modal');
     const iframe = document.getElementById('modal-video');
     const closeBtn = document.getElementById('modal-close');
-    const playBtn = document.getElementById('play-video-btn');
 
     function openVideoModal(url) {
       let embedUrl = url;
@@ -124,6 +112,8 @@
       iframe.src = '';
       modal.classList.add('hidden');
       modal.style.display = 'none';
+      // Redirect back to archive root on close
+      window.location.href = "/en-gb/";
     }
 
     closeBtn.addEventListener('click', closeVideoModal);
@@ -131,8 +121,9 @@
       if (e.target === modal) closeVideoModal();
     });
 
-    playBtn.addEventListener('click', () => {
-      openVideoModal(playBtn.dataset.url);
+    // Open modal automatically on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      openVideoModal(&#x27;https://drive.google.com/file/d/1JAnKNHjahyDaVT2JDoFHgi1ifWmmVL1BkQ/view?usp=sharing&#x27;);
     });
   </script>
 </body>

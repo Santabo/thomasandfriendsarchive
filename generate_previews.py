@@ -122,18 +122,7 @@ def generate_preview_html(ep_code, title, cover_url, season_num, episode_num, vi
   <style>{FONT_FACE_CSS}</style>
 </head>
 <body>
-  <header>
-    <div class="container">
-      <h1>{title_esc}</h1>
-      <p>Season {int(season_num)} Episode {int(episode_num)}</p>
-      <p><a href="/en-gb/">← Back to Archive</a></p>
-    </div>
-  </header>
-
-  <main class="container">
-    <img id="play-video-btn" src="{cover_esc}" alt="{title_esc} cover" style="cursor:pointer; max-width:100%; max-width: 400px;" data-url="{html.escape(video_url)}" />
-    <p>{desc_esc}</p>
-  </main>
+  <!-- Removed episode title and image from body -->
 
   <!-- Video Modal -->
   <div id="video-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="video-title">
@@ -147,7 +136,6 @@ def generate_preview_html(ep_code, title, cover_url, season_num, episode_num, vi
     const modal = document.getElementById('video-modal');
     const iframe = document.getElementById('modal-video');
     const closeBtn = document.getElementById('modal-close');
-    const playBtn = document.getElementById('play-video-btn');
 
     function openVideoModal(url) {{
       let embedUrl = url;
@@ -175,6 +163,8 @@ def generate_preview_html(ep_code, title, cover_url, season_num, episode_num, vi
       iframe.src = '';
       modal.classList.add('hidden');
       modal.style.display = 'none';
+      // Redirect back to archive root on close
+      window.location.href = "/en-gb/";
     }}
 
     closeBtn.addEventListener('click', closeVideoModal);
@@ -182,8 +172,9 @@ def generate_preview_html(ep_code, title, cover_url, season_num, episode_num, vi
       if (e.target === modal) closeVideoModal();
     }});
 
-    playBtn.addEventListener('click', () => {{
-      openVideoModal(playBtn.dataset.url);
+    // Open modal automatically on page load
+    document.addEventListener('DOMContentLoaded', () => {{
+      openVideoModal({html.escape(repr(video_url))});
     }});
   </script>
 </body>
