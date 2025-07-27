@@ -1,6 +1,6 @@
 {
   "redirects": [
-    { "source": "/", "destination": "/en-gb/", "permanent": true }
+    { "source": "/", "destination": "/en-gb", "permanent": true }
   ],
   "rewrites": [
     {
