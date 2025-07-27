@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }))
         .catch(err => ({ seasonKey: key, error: err }));
     } else if (key === 'specials') {
-      return fetch('/data/specials.json')
+      return fetch('/data/en-gb/specials.json')
         .then(res => res.json())
         .then(data => ({
           type: 'specials',
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }))
         .catch(err => ({ seasonKey: key, error: err }));
     } else {
-      return fetch(`/data/${key}.json`)
+      return fetch(`/data/en-gb/${key}.json`)
         .then(res => res.json())
         .then(data => ({
           type: 'season',
