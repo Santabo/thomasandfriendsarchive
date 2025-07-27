@@ -19,6 +19,14 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
+  // --- NEW: Check sessionStorage for redirected episode ID ---
+  const openEpisodeIdFromRedirect = sessionStorage.getItem('openEpisode');
+  if (openEpisodeIdFromRedirect) {
+    sessionStorage.removeItem('openEpisode'); // clear so it doesn't trigger again on reload
+    window.__openEpisodeIdFromRedirect = openEpisodeIdFromRedirect; // store globally for later use
+  }
+  // ------------------------------------------------------------
+
   sections.forEach((key, i) => {
     const label =
       key === 'fan' ? 'Fan Creations'
@@ -140,6 +148,28 @@ document.addEventListener('DOMContentLoaded', () => {
       container.appendChild(wrapper);
     });
 
+    // --- NEW: After episodes added, open modal if redirected ---
+    if (window.__openEpisodeIdFromRedirect) {
+      const epId = window.__openEpisodeIdFromRedirect;
+      delete window.__openEpisodeIdFromRedirect;
+
+      const episodeLink = container.querySelector(`a.video-link[data-epid="${epId}"]`);
+      if (episodeLink) {
+        openVideoModal(episodeLink.dataset.url, epId);
+
+        const seasonNum = epId.slice(0, 2).replace(/^0+/, '') || '1';
+        document.querySelectorAll('.selector-btn').forEach(b => {
+          b.classList.toggle('active', b.dataset.target === `season${seasonNum}`);
+        });
+        document.querySelectorAll('.season').forEach(s => {
+          s.style.display = s.dataset.series === `season${seasonNum}` ? 'block' : 'none';
+        });
+      } else {
+        console.warn(`Redirected episode ID ${epId} not found in DOM.`);
+      }
+    }
+    // ------------------------------------------------------------
+
     // Series selector buttons logic
     document.querySelectorAll('.selector-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -187,7 +217,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     }
-
   });
 
   function openVideoModal(url, epId) {
