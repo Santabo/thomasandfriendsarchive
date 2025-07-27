@@ -3,16 +3,16 @@
     { "source": "/", "destination": "/en-gb", "permanent": true }
   ],
   "rewrites": [
-    { "source": "/terms-of-use", "destination": "/terms-of-use.html" },
+    { "source": "/en-gb", "destination": "/index.html" },
+    { "source": "/en-gb/", "destination": "/index.html" },
 
-    // Keep /en-gb/data/* requests to the same folder (no rewrite)
+    // Keep /en-gb/data/* requests exact, no rewriting
     { "source": "/en-gb/data/:path*", "destination": "/en-gb/data/:path*" },
 
-    // For other /en-gb/* URLs, strip /en-gb to serve files at root (like index.html, scripts, css)
+    // For all other /en-gb/* routes serve from root files
     { "source": "/en-gb/:path*", "destination": "/:path*" },
 
-    // Root en-gb requests serve index.html
-    { "source": "/en-gb", "destination": "/index.html" },
-    { "source": "/en-gb/", "destination": "/index.html" }
+    // Other rewrites (like terms-of-use) here if needed
+    { "source": "/terms-of-use", "destination": "/terms-of-use.html" }
   ]
 }
