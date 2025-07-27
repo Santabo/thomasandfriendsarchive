@@ -1,28 +1,17 @@
 {
-  "redirects": [
-    { "source": "/", "destination": "/en-gb/", "permanent": true },
-    { "source": "/en-gb", "destination": "/en-gb/", "permanent": true }
-  ],
   "rewrites": [
+    {
+      "source": "/en-gb",
+      "destination": "/index.html"
+    },
     {
       "source": "/en-gb/data/:path*",
       "destination": "/data/en-gb/:path*"
     },
     {
-      "source": "/en-gb/episodes/:season/:episode",
-      "destination": "/en-gb/episodes/:season/:episode/index.html"
-    },
-    {
-      "source": "/en-gb/specials/:special",
-      "destination": "/en-gb/specials/:special/index.html"
-    },
-    {
       "source": "/en-gb/:path*",
       "has": [
-        {
-          "type": "missing",
-          "key": "filesystem"
-        }
+        { "type": "missing", "key": "filesystem" }
       ],
       "destination": "/index.html"
     }
