@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Number One Engine | Thomas the Tank Engine Archive</title>
+  <meta name="description" content="Watch &#x27;Number One Engine&#x27; from Series 22 on the Thomas Archive." />
+  
+  <!-- Open Graph -->
+  <meta property="og:type" content="video.other" />
+  <meta property="og:title" content="Number One Engine" />
+  <meta property="og:description" content="Watch &#x27;Number One Engine&#x27; from Series 22 on the Thomas Archive." />
+  <meta property="og:image" content="https://i.ibb.co/35r1CRRZ/Number-One-Engine38.webp" />
+  <meta property="og:url" content="https://thomasarchive.vercel.app/en-gb/episodes/22/01" />
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="player" />
+  <meta name="twitter:title" content="Number One Engine" />
+  <meta name="twitter:description" content="Watch &#x27;Number One Engine&#x27; from Series 22 on the Thomas Archive." />
+  <meta name="twitter:image" content="https://i.ibb.co/35r1CRRZ/Number-One-Engine38.webp" />
+  <meta name="twitter:player" content="https://drive.google.com/file/d/1_jrer4m-4y9HUG3OZJrDf5gGJAuSFiLE/preview" />
+
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="icon" href="https://i.ibb.co/SDBYYshc/image-2025-07-09-212116843.png" type="image/png" />
+  <style>
+@font-face {
+  font-family: 'Flange BQ Bold';
+  src: url('/flangebq_bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+/* Modal styling */
+#video-modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+#video-modal:not(.hidden) {
+  display: flex;
+}
+#video-modal .modal-content {
+  position: relative;
+  width: 90%;
+  max-width: 960px;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+}
+#video-modal iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+#modal-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  font-size: 2rem;
+  color: white;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+}
+</style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Number One Engine</h1>
+      <p>Season 22 Episode 1</p>
+      <p><a href="/en-gb/">← Back to Archive</a></p>
+    </div>
+  </header>
+
+  <main class="container">
+    <img id="play-video-btn" src="https://i.ibb.co/35r1CRRZ/Number-One-Engine38.webp" alt="Number One Engine cover" style="cursor:pointer; max-width:100%; max-width: 400px;" data-url="https://drive.google.com/file/d/1_jrer4m-4y9HUG3OZJrDf5gGJAuSFiLE/view?usp=sharing" />
+    <p>Watch &#x27;Number One Engine&#x27; from Series 22 on the Thomas Archive.</p>
+  </main>
+
+  <!-- Video Modal -->
+  <div id="video-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="video-title">
+    <div class="modal-content">
+      <button id="modal-close" aria-label="Close video modal">&times;</button>
+      <iframe id="modal-video" title="Video player" allow="autoplay" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <script>
+    const modal = document.getElementById('video-modal');
+    const iframe = document.getElementById('modal-video');
+    const closeBtn = document.getElementById('modal-close');
+    const playBtn = document.getElementById('play-video-btn');
+
+    function openVideoModal(url) {
+      let embedUrl = url;
+      try {
+        if (url.includes('youtube.com')) {
+          if (url.includes('/embed/')) {
+            embedUrl = url.includes('?') ? `${url}&autoplay=1` : `${url}?autoplay=1`;
+          } else {
+            const videoId = new URL(url).searchParams.get('v');
+            if (videoId) embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+          }
+        } else if (url.includes('drive.google.com')) {
+          const match = url.match(/\/d\/([^\/]+)\//);
+          if (match && match[1]) embedUrl = `https://drive.google.com/file/d/${match[1]}/preview`;
+        }
+      } catch(e) {
+        console.error('Error parsing video URL:', e);
+      }
+      iframe.src = embedUrl;
+      modal.classList.remove('hidden');
+      modal.style.display = 'flex';
+    }
+
+    function closeVideoModal() {
+      iframe.src = '';
+      modal.classList.add('hidden');
+      modal.style.display = 'none';
+    }
+
+    closeBtn.addEventListener('click', closeVideoModal);
+    modal.addEventListener('click', e => {
+      if (e.target === modal) closeVideoModal();
+    });
+
+    playBtn.addEventListener('click', () => {
+      openVideoModal(playBtn.dataset.url);
+    });
+  </script>
+</body>
+</html>
