@@ -210,8 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('click', e => {
     const link = e.target.closest('.video-link');
     if (link) {
-      // Removed e.preventDefault() and modal opening here
-      // Allow normal navigation when clicking episode links
+      // Allow normal navigation (do NOT preventDefault)
     }
 
     if (e.target.id === 'modal-close') {
