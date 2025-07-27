@@ -4,12 +4,11 @@
   ],
   "rewrites": [
     { "source": "/terms-of-use", "destination": "/terms-of-use.html" },
-
-    // Rewrite everything under /en-gb/* to root /*
     { "source": "/en-gb/:path*", "destination": "/:path*" },
-
-    // Rewrite /en-gb itself to index.html
     { "source": "/en-gb", "destination": "/index.html" },
-    { "source": "/en-gb/", "destination": "/index.html" }
+    { "source": "/en-gb/", "destination": "/index.html" },
+
+    // This line added to fix data loading
+    { "source": "/en-gb/data/:path*", "destination": "/data/:path*" }
   ]
 }
