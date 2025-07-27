@@ -3,14 +3,13 @@
     { "source": "/", "destination": "/en-gb", "permanent": true }
   ],
   "rewrites": [
-    // Make /en-gb and /en-gb/ serve the regular index.html
-    { "source": "/en-gb", "destination": "/" },
-    { "source": "/en-gb/", "destination": "/" },
-
-    // Rewrite /en-gb/data/... to actual language folder in /public/data/en-gb/...
-    { "source": "/en-gb/data/:path*", "destination": "/data/en-gb/:path*" },
-
-    // Other rewrites for static pages
-    { "source": "/terms-of-use", "destination": "/terms-of-use.html" }
+    {
+      "source": "/en-gb/data/:path*",
+      "destination": "/data/en-gb/:path*"
+    },
+    {
+      "source": "/en-gb/:path*",
+      "destination": "/index.html"
+    }
   ]
 }
