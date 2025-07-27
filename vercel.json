@@ -1,5 +1,18 @@
 {
   "rewrites": [
-    { "source": "/terms-of-use", "destination": "/terms-of-use.html" }
+    {
+      "source": "/terms-of-use",
+      "destination": "/terms-of-use.html"
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "ep"
+        }
+      ],
+      "destination": "/previews/:ep.html"
+    }
   ]
 }
