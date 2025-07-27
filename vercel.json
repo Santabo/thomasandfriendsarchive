@@ -1,9 +1,9 @@
 {
+  "redirects": [
+    { "source": "/", "destination": "/en-gb/", "permanent": true },
+    { "source": "/en-gb", "destination": "/en-gb/", "permanent": true }
+  ],
   "rewrites": [
-    {
-      "source": "/en-gb",
-      "destination": "/index.html"
-    },
     {
       "source": "/en-gb/data/:path*",
       "destination": "/data/en-gb/:path*"
