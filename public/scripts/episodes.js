@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const lang = window.LANG_CODE || 'en-gb'; // Use global lang code, fallback to en-gb
+
   const sections = [
     ...Array.from({ length: 22 }, (_, i) => `season${i + 1}`),
     'specials',
@@ -43,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }))
         .catch(err => ({ seasonKey: key, error: err }));
     } else if (key === 'specials') {
-      return fetch('/data/en-gb/specials.json')
+      return fetch(`/${lang}/data/specials.json`)
         .then(res => res.json())
         .then(data => ({
           type: 'specials',
@@ -53,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }))
         .catch(err => ({ seasonKey: key, error: err }));
     } else {
-      return fetch(`/data/en-gb/${key}.json`)
+      return fetch(`/${lang}/data/${key}.json`)
         .then(res => res.json())
         .then(data => ({
           type: 'season',
@@ -102,14 +104,14 @@ document.addEventListener('DOMContentLoaded', () => {
           title = `E${ep.episode_number}: ${ep.uk_title}`;
         }
 
-        // New episode link with language & season/episode path
+        // Episode link with language & season/episode path
         let episodeLink = '';
         if (type === 'season') {
-          episodeLink = `/en-gb/episodes/${seasonNumber}/${ep.episode_number}`;
+          episodeLink = `/${lang}/episodes/${seasonNumber}/${ep.episode_number}`;
         } else if (type === 'specials') {
-          episodeLink = `/en-gb/specials/${ep.number}`;
+          episodeLink = `/${lang}/specials/${ep.number}`;
         } else if (type === 'fan') {
-          episodeLink = `/en-gb/fan/${i + 1}`;
+          episodeLink = `/${lang}/fan/${i + 1}`;
         }
 
         const cover = ep.cover;
@@ -147,14 +149,13 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Parse the URL path for episode details (instead of query string)
+    // Parse URL path for episode details (instead of query string)
     // Expecting URL like: /en-gb/episodes/{season}/{episode}
     const pathSegments = window.location.pathname.split('/').filter(Boolean);
     if (pathSegments.length >= 4) {
-      const [lang, section, seasonPart, episodePart] = pathSegments;
-      if (lang === 'en-gb' && section === 'episodes') {
+      const [langInPath, section, seasonPart, episodePart] = pathSegments;
+      if (langInPath === lang && section === 'episodes') {
         const epId = String(seasonPart).padStart(2, '0') + String(episodePart).padStart(2, '0');
-        // Find the episode element by data-epid and open modal
         const episodeEl = document.querySelector(`[data-epid="${epId}"] .video-link`);
         if (episodeEl) {
           openVideoModal(episodeEl.dataset.url, epId);
@@ -198,14 +199,13 @@ document.addEventListener('DOMContentLoaded', () => {
     modal.classList.remove('hidden');
     modal.style.display = 'flex';
 
-    // Update URL to the new format without reloading
     const currentUrl = new URL(window.location);
-    currentUrl.pathname = `/en-gb/episodes/${epId.slice(0, 2)}/${parseInt(epId.slice(2))}`;
+    currentUrl.pathname = `/${lang}/episodes/${epId.slice(0, 2)}/${parseInt(epId.slice(2))}`;
     currentUrl.search = '';
     window.history.replaceState({}, '', currentUrl.toString());
   }
 
-  // Event listeners for modal close and video link clicks
+  // Modal close & video link click handlers
   document.addEventListener('click', e => {
     const link = e.target.closest('.video-link');
     if (link) {
@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
       modal.style.display = 'none';
 
       const currentUrl = new URL(window.location);
-      currentUrl.pathname = '/en-gb/';
+      currentUrl.pathname = `/${lang}/`;
       currentUrl.search = '';
       window.history.replaceState({}, '', currentUrl.toString());
     }
@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
       modal.style.display = 'none';
 
       const currentUrl = new URL(window.location);
-      currentUrl.pathname = '/en-gb/';
+      currentUrl.pathname = `/${lang}/`;
       currentUrl.search = '';
       window.history.replaceState({}, '', currentUrl.toString());
     }
