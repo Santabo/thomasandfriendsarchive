@@ -95,23 +95,25 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (type === 'specials') {
           epId = `SPL${String(ep.number).padStart(2, '0')}`;
           epUrl = ep.link;
-          title = `Special ${ep.number}: ${ep.uk_title}`;
+          title = `Special ${String(ep.number).padStart(2, '0')}: ${ep.uk_title}`;
         } else {
           const seasonStr = String(seasonNumber).padStart(2, '0');
           const epNumStr = String(ep.episode_number).padStart(2, '0');
           epId = `${seasonStr}${epNumStr}`;
           epUrl = ep.link;
-          title = `E${ep.episode_number}: ${ep.uk_title}`;
+          title = `E${epNumStr}: ${ep.uk_title}`;
         }
 
-        // Episode link with language & season/episode path
+        // Episode link with language & season/episode path (zero-padded)
         let episodeLink = '';
         if (type === 'season') {
-          episodeLink = `/${lang}/episodes/${seasonNumber}/${ep.episode_number}`;
+          const seasonStr = String(seasonNumber).padStart(2, '0');
+          const epNumStr = String(ep.episode_number).padStart(2, '0');
+          episodeLink = `/${lang}/episodes/${seasonStr}/${epNumStr}`;
         } else if (type === 'specials') {
-          episodeLink = `/${lang}/specials/${ep.number}`;
+          episodeLink = `/${lang}/specials/${String(ep.number).padStart(2, '0')}`;
         } else if (type === 'fan') {
-          episodeLink = `/${lang}/fan/${i + 1}`;
+          episodeLink = `/${lang}/fan/${String(i + 1).padStart(2, '0')}`;
         }
 
         const cover = ep.cover;
@@ -161,10 +163,10 @@ document.addEventListener('DOMContentLoaded', () => {
           openVideoModal(episodeEl.dataset.url, epId);
           // Set active series tab for correct season
           document.querySelectorAll('.selector-btn').forEach(b => {
-            b.classList.toggle('active', b.dataset.target === `season${parseInt(seasonPart)}`);
+            b.classList.toggle('active', b.dataset.target === `season${parseInt(seasonPart, 10)}`);
           });
           document.querySelectorAll('.season').forEach(s => {
-            s.style.display = s.dataset.series === `season${parseInt(seasonPart)}` ? 'block' : 'none';
+            s.style.display = s.dataset.series === `season${parseInt(seasonPart, 10)}` ? 'block' : 'none';
           });
         }
       }
@@ -200,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
     modal.style.display = 'flex';
 
     const currentUrl = new URL(window.location);
-    currentUrl.pathname = `/${lang}/episodes/${epId.slice(0, 2)}/${parseInt(epId.slice(2))}`;
+    currentUrl.pathname = `/${lang}/episodes/${epId.slice(0, 2)}/${parseInt(epId.slice(2), 10)}`;
     currentUrl.search = '';
     window.history.replaceState({}, '', currentUrl.toString());
   }
