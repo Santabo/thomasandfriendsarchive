@@ -3,17 +3,14 @@
     { "source": "/", "destination": "/en-gb", "permanent": true }
   ],
   "rewrites": [
-    // Serve index.html for "/en-gb" and "/en-gb/"
-    { "source": "/en-gb", "destination": "/index.html" },
-    { "source": "/en-gb/", "destination": "/index.html" },
+    // Make /en-gb and /en-gb/ serve the regular index.html
+    { "source": "/en-gb", "destination": "/" },
+    { "source": "/en-gb/", "destination": "/" },
 
-    // Allow data to be fetched under /en-gb/data/... but load from /data/en-gb/...
+    // Rewrite /en-gb/data/... to actual language folder in /public/data/en-gb/...
     { "source": "/en-gb/data/:path*", "destination": "/data/en-gb/:path*" },
 
-    // Load static assets (like .js, .css) from the root
-    { "source": "/en-gb/:path*", "destination": "/:path*" },
-
-    // Terms page rewrite
+    // Other rewrites for static pages
     { "source": "/terms-of-use", "destination": "/terms-of-use.html" }
   ]
 }
