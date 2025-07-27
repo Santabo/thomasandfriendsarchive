@@ -148,12 +148,12 @@ def generate_preview_html(ep_code, title, cover_url, season_num, episode_num, vi
   <title>{title_esc} | {SITE_TITLE}</title>
   <meta name="description" content="{desc_esc}" />
   <meta property="og:type" content="video.other" />
-  <meta property="og:title" content="{title_esc}" />
+  <meta property="og:title" content="{title_esc} (UK)" />
   <meta property="og:description" content="{desc_esc}" />
   <meta property="og:image" content="{html.escape(cover_url)}" />
   <meta property="og:url" content="{html.escape(url)}" />
   <meta name="twitter:card" content="player" />
-  <meta name="twitter:title" content="{title_esc}" />
+  <meta name="twitter:title" content="{title_esc} (UK)" />
   <meta name="twitter:description" content="{desc_esc}" />
   <meta name="twitter:image" content="{html.escape(cover_url)}" />
   <meta name="twitter:player" content="{embed_url}" />
