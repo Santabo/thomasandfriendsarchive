@@ -85,33 +85,46 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       episodes.forEach((ep, i) => {
-        const epId =
-          type === 'fan'
-            ? `F0${String(i).padStart(2, '0')}`
-            : type === 'specials'
-              ? `SPL${String(ep.number).padStart(2, '0')}`
-              : `${String(seasonNumber).padStart(2, '0')}${String(ep.episode_number).padStart(2, '0')}`;
+        let epId, epUrl, title;
+        if (type === 'fan') {
+          epId = `F0${String(i).padStart(2, '0')}`;
+          epUrl = ep.video_url;
+          title = ep.title;
+        } else if (type === 'specials') {
+          epId = `SPL${String(ep.number).padStart(2, '0')}`;
+          epUrl = ep.link;
+          title = `Special ${ep.number}: ${ep.uk_title}`;
+        } else {
+          const seasonStr = String(seasonNumber).padStart(2, '0');
+          const epNumStr = String(ep.episode_number).padStart(2, '0');
+          epId = `${seasonStr}${epNumStr}`;
+          epUrl = ep.link;
+          title = `E${ep.episode_number}: ${ep.uk_title}`;
+        }
 
-        const url = type === 'fan' ? ep.video_url : ep.link;
-        const title =
-          type === 'fan'
-            ? ep.title
-            : type === 'specials'
-              ? `Special ${ep.number}: ${ep.uk_title}`
-              : `E${ep.episode_number}: ${ep.uk_title}`;
+        // New episode link with language & season/episode path
+        let episodeLink = '';
+        if (type === 'season') {
+          episodeLink = `/en-gb/episodes/${seasonNumber}/${ep.episode_number}`;
+        } else if (type === 'specials') {
+          episodeLink = `/en-gb/specials/${ep.number}`;
+        } else if (type === 'fan') {
+          episodeLink = `/en-gb/fan/${i + 1}`;
+        }
+
         const cover = ep.cover;
 
         const div = document.createElement('div');
         div.className = 'episode';
         div.setAttribute('data-epid', epId);
         div.innerHTML = `
-          <a href="?ep=${epId}" class="video-link" data-url="${url}" data-epid="${epId}">
+          <a href="${episodeLink}" class="video-link" data-url="${epUrl}" data-epid="${epId}">
             <img src="${cover}" alt="${title} cover" />
           </a>
           <h3>${title}</h3>
           ${
             type === 'fan' && ep.author_name
-              ? `<p>By <a href="${ep.author_url}" target="_blank">${ep.author_name}</a></p>`
+              ? `<p>By <a href="${ep.author_url}" target="_blank" rel="noopener">${ep.author_name}</a></p>`
               : ''
           }
         `;
@@ -122,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
       container.appendChild(wrapper);
     });
 
+    // Series selector buttons logic
     document.querySelectorAll('.selector-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const target = btn.dataset.target;
@@ -133,14 +147,28 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    const params = new URLSearchParams(window.location.search);
-    const requestedId = params.get('ep');
-    if (requestedId) {
-      const episodeEl = document.querySelector(`[data-epid="${requestedId}"] .video-link`);
-      if (episodeEl) {
-        openVideoModal(episodeEl.dataset.url, requestedId);
+    // Parse the URL path for episode details (instead of query string)
+    // Expecting URL like: /en-gb/episodes/{season}/{episode}
+    const pathSegments = window.location.pathname.split('/').filter(Boolean);
+    if (pathSegments.length >= 4) {
+      const [lang, section, seasonPart, episodePart] = pathSegments;
+      if (lang === 'en-gb' && section === 'episodes') {
+        const epId = String(seasonPart).padStart(2, '0') + String(episodePart).padStart(2, '0');
+        // Find the episode element by data-epid and open modal
+        const episodeEl = document.querySelector(`[data-epid="${epId}"] .video-link`);
+        if (episodeEl) {
+          openVideoModal(episodeEl.dataset.url, epId);
+          // Set active series tab for correct season
+          document.querySelectorAll('.selector-btn').forEach(b => {
+            b.classList.toggle('active', b.dataset.target === `season${parseInt(seasonPart)}`);
+          });
+          document.querySelectorAll('.season').forEach(s => {
+            s.style.display = s.dataset.series === `season${parseInt(seasonPart)}` ? 'block' : 'none';
+          });
+        }
       }
     }
+
   });
 
   function openVideoModal(url, epId) {
@@ -170,11 +198,14 @@ document.addEventListener('DOMContentLoaded', () => {
     modal.classList.remove('hidden');
     modal.style.display = 'flex';
 
+    // Update URL to the new format without reloading
     const currentUrl = new URL(window.location);
-    currentUrl.searchParams.set('ep', epId);
+    currentUrl.pathname = `/en-gb/episodes/${epId.slice(0, 2)}/${parseInt(epId.slice(2))}`;
+    currentUrl.search = '';
     window.history.replaceState({}, '', currentUrl.toString());
   }
 
+  // Event listeners for modal close and video link clicks
   document.addEventListener('click', e => {
     const link = e.target.closest('.video-link');
     if (link) {
@@ -188,7 +219,8 @@ document.addEventListener('DOMContentLoaded', () => {
       modal.style.display = 'none';
 
       const currentUrl = new URL(window.location);
-      currentUrl.searchParams.delete('ep');
+      currentUrl.pathname = '/en-gb/';
+      currentUrl.search = '';
       window.history.replaceState({}, '', currentUrl.toString());
     }
   });
@@ -200,7 +232,8 @@ document.addEventListener('DOMContentLoaded', () => {
       modal.style.display = 'none';
 
       const currentUrl = new URL(window.location);
-      currentUrl.searchParams.delete('ep');
+      currentUrl.pathname = '/en-gb/';
+      currentUrl.search = '';
       window.history.replaceState({}, '', currentUrl.toString());
     }
   });
