@@ -2,17 +2,14 @@ import json
 import os
 import html
 
-# Adjust paths as needed
 DATA_DIR = "public/data/en-gb"
-OUTPUT_BASE_DIR = "public/en-gb/episodes"  # nested output folders
-
-# Base URL pattern for episode pages on your site (language + season + episode)
+OUTPUT_BASE_DIR = "public/en-gb/episodes"
 BASE_EPISODE_URL = "https://thomasarchive.vercel.app/en-gb/episodes"
 
-# Site-wide static info
 SITE_TITLE = "Thomas the Tank Engine Archive"
 SITE_DESC = "Complete collection of Thomas the Tank Engine episodes, specials, and fan-made content."
 SITE_FAVICON = "https://i.ibb.co/SDBYYshc/image-2025-07-09-212116843.png"
+
 FONT_FACE_CSS = """
 @font-face {
   font-family: 'Flange BQ Bold';
@@ -20,51 +17,75 @@ FONT_FACE_CSS = """
   font-weight: bold;
   font-style: normal;
 }
-/* Modal styling */
-#video-modal {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.85);
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-#video-modal:not(.hidden) {
+"""
+
+PAGE_CSS = FONT_FACE_CSS + """
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #121212;
+  color: #ddd;
   display: flex;
-}
-#video-modal .modal-content {
-  position: relative;
-  width: 90%;
-  max-width: 960px;
-  aspect-ratio: 16 / 9;
-  background: #000;
-  border-radius: 8px;
+  height: 100vh;
   overflow: hidden;
+}
+main#video-player {
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  color: white;
-  font-family: Arial, sans-serif;
+  justify-content: center;
+  background: black;
+  padding: 1rem;
 }
-#video-modal iframe {
+main#video-player iframe {
   width: 100%;
-  height: 100%;
+  height: 60vh;
+  max-width: 960px;
   border: none;
-  flex-grow: 1;
+  border-radius: 8px;
 }
-#modal-close {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.75rem;
-  font-size: 2rem;
-  color: white;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  z-index: 10;
+aside#sidebar {
+  width: 300px;
+  background: #1f1f1f;
+  padding: 1rem;
+  overflow-y: auto;
+  border-left: 1px solid #333;
+}
+aside#sidebar h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  font-family: 'Flange BQ Bold', Arial, sans-serif;
+}
+a.sidebar-episode {
+  display: flex;
+  margin-bottom: 1rem;
+  text-decoration: none;
+  color: #ddd;
+  transition: background 0.2s;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #2a2a2a;
+}
+a.sidebar-episode:hover {
+  background: #3a3a3a;
+}
+a.sidebar-episode img {
+  width: 80px;
+  height: 45px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.sidebar-ep-info {
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+}
+.sidebar-empty {
+  font-style: italic;
+  color: #777;
 }
 """
 
@@ -72,28 +93,43 @@ def ensure_dir(path):
     if not os.path.exists(path):
         os.makedirs(path)
 
-def generate_preview_html(ep_code, title, cover_url, season_num, episode_num, video_url):
-    # Escape values for safe HTML usage
+def generate_sidebar_html(episodes, current_ep_code, season_num):
+    items = []
+    for ep in episodes:
+        ep_num = ep.get("episode_number")
+        if ep_num is None:
+            continue
+        ep_str = str(ep_num).zfill(2)
+        ep_code = f"{str(season_num).zfill(2)}{ep_str}"
+        title = ep.get("uk_title", f"Episode {ep_str}")
+        cover = ep.get("cover", "")
+        link = f"{BASE_EPISODE_URL}/{str(season_num).zfill(2)}/{ep_str}"
+        active_class = "active" if ep_code == current_ep_code else ""
+        items.append(f'''
+        <a href="{link}" class="sidebar-episode {active_class}">
+          <img src="{html.escape(cover)}" alt="{html.escape(title)} cover" />
+          <div class="sidebar-ep-info">
+            <span>{html.escape(title)}</span>
+          </div>
+        </a>
+        ''')
+    return '\n'.join(items) if items else '<p class="sidebar-empty">No episodes available</p>'
+
+def generate_preview_html(ep_code, title, cover_url, season_num, episode_num, video_url, season_episodes):
     title_esc = html.escape(title)
-    cover_esc = html.escape(cover_url)
     desc = f"Watch '{title}' from Series {season_num} on the Thomas Archive."
     desc_esc = html.escape(desc)
     url = f"{BASE_EPISODE_URL}/{str(season_num).zfill(2)}/{str(episode_num).zfill(2)}"
-    url_esc = html.escape(url)
-
-    # Extract embed URL for OG Twitter player tag (simplified for YouTube and Drive)
     embed_url = video_url
+
     try:
         if "youtube.com" in video_url:
-            if "/embed/" in video_url:
-                embed_url = video_url
-            else:
+            if "/embed/" not in video_url:
                 from urllib.parse import urlparse, parse_qs
                 parsed = urlparse(video_url)
-                qs = parse_qs(parsed.query)
-                v = qs.get("v", [None])[0]
+                v = parse_qs(parsed.query).get("v", [None])[0]
                 if v:
-                    embed_url = f"https://www.youtube.com/embed/{v}"
+                    embed_url = f"https://www.youtube.com/embed/{v}?autoplay=1"
         elif "drive.google.com" in video_url:
             import re
             m = re.search(r"/d/([^/]+)/", video_url)
@@ -102,6 +138,8 @@ def generate_preview_html(ep_code, title, cover_url, season_num, episode_num, vi
     except Exception:
         pass
 
+    sidebar_html = generate_sidebar_html(season_episodes, ep_code, season_num)
+
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -109,83 +147,28 @@ def generate_preview_html(ep_code, title, cover_url, season_num, episode_num, vi
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{title_esc} | {SITE_TITLE}</title>
   <meta name="description" content="{desc_esc}" />
-  
-  <!-- Open Graph -->
   <meta property="og:type" content="video.other" />
   <meta property="og:title" content="{title_esc}" />
   <meta property="og:description" content="{desc_esc}" />
-  <meta property="og:image" content="{cover_esc}" />
-  <meta property="og:url" content="{url_esc}" />
-  
-  <!-- Twitter -->
+  <meta property="og:image" content="{html.escape(cover_url)}" />
+  <meta property="og:url" content="{html.escape(url)}" />
   <meta name="twitter:card" content="player" />
   <meta name="twitter:title" content="{title_esc}" />
   <meta name="twitter:description" content="{desc_esc}" />
-  <meta name="twitter:image" content="{cover_esc}" />
+  <meta name="twitter:image" content="{html.escape(cover_url)}" />
   <meta name="twitter:player" content="{embed_url}" />
-
   <link rel="stylesheet" href="/style.css" />
   <link rel="icon" href="{SITE_FAVICON}" type="image/png" />
-  <style>{FONT_FACE_CSS}</style>
+  <style>{PAGE_CSS}</style>
 </head>
 <body>
-  <!-- No visible content on purpose, just modal -->
-
-  <!-- Video Modal -->
-  <div id="video-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="video-title">
-    <div class="modal-content">
-      <button id="modal-close" aria-label="Close video modal">&times;</button>
-      <iframe id="modal-video" data-url="{html.escape(video_url)}" title="Video player" allow="autoplay" allowfullscreen></iframe>
-      <!-- Debug line, remove if unwanted -->
-      <p id="debug-url" style="color:white; font-size: 0.8rem; margin-top: 8px;">Loading video...</p>
-    </div>
-  </div>
-
-  <script>
-    const modal = document.getElementById('video-modal');
-    const iframe = document.getElementById('modal-video');
-    const closeBtn = document.getElementById('modal-close');
-    const debugUrlEl = document.getElementById('debug-url');
-
-    function openVideoModal(url) {{
-      let embedUrl = url;
-      try {{
-        if (url.includes('youtube.com')) {{
-          if (url.includes('/embed/')) {{
-            embedUrl = url.includes('?') ? `${{url}}&autoplay=1` : `${{url}}?autoplay=1`;
-          }} else {{
-            const videoId = new URL(url).searchParams.get('v');
-            if (videoId) embedUrl = `https://www.youtube.com/embed/${{videoId}}?autoplay=1`;
-          }}
-        }} else if (url.includes('drive.google.com')) {{
-          const match = url.match(/\\/d\\/([^\\/]+)\\//);
-          if (match && match[1]) embedUrl = `https://drive.google.com/file/d/${{match[1]}}/preview`;
-        }}
-      }} catch(e) {{
-        console.error('Error parsing video URL:', e);
-      }}
-      iframe.src = embedUrl;
-      modal.classList.remove('hidden');
-      modal.style.display = 'flex';
-      if(debugUrlEl) debugUrlEl.textContent = 'Video URL: ' + embedUrl;
-    }}
-
-    function closeVideoModal() {{
-      iframe.src = '';
-      modal.classList.add('hidden');
-      modal.style.display = 'none';
-      window.location.href = "/en-gb/";  // Redirect back to archive
-    }}
-
-    closeBtn.addEventListener('click', closeVideoModal);
-    modal.addEventListener('click', e => {{
-      if (e.target === modal) closeVideoModal();
-    }});
-
-    document.addEventListener('DOMContentLoaded', () => {{
-      openVideoModal(iframe.dataset.url);
-    }});
-  </script>
+  <main id="video-player" role="main">
+    <iframe id="modal-video" src="{embed_url}" title="Video player" allow="autoplay" allowfullscreen></iframe>
+  </main>
+  <aside id="sidebar" role="complementary" aria-label="Episodes">
+    <h2>Episodes</h2>
+    {sidebar_html}
+  </aside>
 </body>
 </html>
 """
@@ -197,13 +180,11 @@ def main():
 
         season_num = filename[len("season") : -len(".json")]
         season_str = str(season_num).zfill(2)
-        season_path = os.path.join(DATA_DIR, filename)
 
-        with open(season_path, "r", encoding="utf-8") as f:
+        with open(os.path.join(DATA_DIR, filename), "r", encoding="utf-8") as f:
             data = json.load(f)
 
-        season_key = f"season{season_num}"
-        episodes = data.get(season_key, {}).get("episodes", [])
+        episodes = data.get(f"season{season_num}", {}).get("episodes", [])
         if not episodes:
             print(f"No episodes found in {filename}")
             continue
@@ -215,21 +196,18 @@ def main():
 
             ep_num_str = str(ep_num).zfill(2)
             ep_code = f"{season_str}{ep_num_str}"
-
             title = ep.get("uk_title", f"Episode {ep_num_str}")
             cover = ep.get("cover", "")
-            video_url = ep.get("link", "")  # Assuming 'link' contains video URL
+            video_url = ep.get("link", "")
 
             html_content = generate_preview_html(
-                ep_code, title, cover, season_num, ep_num, video_url
+                ep_code, title, cover, season_str, ep_num_str, video_url, episodes
             )
 
-            # Create nested folders for season/episode
             output_dir = os.path.join(OUTPUT_BASE_DIR, season_str, ep_num_str)
             ensure_dir(output_dir)
 
-            output_path = os.path.join(output_dir, "index.html")
-            with open(output_path, "w", encoding="utf-8") as out_file:
+            with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as out_file:
                 out_file.write(html_content)
 
             print(f"Generated preview for episode {ep_code}: {title}")

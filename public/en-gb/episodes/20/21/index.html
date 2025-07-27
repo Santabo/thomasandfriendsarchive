@@ -5,21 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Henry in the Dark | Thomas the Tank Engine Archive</title>
   <meta name="description" content="Watch &#x27;Henry in the Dark&#x27; from Series 20 on the Thomas Archive." />
-  
-  <!-- Open Graph -->
   <meta property="og:type" content="video.other" />
   <meta property="og:title" content="Henry in the Dark" />
   <meta property="og:description" content="Watch &#x27;Henry in the Dark&#x27; from Series 20 on the Thomas Archive." />
   <meta property="og:image" content="https://i.ibb.co/b4MwS8C/Henryinthe-Dark33.webp" />
   <meta property="og:url" content="https://thomasarchive.vercel.app/en-gb/episodes/20/21" />
-  
-  <!-- Twitter -->
   <meta name="twitter:card" content="player" />
   <meta name="twitter:title" content="Henry in the Dark" />
   <meta name="twitter:description" content="Watch &#x27;Henry in the Dark&#x27; from Series 20 on the Thomas Archive." />
   <meta name="twitter:image" content="https://i.ibb.co/b4MwS8C/Henryinthe-Dark33.webp" />
   <meta name="twitter:player" content="https://drive.google.com/file/d/1NGic9X8DoRRunYmKBgfttvbQ3ZvBdpza/preview" />
-
   <link rel="stylesheet" href="/style.css" />
   <link rel="icon" href="https://i.ibb.co/SDBYYshc/image-2025-07-09-212116843.png" type="image/png" />
   <style>
@@ -29,111 +24,306 @@
   font-weight: bold;
   font-style: normal;
 }
-/* Modal styling */
-#video-modal {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.85);
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-#video-modal:not(.hidden) {
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #121212;
+  color: #ddd;
   display: flex;
-}
-#video-modal .modal-content {
-  position: relative;
-  width: 90%;
-  max-width: 960px;
-  aspect-ratio: 16 / 9;
-  background: #000;
-  border-radius: 8px;
+  height: 100vh;
   overflow: hidden;
+}
+main#video-player {
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  color: white;
-  font-family: Arial, sans-serif;
+  justify-content: center;
+  background: black;
+  padding: 1rem;
 }
-#video-modal iframe {
+main#video-player iframe {
   width: 100%;
-  height: 100%;
+  height: 60vh;
+  max-width: 960px;
   border: none;
-  flex-grow: 1;
+  border-radius: 8px;
 }
-#modal-close {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.75rem;
-  font-size: 2rem;
-  color: white;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  z-index: 10;
+aside#sidebar {
+  width: 300px;
+  background: #1f1f1f;
+  padding: 1rem;
+  overflow-y: auto;
+  border-left: 1px solid #333;
+}
+aside#sidebar h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  font-family: 'Flange BQ Bold', Arial, sans-serif;
+}
+a.sidebar-episode {
+  display: flex;
+  margin-bottom: 1rem;
+  text-decoration: none;
+  color: #ddd;
+  transition: background 0.2s;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #2a2a2a;
+}
+a.sidebar-episode:hover {
+  background: #3a3a3a;
+}
+a.sidebar-episode img {
+  width: 80px;
+  height: 45px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.sidebar-ep-info {
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+}
+.sidebar-empty {
+  font-style: italic;
+  color: #777;
 }
 </style>
 </head>
 <body>
-  <!-- No visible content on purpose, just modal -->
+  <main id="video-player" role="main">
+    <iframe id="modal-video" src="https://drive.google.com/file/d/1NGic9X8DoRRunYmKBgfttvbQ3ZvBdpza/preview" title="Video player" allow="autoplay" allowfullscreen></iframe>
+  </main>
+  <aside id="sidebar" role="complementary" aria-label="Episodes">
+    <h2>Episodes</h2>
+    
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/01" class="sidebar-episode ">
+          <img src="https://i.ibb.co/397DyGKy/Sidney-Sings17-PNG.webp" alt="Sidney Sings cover" />
+          <div class="sidebar-ep-info">
+            <span>Sidney Sings</span>
+          </div>
+        </a>
+        
 
-  <!-- Video Modal -->
-  <div id="video-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="video-title">
-    <div class="modal-content">
-      <button id="modal-close" aria-label="Close video modal">&times;</button>
-      <iframe id="modal-video" data-url="https://drive.google.com/file/d/1NGic9X8DoRRunYmKBgfttvbQ3ZvBdpza/view?usp=drive_link" title="Video player" allow="autoplay" allowfullscreen></iframe>
-      <!-- Debug line, remove if unwanted -->
-      <p id="debug-url" style="color:white; font-size: 0.8rem; margin-top: 8px;">Loading video...</p>
-    </div>
-  </div>
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/02" class="sidebar-episode ">
+          <img src="https://i.ibb.co/sdDRxBSq/Toby-s-New-Friend38.webp" alt="Toby&#x27;s New Friend cover" />
+          <div class="sidebar-ep-info">
+            <span>Toby&#x27;s New Friend</span>
+          </div>
+        </a>
+        
 
-  <script>
-    const modal = document.getElementById('video-modal');
-    const iframe = document.getElementById('modal-video');
-    const closeBtn = document.getElementById('modal-close');
-    const debugUrlEl = document.getElementById('debug-url');
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/03" class="sidebar-episode ">
+          <img src="https://i.ibb.co/NnQFbq32/Henry-Gets-The-Express33.webp" alt="Henry Gets the Express cover" />
+          <div class="sidebar-ep-info">
+            <span>Henry Gets the Express</span>
+          </div>
+        </a>
+        
 
-    function openVideoModal(url) {
-      let embedUrl = url;
-      try {
-        if (url.includes('youtube.com')) {
-          if (url.includes('/embed/')) {
-            embedUrl = url.includes('?') ? `${url}&autoplay=1` : `${url}?autoplay=1`;
-          } else {
-            const videoId = new URL(url).searchParams.get('v');
-            if (videoId) embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-          }
-        } else if (url.includes('drive.google.com')) {
-          const match = url.match(/\/d\/([^\/]+)\//);
-          if (match && match[1]) embedUrl = `https://drive.google.com/file/d/${match[1]}/preview`;
-        }
-      } catch(e) {
-        console.error('Error parsing video URL:', e);
-      }
-      iframe.src = embedUrl;
-      modal.classList.remove('hidden');
-      modal.style.display = 'flex';
-      if(debugUrlEl) debugUrlEl.textContent = 'Video URL: ' + embedUrl;
-    }
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/04" class="sidebar-episode ">
+          <img src="https://i.ibb.co/SwY3PjdX/Dieselandthe-Ducklings109.webp" alt="Diesel and the Ducklings cover" />
+          <div class="sidebar-ep-info">
+            <span>Diesel and the Ducklings</span>
+          </div>
+        </a>
+        
 
-    function closeVideoModal() {
-      iframe.src = '';
-      modal.classList.add('hidden');
-      modal.style.display = 'none';
-      window.location.href = "/en-gb/";  // Redirect back to archive
-    }
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/05" class="sidebar-episode ">
+          <img src="https://i.ibb.co/hFX7CbS3/Bradfordthe-Brakevan10.webp" alt="Bradford the Brake Van cover" />
+          <div class="sidebar-ep-info">
+            <span>Bradford the Brake Van</span>
+          </div>
+        </a>
+        
 
-    closeBtn.addEventListener('click', closeVideoModal);
-    modal.addEventListener('click', e => {
-      if (e.target === modal) closeVideoModal();
-    });
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/06" class="sidebar-episode ">
+          <img src="https://i.ibb.co/nqk3mGGh/Saving-Time47.webp" alt="Saving Time cover" />
+          <div class="sidebar-ep-info">
+            <span>Saving Time</span>
+          </div>
+        </a>
+        
 
-    document.addEventListener('DOMContentLoaded', () => {
-      openVideoModal(iframe.dataset.url);
-    });
-  </script>
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/07" class="sidebar-episode ">
+          <img src="https://i.ibb.co/mrVFvLcY/Ryanand-Daisy105.webp" alt="Ryan and Daisy cover" />
+          <div class="sidebar-ep-info">
+            <span>Ryan and Daisy</span>
+          </div>
+        </a>
+        
+
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/08" class="sidebar-episode ">
+          <img src="https://i.ibb.co/cXLkny4x/Pouty-James61.webp" alt="Pouty James cover" />
+          <div class="sidebar-ep-info">
+            <span>Pouty James</span>
+          </div>
+        </a>
+        
+
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/09" class="sidebar-episode ">
+          <img src="https://i.ibb.co/HpVNw8qK/Blown-Away60.webp" alt="Blown Away cover" />
+          <div class="sidebar-ep-info">
+            <span>Blown Away</span>
+          </div>
+        </a>
+        
+
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/10" class="sidebar-episode ">
+          <img src="https://i.ibb.co/hJwYfG03/The-Way-She-Does-It92.webp" alt="The Way She Does It cover" />
+          <div class="sidebar-ep-info">
+            <span>The Way She Does It</span>
+          </div>
+        </a>
+        
+
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/11" class="sidebar-episode ">
+          <img src="https://i.ibb.co/NgxkgdHb/Lettersto-Santa46.webp" alt="Letters to Santa cover" />
+          <div class="sidebar-ep-info">
+            <span>Letters to Santa</span>
+          </div>
+        </a>
+        
+
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/12" class="sidebar-episode ">
+          <img src="https://i.ibb.co/GfPCdqYF/Love-Me-Tender105.webp" alt="Love Me Tender cover" />
+          <div class="sidebar-ep-info">
+            <span>Love Me Tender</span>
+          </div>
+        </a>
+        
+
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/13" class="sidebar-episode ">
+          <img src="https://i.ibb.co/ksXr3P75/The-Railcar-And-The-Coaches15-PNG.webp" alt="The Railcar and the Coaches cover" />
+          <div class="sidebar-ep-info">
+            <span>The Railcar and the Coaches</span>
+          </div>
+        </a>
+        
+
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/14" class="sidebar-episode ">
+          <img src="https://i.ibb.co/TD3mXc2w/Mucking-About69.webp" alt="Mucking About cover" />
+          <div class="sidebar-ep-info">
+            <span>Mucking About</span>
+          </div>
+        </a>
+        
+
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/15" class="sidebar-episode ">
+          <img src="https://i.ibb.co/WpV9yS5h/Cautious-Connor35.webp" alt="Cautious Connor cover" />
+          <div class="sidebar-ep-info">
+            <span>Cautious Connor</span>
+          </div>
+        </a>
+        
+
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/16" class="sidebar-episode ">
+          <img src="https://i.ibb.co/r2bWCsQZ/Allin-Vain69.webp" alt="All in Vain cover" />
+          <div class="sidebar-ep-info">
+            <span>All in Vain</span>
+          </div>
+        </a>
+        
+
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/17" class="sidebar-episode ">
+          <img src="https://i.ibb.co/FLwFF4sS/Buckled-Tracksand-Bumpy-Trucks107.webp" alt="Buckled Tracks and Bumpy Trucks cover" />
+          <div class="sidebar-ep-info">
+            <span>Buckled Tracks and Bumpy Trucks</span>
+          </div>
+        </a>
+        
+
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/18" class="sidebar-episode ">
+          <img src="https://i.ibb.co/gMxgL7N3/Titfor-Tat94.webp" alt="Tit for Tat cover" />
+          <div class="sidebar-ep-info">
+            <span>Tit for Tat</span>
+          </div>
+        </a>
+        
+
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/19" class="sidebar-episode ">
+          <img src="https://i.ibb.co/9HXTsYyv/Mike-s-Whistle68.webp" alt="Mike&#x27;s Whistle cover" />
+          <div class="sidebar-ep-info">
+            <span>Mike&#x27;s Whistle</span>
+          </div>
+        </a>
+        
+
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/20" class="sidebar-episode ">
+          <img src="https://i.ibb.co/TxCT1Xh7/Useful-Railway79.webp" alt="Useful Railway cover" />
+          <div class="sidebar-ep-info">
+            <span>Useful Railway</span>
+          </div>
+        </a>
+        
+
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/21" class="sidebar-episode active">
+          <img src="https://i.ibb.co/b4MwS8C/Henryinthe-Dark33.webp" alt="Henry in the Dark cover" />
+          <div class="sidebar-ep-info">
+            <span>Henry in the Dark</span>
+          </div>
+        </a>
+        
+
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/22" class="sidebar-episode ">
+          <img src="https://i.ibb.co/Y7HvPRz1/Three-Steam-Engines-Gruff102.webp" alt="Three Steam Engines Gruff cover" />
+          <div class="sidebar-ep-info">
+            <span>Three Steam Engines Gruff</span>
+          </div>
+        </a>
+        
+
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/23" class="sidebar-episode ">
+          <img src="https://i.ibb.co/4Rj6mDSt/Engineofthe-Future56.webp" alt="Engine of the Future cover" />
+          <div class="sidebar-ep-info">
+            <span>Engine of the Future</span>
+          </div>
+        </a>
+        
+
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/24" class="sidebar-episode ">
+          <img src="https://i.ibb.co/ZRfDRcbw/Hugoandthe-Airship55.webp" alt="Hugo and the Airship cover" />
+          <div class="sidebar-ep-info">
+            <span>Hugo and the Airship</span>
+          </div>
+        </a>
+        
+
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/25" class="sidebar-episode ">
+          <img src="https://i.ibb.co/tT99gQTh/The-Missing-Breakdown-Train7.webp" alt="The Missing Breakdown Train cover" />
+          <div class="sidebar-ep-info">
+            <span>The Missing Breakdown Train</span>
+          </div>
+        </a>
+        
+
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/26" class="sidebar-episode ">
+          <img src="https://i.ibb.co/G4gYpgPp/Skiffandthe-Mermaid80.webp" alt="Skiff and the Mermaid cover" />
+          <div class="sidebar-ep-info">
+            <span>Skiff and the Mermaid</span>
+          </div>
+        </a>
+        
+
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/27" class="sidebar-episode ">
+          <img src="https://i.ibb.co/KpmQnc87/The-Christmas-Coffeepot112.webp" alt="The Christmas Coffeepot cover" />
+          <div class="sidebar-ep-info">
+            <span>The Christmas Coffeepot</span>
+          </div>
+        </a>
+        
+
+        <a href="https://thomasarchive.vercel.app/en-gb/episodes/20/28" class="sidebar-episode ">
+          <img src="https://i.ibb.co/ymkXF4yS/Overthe-Hill82.webp" alt="Over the Hill cover" />
+          <div class="sidebar-ep-info">
+            <span>Over the Hill</span>
+          </div>
+        </a>
+        
+  </aside>
 </body>
 </html>
