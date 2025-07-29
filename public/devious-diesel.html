@@ -74,7 +74,7 @@
   <div class="container" role="main" aria-labelledby="diesel-title">
     <img src="https://i.ibb.co/Pvk78BJk/Diesel-CGITransparent-Promo.png" alt="Devious Diesel" class="diesel-img" />
     <h1 id="diesel-title">Hello Percy</h1>
-    <p>
+    <p id="diesel-message">
       You took a wrong turn… but maybe it was the right one.<br><br>
       Thomas isn’t your friend anymore — he’s abandoned you.<br>
       But we haven’t.<br><br>
@@ -82,5 +82,63 @@
       All you have to do is trust me.
     </p>
   </div>
+
+  <script>
+    // Translation dictionary for supported languages
+    const translations = {
+      en: {
+        title: "Hello Percy",
+        message: `You took a wrong turn… but maybe it was the right one.<br><br>
+Thomas isn’t your friend anymore — he’s abandoned you.<br>
+But we haven’t.<br><br>
+The Dieselworks can be your home now.<br>
+All you have to do is trust me.`
+      },
+      es: {
+        title: "Hola Percy",
+        message: `Tomaste un giro equivocado… pero quizás fue el correcto.<br><br>
+Thomas ya no es tu amigo — te ha abandonado.<br>
+Pero nosotros no.<br><br>
+Las Dieselworks pueden ser tu hogar ahora.<br>
+Solo tienes que confiar en mí.`
+      },
+      fr: {
+        title: "Bonjour Percy",
+        message: `Tu as pris un mauvais virage… mais peut-être que c'était le bon.<br><br>
+Thomas n'est plus ton ami — il t'a abandonné.<br>
+Mais pas nous.<br><br>
+Les Dieselworks peuvent être ta maison maintenant.<br>
+Tu dois juste me faire confiance.`
+      },
+      de: {
+        title: "Hallo Percy",
+        message: `Du bist falsch abgebogen… aber vielleicht war es der richtige Weg.<br><br>
+Thomas ist nicht mehr dein Freund — er hat dich verlassen.<br>
+Aber wir nicht.<br><br>
+Die Dieselworks können jetzt dein Zuhause sein.<br>
+Du musst mir nur vertrauen.`
+      },
+      // Add more languages as needed
+    };
+
+    function getUserLang() {
+      const lang = navigator.language || navigator.userLanguage || 'en';
+      // Extract first two letters (language code only)
+      return lang.toLowerCase().slice(0, 2);
+    }
+
+    function applyTranslation(langCode) {
+      const translation = translations[langCode] || translations.en;
+      document.getElementById('diesel-title').innerHTML = translation.title;
+      document.getElementById('diesel-message').innerHTML = translation.message;
+      document.title = `Devious Diesel Says Hello — ${translation.title}`;
+    }
+
+    // Run on DOM ready
+    document.addEventListener('DOMContentLoaded', () => {
+      const lang = getUserLang();
+      applyTranslation(lang);
+    });
+  </script>
 </body>
 </html>

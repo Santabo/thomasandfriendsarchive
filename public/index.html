@@ -61,9 +61,10 @@
   </style>
   
   <script>
-    // Set global language code early for scripts that run in <head>
-    window.LANG_CODE = "en-gb";
+    const pathMatch = window.location.pathname.match(/^\/([a-z]{2}-[a-z]{2})(\/|$)/i);
+    window.LANG_CODE = pathMatch ? pathMatch[1].toLowerCase() : "en-gb";
   </script>
+
 </head>
 
 <body>

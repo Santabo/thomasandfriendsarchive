@@ -1,6 +1,10 @@
 {
   "redirects": [
-    { "source": "/", "destination": "/en-gb", "permanent": true }
+    {
+      "source": "/",
+      "destination": "/en-gb",
+      "permanent": true
+    }
   ],
   "rewrites": [
     {
@@ -8,12 +12,17 @@
       "destination": "/data/en-gb/:path*"
     },
     {
-      "source": "/en-gb/:path*",
-      "destination": "/en-gb/index.html"
+      "source": "/en-gb",
+      "destination": "/index.html"
     },
     {
-      "source": "/en-gb",
-      "destination": "/en-gb/index.html"
+      "source": "/en-gb/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en-gb/:path*",
+      "has": [{ "type": "missing", "key": "filesystem" }],
+      "destination": "/index.html"
     }
   ]
 }
