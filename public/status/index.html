@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thomas Archive | Status</title>
+  <link rel="stylesheet" href="/style.css" />
+  <style>
+    body {
+      background-color: #0f1117;
+      color: #fff;
+      font-family: "Flange BQ Bold", Arial, sans-serif;
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .monitor {
+      background: #1c1f26;
+      border-radius: 8px;
+      margin: 1rem auto;
+      padding: 1rem;
+      max-width: 600px;
+    }
+
+    .status.up {
+      color: #4caf50;
+    }
+
+    .status.down {
+      color: #f44336;
+    }
+
+    .status.paused {
+      color: #ffc107;
+    }
+
+    a.back-link {
+      display: block;
+      max-width: 600px;
+      margin: 1rem auto 2rem;
+      color: #ccc;
+      text-decoration: none;
+    }
+
+    a.back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <a href="/" class="back-link">← Back to Home</a>
+  <h1>Service Status</h1>
+  <div id="status-container">Loading...</div>
+
+  <script src="/scripts/status.js" defer></script>
+</body>
+</html>
