@@ -3,83 +3,107 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Thomas Archive | Page Unavailable</title>
-  <meta name="description" content="Page unavailable or down. Check service status." />
-  <link rel="stylesheet" href="/style.css" />
+  <title>Thomas Archive | Page Lost on the Tracks</title>
+  <meta name="description" content="Oops! This page ran off the rails. Check the status or head back home." />
   <link rel="icon" href="https://i.ibb.co/SDBYYshc/image-2025-07-09-212116843.png" type="image/png" />
   <style>
-    body, html {
-      height: 100%;
+    @font-face {
+      font-family: 'Flange BQ Bold';
+      src: url('/flangebq_bold.ttf') format('truetype');
+      font-weight: bold;
+      font-style: normal;
     }
-    body {
+
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      background: #121317;
+      color: #eee;
+      font-family: 'Flange BQ Bold', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
-      background: #f2f7fc;
-      color: #333;
-      font-family: 'Flange BQ Bold', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      margin: 0;
-      padding: 0 1rem;
       text-align: center;
       flex-direction: column;
+      padding: 1rem;
     }
 
-    .error-container {
-      max-width: 480px;
-      padding: 2rem;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    .container {
+      max-width: 440px;
+      background: #1f222a;
+      border-radius: 12px;
+      box-shadow: 0 0 30px rgb(255 191 0 / 0.6);
+      padding: 2.5rem 2rem;
+      user-select: none;
     }
 
     h1 {
-      font-size: 2.5rem;
-      color: #005eb8;
+      font-size: 3.5rem;
       margin-bottom: 1rem;
+      color: #ffbf00;
+      text-shadow: 0 0 10px #ffbf00cc;
     }
 
     p {
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       margin-bottom: 2rem;
-      color: #555;
       line-height: 1.4;
+      color: #ccc;
     }
 
-    a.status-link {
-      display: inline-block;
+    a {
       font-weight: bold;
+      font-family: 'Flange BQ Bold', sans-serif;
+      text-decoration: none;
       background: #ffbf00;
       color: #222;
       padding: 0.75rem 1.5rem;
-      border-radius: 6px;
-      text-decoration: none;
-      font-family: 'Flange BQ Bold', sans-serif;
-      transition: background 0.3s ease;
-      box-shadow: 0 4px 8px rgb(255 191 0 / 0.3);
+      border-radius: 8px;
+      box-shadow: 0 6px 12px rgb(255 191 0 / 0.5);
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+      display: inline-block;
     }
 
-    a.status-link:hover,
-    a.status-link:focus {
+    a:hover,
+    a:focus {
       background: #e6ac00;
+      box-shadow: 0 8px 16px rgb(230 172 0 / 0.7);
       outline: none;
-      box-shadow: 0 6px 12px rgb(230 172 0 / 0.5);
     }
 
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 2rem;
-      }
-      .error-container {
-        padding: 1.5rem;
-      }
+    /* Subtle train track lines background */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background:
+        repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 20px,
+          rgba(255, 191, 0, 0.1) 20px,
+          rgba(255, 191, 0, 0.1) 25px
+        ),
+        repeating-linear-gradient(
+          -45deg,
+          transparent,
+          transparent 20px,
+          rgba(255, 191, 0, 0.1) 20px,
+          rgba(255, 191, 0, 0.1) 25px
+        );
+      z-index: 0;
+      pointer-events: none;
     }
   </style>
 </head>
 <body>
-  <div class="error-container" role="main" aria-labelledby="error-title">
-    <h1 id="error-title">Page Unavailable</h1>
-    <p>Sorry, this page is currently unavailable or down.<br />
-       You can check the <a href="https://stats.uptimerobot.com/G7yIvQIlao" target="_blank" rel="noopener" class="status-link">service status here</a>.
+  <div class="container" role="main" aria-labelledby="error-title">
+    <h1 id="error-title">Page Lost on the Tracks</h1>
+    <p>
+      Looks like this page ran off the rails.<br />
+      You can check the <a href="https://stats.uptimerobot.com/G7yIvQIlao" target="_blank" rel="noopener">service status here</a>,<br />
+      or <a href="https://thomasarchive.vercel.app" aria-label="Go back to homepage">head back home</a> and try again.
     </p>
   </div>
 </body>
