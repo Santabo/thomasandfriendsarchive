@@ -1,102 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Thomas Archive | Page Lost on the Tracks</title>
-<meta name="description" content="Page unavailable or down. Check service status." />
-<link rel="icon" href="https://i.ibb.co/SDBYYshc/image-2025-07-09-212116843.png" type="image/png" />
-<style>
-  @font-face {
-    font-family: 'Flange BQ Bold';
-    src: url('/flangebq_bold.ttf') format('truetype');
-    font-weight: bold;
-    font-style: normal;
-  }
-  html, body {
-    height: 100%;
-    margin: 0;
-    font-family: 'Flange BQ Bold', Arial, sans-serif;
-    color: #ddd;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 2rem;
-    background: url('https://i.ibb.co/C3sbhdqF/1mbVv11I.png') no-repeat center center fixed;
-    background-size: cover;
-    overflow: hidden;
-    user-select: text; /* allow text selection by default */
-  }
-  .overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(20, 20, 20, 0.75);
-    z-index: 0;
-  }
-  .container {
-    position: relative;
-    z-index: 1;
-    max-width: 480px;
-    padding: 3rem 2rem;
-    background: rgba(35, 31, 27, 0.85);
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.7);
-    border: 1.5px solid #5a4a3c;
-  }
-  h1 {
-    font-size: 3rem;
-    margin-bottom: 1.5rem;
-    color: #c7b299;
-    text-shadow: 1px 1px 2px #3a3329;
-  }
-  p {
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
-    line-height: 1.5;
-    color: #bfb7a1;
-    text-shadow: 1px 1px 1px #2e2a24;
-  }
-  .buttons {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  a.status-link {
-    font-weight: bold;
-    font-family: 'Flange BQ Bold', sans-serif;
-    text-decoration: none;
-    background: #6b5b4b;
-    color: #ddd;
-    padding: 0.6rem 1.8rem;
-    border-radius: 6px;
-    box-shadow: inset 0 2px 3px #8a7d6f;
-    transition: background 0.3s ease;
-    user-select: none; /* prevent text selection on buttons */
-    cursor: pointer;
-    border: 1px solid #5a4a3c;
-    font-size: 1rem;
-  }
-  a.status-link:hover,
-  a.status-link:focus {
-    background: #7c6b58;
-    outline: none;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Thomas Archive | Lost on the Tracks</title>
+  <meta name="description" content="Page unavailable or off the rails. Check the service status or try another route." />
+  <link rel="icon" href="https://i.ibb.co/SDBYYshc/image-2025-07-09-212116843.png" type="image/png" />
+  <style>
+    @font-face {
+      font-family: 'Flange BQ Bold';
+      src: url('/flangebq_bold.ttf') format('truetype');
+      font-weight: bold;
+      font-style: normal;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: 'Flange BQ Bold', Arial, sans-serif;
+      color: #ddd;
+      background: url('https://i.ibb.co/C3sbhdqF/1mbVv11I.png') no-repeat center center fixed;
+      background-size: cover;
+      user-select: text;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 15, 15, 0.75);
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 540px;
+      margin: auto;
+      padding: 2rem;
+      background: rgba(30, 25, 20, 0.88);
+      border-radius: 8px;
+      border: 1.5px solid #4c3f33;
+      box-shadow: 0 0 16px rgba(0, 0, 0, 0.6);
+      margin-top: 8vh;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      margin-bottom: 1rem;
+      color: #c6b59d;
+      text-shadow: 1px 1px 2px #2b241d;
+    }
+
+    p {
+      font-size: 1rem;
+      color: #bdb5a0;
+      text-shadow: 1px 1px 1px #1d1a15;
+      margin-bottom: 1.5rem;
+      line-height: 1.4;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    a.status-link {
+      display: inline-block;
+      padding: 0.45rem 1.2rem;
+      font-size: 0.95rem;
+      color: #e6e1d9;
+      background: #5c4c3c;
+      border: 1px solid #3f342a;
+      border-radius: 5px;
+      text-decoration: none;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+      transition: background 0.2s ease;
+      user-select: none;
+    }
+
+    a.status-link:hover,
+    a.status-link:focus {
+      background: #6a5947;
+      outline: none;
+    }
+  </style>
 </head>
 <body>
   <div class="overlay"></div>
   <div class="container" role="main" aria-labelledby="error-title">
-    <h1 id="error-title">Page Lost on the Tracks</h1>
+    <h1 id="error-title">Lost on the Tracks</h1>
     <p>
-      This page ran off the rails.<br />
-      What will you do now?
+      You took a wrong turn...<br />
+      The Steam Team’s not here—but maybe the Diesels can help.<br />
+      Where will you go now?
     </p>
     <div class="buttons">
-      <a href="https://stats.uptimerobot.com/G7yIvQIlao" target="_blank" rel="noopener" class="status-link">Check Service Status</a>
-      <a href="https://thomasarchive.vercel.app" class="status-link" aria-label="Go back home">Head Back Home</a>
-      <a href="/devious-diesel.html" class="status-link" aria-label="Keep going forward">Keep Going Forward</a>
+      <a href="https://stats.uptimerobot.com/G7yIvQIlao" target="_blank" rel="noopener" class="status-link">Check Status</a>
+      <a href="https://thomasarchive.vercel.app" class="status-link">Turn Back</a>
+      <a href="/devious-diesel.html" class="status-link">Keep Going Forward</a>
     </div>
   </div>
 </body>
