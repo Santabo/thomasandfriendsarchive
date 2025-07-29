@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Thomas Archive | Page Lost on the Tracks</title>
-  <meta name="description" content="Oops! This page ran off the rails. Check the status or head back home." />
+  <meta name="description" content="Page unavailable or down. Check service status." />
   <link rel="icon" href="https://i.ibb.co/SDBYYshc/image-2025-07-09-212116843.png" type="image/png" />
   <style>
     @font-face {
@@ -13,97 +13,91 @@
       font-weight: bold;
       font-style: normal;
     }
-
     html, body {
-      margin: 0; padding: 0; height: 100%;
-      background: #121317;
+      height: 100%;
+      margin: 0;
+      font-family: 'Flange BQ Bold', Arial, sans-serif;
       color: #eee;
-      font-family: 'Flange BQ Bold', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       text-align: center;
-      flex-direction: column;
-      padding: 1rem;
+      padding: 2rem;
+      background: url('https://i.ibb.co/C3sbhdqF/1mbVv11I.png') no-repeat center center fixed;
+      background-size: cover;
+      overflow: hidden;
     }
-
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 15, 58, 0.8); /* dark blue overlay to keep text visible */
+      z-index: 0;
+    }
     .container {
-      max-width: 440px;
-      background: #1f222a;
+      position: relative;
+      z-index: 1;
+      max-width: 480px;
+      padding: 3rem 2rem;
+      background: rgba(255 255 255 / 0.05);
       border-radius: 12px;
-      box-shadow: 0 0 30px rgb(255 191 0 / 0.6);
-      padding: 2.5rem 2rem;
+      box-shadow:
+        0 0 10px #ffbf00,
+        0 0 20px #ffbf00,
+        0 0 30px #ffbf00;
       user-select: none;
     }
-
     h1 {
       font-size: 3.5rem;
-      margin-bottom: 1rem;
-      color: #ffbf00;
-      text-shadow: 0 0 10px #ffbf00cc;
+      margin-bottom: 1.5rem;
+      color: #fff;
+      text-shadow:
+        0 0 10px #ffbf00,
+        0 0 20px #ffbf00,
+        0 0 30px #ffbf00;
     }
-
     p {
       font-size: 1.25rem;
-      margin-bottom: 2rem;
-      line-height: 1.4;
-      color: #ccc;
+      margin-bottom: 3rem;
+      line-height: 1.5;
+      color: #ddd;
+      text-shadow: 0 0 5px rgba(255 191 0 / 0.7);
     }
-
-    a {
+    a.status-link {
+      display: inline-block;
       font-weight: bold;
       font-family: 'Flange BQ Bold', sans-serif;
       text-decoration: none;
       background: #ffbf00;
-      color: #222;
-      padding: 0.75rem 1.5rem;
+      color: #1a1a1a;
+      padding: 1rem 3rem;
       border-radius: 8px;
-      box-shadow: 0 6px 12px rgb(255 191 0 / 0.5);
+      box-shadow:
+        0 0 8px #ffbf00,
+        0 0 16px #ffbf00,
+        0 0 24px #ffbf00;
       transition: background 0.3s ease, box-shadow 0.3s ease;
-      display: inline-block;
+      user-select: none;
+      cursor: pointer;
     }
-
-    a:hover,
-    a:focus {
-      background: #e6ac00;
-      box-shadow: 0 8px 16px rgb(230 172 0 / 0.7);
+    a.status-link:hover,
+    a.status-link:focus {
+      background: #ffdb4d;
+      box-shadow:
+        0 0 12px #ffdb4d,
+        0 0 24px #ffdb4d,
+        0 0 36px #ffdb4d;
       outline: none;
-    }
-
-    /* Subtle train track lines background */
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-      background:
-        repeating-linear-gradient(
-          45deg,
-          transparent,
-          transparent 20px,
-          rgba(255, 191, 0, 0.1) 20px,
-          rgba(255, 191, 0, 0.1) 25px
-        ),
-        repeating-linear-gradient(
-          -45deg,
-          transparent,
-          transparent 20px,
-          rgba(255, 191, 0, 0.1) 20px,
-          rgba(255, 191, 0, 0.1) 25px
-        );
-      z-index: 0;
-      pointer-events: none;
     }
   </style>
 </head>
 <body>
+  <div class="overlay"></div>
   <div class="container" role="main" aria-labelledby="error-title">
     <h1 id="error-title">Page Lost on the Tracks</h1>
     <p>
-      Looks like this page ran off the rails.<br />
-      You can check the <a href="https://stats.uptimerobot.com/G7yIvQIlao" target="_blank" rel="noopener">service status here</a>,<br />
-      or <a href="https://thomasarchive.vercel.app" aria-label="Go back to homepage">head back home</a> and try again.
+      This page ran off the rails.<br />
+      Check the <a href="https://stats.uptimerobot.com/G7yIvQIlao" target="_blank" rel="noopener" class="status-link">service status</a>,<br />
+      or <a href="https://thomasarchive.vercel.app" class="status-link" aria-label="Go back home">head back home</a>.
     </p>
   </div>
 </body>
