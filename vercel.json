@@ -14,10 +14,6 @@
     {
       "source": "/en-gb",
       "destination": "/en-gb/index.html"
-    },
-    {
-      "source": "/status",
-      "destination": "/status/index.html"
     }
   ]
 }
