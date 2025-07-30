@@ -42,39 +42,38 @@ document.addEventListener('DOMContentLoaded', () => {
   container.before(selector);
 
   const fetchSeasonData = sections.map((key, index) => {
-  if (key === 'fan') {
-    return fetch('/data/fanContent.json')
-      .then(res => res.json())
-      .then(items => ({
-        type: 'fan',
-        seasonKey: key,
-        seasonNumber: null,
-        episodes: items
-      }))
-      .catch(err => ({ seasonKey: key, error: err }));
-  } else if (key === 'specials') {
-    return fetch(`/${lang}/data/specials.json`)
-      .then(res => res.json())
-      .then(data => ({
-        type: 'specials',
-        seasonKey: key,
-        seasonNumber: null,
-        episodes: data.specials // fixed: it's an array, not object with .episodes
-      }))
-      .catch(err => ({ seasonKey: key, error: err }));
-  } else {
-    return fetch(`/${lang}/data/${key}.json`)
-      .then(res => res.json())
-      .then(data => ({
-        type: 'season',
-        seasonKey: key,
-        seasonNumber: index + 1,
-        episodes: data[key].episodes
-      }))
-      .catch(err => ({ seasonKey: key, error: err }));
-  }
-});
-
+    if (key === 'fan') {
+      return fetch('/data/fanContent.json')
+        .then(res => res.json())
+        .then(items => ({
+          type: 'fan',
+          seasonKey: key,
+          seasonNumber: null,
+          episodes: items
+        }))
+        .catch(err => ({ seasonKey: key, error: err }));
+    } else if (key === 'specials') {
+      return fetch(`/${lang}/data/specials.json`)
+        .then(res => res.json())
+        .then(data => ({
+          type: 'specials',
+          seasonKey: key,
+          seasonNumber: null,
+          episodes: data.specials // fixed: it's an array, not object with .episodes
+        }))
+        .catch(err => ({ seasonKey: key, error: err }));
+    } else {
+      return fetch(`/${lang}/data/${key}.json`)
+        .then(res => res.json())
+        .then(data => ({
+          type: 'season',
+          seasonKey: key,
+          seasonNumber: index + 1,
+          episodes: data[key].episodes
+        }))
+        .catch(err => ({ seasonKey: key, error: err }));
+    }
+  });
 
   Promise.all(fetchSeasonData).then(results => {
     results.forEach(({ type, seasonKey, seasonNumber, episodes, error }) => {
@@ -102,9 +101,9 @@ document.addEventListener('DOMContentLoaded', () => {
           epUrl = ep.video_url;
           title = ep.title;
         } else if (type === 'specials') {
-          epId = `SPL${String(ep.number).padStart(2, '0')}`;
+          epId = `SPL${String(ep.episode_number).padStart(2, '0')}`;
           epUrl = ep.link;
-          title = `Special ${String(ep.number).padStart(2, '0')}: ${ep.uk_title}`;
+          title = `Special ${String(ep.episode_number).padStart(2, '0')}: ${ep.uk_title}`;
         } else {
           const seasonStr = String(seasonNumber).padStart(2, '0');
           const epNumStr = String(ep.episode_number).padStart(2, '0');
@@ -119,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const epNumStr = String(ep.episode_number).padStart(2, '0');
           episodeLink = `/${lang}/episodes/${seasonStr}/${epNumStr}`;
         } else if (type === 'specials') {
-          episodeLink = `/${lang}/specials/${String(ep.number).padStart(2, '0')}`;
+          episodeLink = `/${lang}/specials/${String(ep.episode_number).padStart(2, '0')}`;
         } else if (type === 'fan') {
           episodeLink = `/${lang}/fan/${String(i + 1).padStart(2, '0')}`;
         }
