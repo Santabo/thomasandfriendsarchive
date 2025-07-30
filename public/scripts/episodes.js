@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
           type: 'specials',
           seasonKey: key,
           seasonNumber: null,
-          episodes: data.specials
+          episodes: data.specials.episodes // ✅ Fixed here
         }))
         .catch(err => ({ seasonKey: key, error: err }));
     } else {
@@ -112,7 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
           title = `E${epNumStr}: ${ep.uk_title}`;
         }
 
-        // Episode link with language & season/episode path (zero-padded) — used for display, NOT href
         let episodeLink = '';
         if (type === 'season') {
           const seasonStr = String(seasonNumber).padStart(2, '0');
@@ -148,7 +147,6 @@ document.addEventListener('DOMContentLoaded', () => {
       container.appendChild(wrapper);
     });
 
-    // --- NEW: After episodes added, open modal if redirected ---
     if (window.__openEpisodeIdFromRedirect) {
       const epId = window.__openEpisodeIdFromRedirect;
       delete window.__openEpisodeIdFromRedirect;
@@ -168,9 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.warn(`Redirected episode ID ${epId} not found in DOM.`);
       }
     }
-    // ------------------------------------------------------------
 
-    // Series selector buttons logic
     document.querySelectorAll('.selector-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const target = btn.dataset.target;
@@ -182,10 +178,8 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Attach click handlers on video links (no href, act like buttons)
     container.querySelectorAll('a.video-link').forEach(link => {
       link.style.cursor = 'pointer';
-      // Remove href to prevent navigation if any:
       link.removeAttribute('href');
 
       link.addEventListener('click', e => {
@@ -194,8 +188,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Parse URL path for episode details (instead of query string)
-    // Expecting URL like: /en-gb/episodes/{season}/{episode}
     const pathSegments = window.location.pathname.split('/').filter(Boolean);
     if (pathSegments.length >= 4) {
       const [langInPath, section, seasonPart, episodePart] = pathSegments;
@@ -204,7 +196,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const episodeEl = container.querySelector(`[data-epid="${epId}"] a.video-link`);
         if (episodeEl) {
           openVideoModal(episodeEl.dataset.url, epId);
-          // Set active series tab for correct season
           document.querySelectorAll('.selector-btn').forEach(b => {
             b.classList.toggle('active', b.dataset.target === `season${parseInt(seasonPart, 10)}`);
           });
@@ -212,7 +203,6 @@ document.addEventListener('DOMContentLoaded', () => {
             s.style.display = s.dataset.series === `season${parseInt(seasonPart, 10)}` ? 'block' : 'none';
           });
         } else {
-          // If episode not found in DOM, redirect to main language root page:
           window.location.replace(`/${lang}/`);
         }
       }
@@ -252,7 +242,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.history.replaceState({}, '', currentUrl.toString());
   }
 
-  // Modal close & video link click handlers
   document.addEventListener('click', e => {
     if (e.target.id === 'modal-close') {
       iframe.src = '';
