@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (type === 'specials') {
           epId = `SPL${String(ep.episode_number).padStart(2, '0')}`; // use episode_number here
           epUrl = ep.link;
-          title = `Special ${String(ep.episode_number).padStart(2, '0')}: ${ep.uk_title}`;
+          title = ep.uk_title;  // <-- FIXED: just the title, no "Special 05:"
         } else {
           const seasonStr = String(seasonNumber).padStart(2, '0');
           const epNumStr = String(ep.episode_number).padStart(2, '0');
