@@ -4,6 +4,7 @@ import html
 
 DATA_DIR = "public/data/en-gb"
 OUTPUT_BASE_DIR = "public/en-gb/episodes"
+OUTPUT_SPECIALS_DIR = "public/en-gb/specials"
 BASE_EPISODE_URL = "https://thomasarchive.vercel.app/en-gb"
 
 SITE_TITLE = "Thomas the Tank Engine Archive"
@@ -46,7 +47,7 @@ def generate_redirect_html(ep_code, title, cover_url, season_num, episode_num):
 
   <script>
     // Save episode ID to sessionStorage and redirect
-    sessionStorage.setItem('openEpisode', '{season_num.zfill(2)}{episode_num.zfill(2)}');
+    sessionStorage.setItem('openEpisode', '{ep_code}');
     window.location.replace("{redirect_url}");
   </script>
 </head>
@@ -57,6 +58,7 @@ def generate_redirect_html(ep_code, title, cover_url, season_num, episode_num):
 """
 
 def main():
+    # Generate redirects for seasons
     for filename in os.listdir(DATA_DIR):
         if not filename.startswith("season") or not filename.endswith(".json"):
             continue
@@ -93,6 +95,38 @@ def main():
                 out_file.write(html_content)
 
             print(f"Generated redirect page for episode {ep_code}: {title}")
+
+    # Generate redirects for specials
+    specials_path = os.path.join(DATA_DIR, "specials.json")
+    if os.path.exists(specials_path):
+        with open(specials_path, "r", encoding="utf-8") as f:
+            specials_data = json.load(f)
+
+        specials = specials_data.get("specials", {}).get("episodes", [])
+        if not specials:
+            print("No specials episodes found in specials.json")
+        else:
+            for ep in specials:
+                ep_num = ep.get("episode_number")
+                if ep_num is None:
+                    continue
+                ep_num_str = str(ep_num).zfill(2)
+                ep_code = f"SPL{ep_num_str}"  # Special episode code prefix
+
+                title = ep.get("uk_title", f"Special {ep_num_str}")
+                cover = ep.get("cover", "")
+
+                html_content = generate_redirect_html(
+                    ep_code, title, cover, "Specials", ep_num_str
+                )
+
+                output_dir = os.path.join(OUTPUT_SPECIALS_DIR, ep_num_str)
+                ensure_dir(output_dir)
+
+                with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as out_file:
+                    out_file.write(html_content)
+
+                print(f"Generated redirect page for special {ep_code}: {title}")
 
     print("All redirect pages generated!")
 
