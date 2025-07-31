@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
           type: 'specials',
           seasonKey: key,
           seasonNumber: null,
-          episodes: data.specials.episodes  // <-- important fix here
+          episodes: data.specials.episodes  // <-- correct path for specials episodes
         }))
         .catch(err => ({ seasonKey: key, error: err }));
     } else {
@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
       content.className = type === 'fan' ? 'fan-content' : 'season-content';
 
       if (type === 'season' || type === 'specials') {
-        episodes.sort((a, b) => a.episode_number - b.episode_number);  // <-- sort specials same as seasons
+        episodes.sort((a, b) => a.episode_number - b.episode_number);  // sort specials same as seasons
       }
 
       episodes.forEach((ep, i) => {
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
           epUrl = ep.video_url;
           title = ep.title;
         } else if (type === 'specials') {
-          epId = `SPL${String(ep.episode_number).padStart(2, '0')}`; // <-- use episode_number here
+          epId = `SPL${String(ep.episode_number).padStart(2, '0')}`; // use episode_number here
           epUrl = ep.link;
           title = `Special ${String(ep.episode_number).padStart(2, '0')}: ${ep.uk_title}`;
         } else {
@@ -184,7 +184,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Attach click handlers on video links (no href, act like buttons)
     container.querySelectorAll('a.video-link').forEach(link => {
       link.style.cursor = 'pointer';
-      // Remove href to prevent navigation if any:
       link.removeAttribute('href');
 
       link.addEventListener('click', e => {
@@ -194,7 +193,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Parse URL path for episode details (instead of query string)
-    // Expecting URL like: /en-gb/episodes/{season}/{episode}
     const pathSegments = window.location.pathname.split('/').filter(Boolean);
     if (pathSegments.length >= 4) {
       const [langInPath, section, seasonPart, episodePart] = pathSegments;
@@ -203,7 +201,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const episodeEl = container.querySelector(`[data-epid="${epId}"] a.video-link`);
         if (episodeEl) {
           openVideoModal(episodeEl.dataset.url, epId);
-          // Set active series tab for correct season
           document.querySelectorAll('.selector-btn').forEach(b => {
             b.classList.toggle('active', b.dataset.target === `season${parseInt(seasonPart, 10)}`);
           });
@@ -211,7 +208,6 @@ document.addEventListener('DOMContentLoaded', () => {
             s.style.display = s.dataset.series === `season${parseInt(seasonPart, 10)}` ? 'block' : 'none';
           });
         } else {
-          // If episode not found in DOM, redirect to main language root page:
           window.location.replace(`/${lang}/`);
         }
       }
