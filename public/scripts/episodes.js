@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const lang = window.LANG_CODE || 'en-gb'; // Use global lang code, fallback to en-gb
 
   const sections = [
-    ...Array.from({ length: 23 }, (_, i) => `season${i + 1}`),
+    ...Array.from({ length: 22 }, (_, i) => `season${i + 1}`),
     'specials',
     'fan'
   ];
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
           type: 'specials',
           seasonKey: key,
           seasonNumber: null,
-          episodes: data.specials
+          episodes: data.specials.episodes  // <-- important fix here
         }))
         .catch(err => ({ seasonKey: key, error: err }));
     } else {
@@ -90,8 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const content = document.createElement('div');
       content.className = type === 'fan' ? 'fan-content' : 'season-content';
 
-      if (type === 'season') {
-        episodes.sort((a, b) => a.episode_number - b.episode_number);
+      if (type === 'season' || type === 'specials') {
+        episodes.sort((a, b) => a.episode_number - b.episode_number);  // <-- sort specials same as seasons
       }
 
       episodes.forEach((ep, i) => {
@@ -101,9 +101,9 @@ document.addEventListener('DOMContentLoaded', () => {
           epUrl = ep.video_url;
           title = ep.title;
         } else if (type === 'specials') {
-          epId = `SPL${String(ep.number).padStart(2, '0')}`;
+          epId = `SPL${String(ep.episode_number).padStart(2, '0')}`; // <-- use episode_number here
           epUrl = ep.link;
-          title = `Special ${String(ep.number).padStart(2, '0')}: ${ep.uk_title}`;
+          title = `Special ${String(ep.episode_number).padStart(2, '0')}: ${ep.uk_title}`;
         } else {
           const seasonStr = String(seasonNumber).padStart(2, '0');
           const epNumStr = String(ep.episode_number).padStart(2, '0');
@@ -112,14 +112,13 @@ document.addEventListener('DOMContentLoaded', () => {
           title = `E${epNumStr}: ${ep.uk_title}`;
         }
 
-        // Episode link with language & season/episode path (zero-padded) — used for display, NOT href
         let episodeLink = '';
         if (type === 'season') {
           const seasonStr = String(seasonNumber).padStart(2, '0');
           const epNumStr = String(ep.episode_number).padStart(2, '0');
           episodeLink = `/${lang}/episodes/${seasonStr}/${epNumStr}`;
         } else if (type === 'specials') {
-          episodeLink = `/${lang}/specials/${String(ep.number).padStart(2, '0')}`;
+          episodeLink = `/${lang}/specials/${String(ep.episode_number).padStart(2, '0')}`;
         } else if (type === 'fan') {
           episodeLink = `/${lang}/fan/${String(i + 1).padStart(2, '0')}`;
         }
