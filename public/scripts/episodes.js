@@ -8,6 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   const container = document.getElementById('episode-list');
+  if (!container) {
+    console.error('Container element with id "episode-list" not found!');
+    return;
+  }
+
   const selector = document.createElement('div');
   selector.className = 'series-selector';
 
@@ -170,15 +175,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // ------------------------------------------------------------
 
-    // Series selector buttons logic
-    document.querySelectorAll('.selector-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const target = btn.dataset.target;
-        document.querySelectorAll('.selector-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        document.querySelectorAll('.season').forEach(s => {
-          s.style.display = s.dataset.series === target ? 'block' : 'none';
-        });
+    // SERIES SELECTOR BUTTONS — Using event delegation on 'selector' div
+    selector.addEventListener('click', e => {
+      const btn = e.target.closest('.selector-btn');
+      if (!btn) return;
+
+      console.log('Clicked button for target:', btn.dataset.target); // debug log
+      const target = btn.dataset.target;
+
+      document.querySelectorAll('.selector-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      document.querySelectorAll('.season').forEach(s => {
+        s.style.display = s.dataset.series === target ? 'block' : 'none';
       });
     });
 
