@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const lang = window.LANG_CODE || 'en-gb'; // Use global lang code, fallback to en-gb
+  const lang = window.LANG_CODE || 'en-gb';
 
   const sections = [
     ...Array.from({ length: 22 }, (_, i) => `season${i + 1}`),
@@ -19,13 +19,11 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // --- NEW: Check sessionStorage for redirected episode ID ---
   const openEpisodeIdFromRedirect = sessionStorage.getItem('openEpisode');
   if (openEpisodeIdFromRedirect) {
-    sessionStorage.removeItem('openEpisode'); // clear so it doesn't trigger again on reload
-    window.__openEpisodeIdFromRedirect = openEpisodeIdFromRedirect; // store globally for later use
+    sessionStorage.removeItem('openEpisode');
+    window.__openEpisodeIdFromRedirect = openEpisodeIdFromRedirect;
   }
-  // ------------------------------------------------------------
 
   sections.forEach((key, i) => {
     const label =
@@ -53,17 +51,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }))
         .catch(err => ({ seasonKey: key, error: err }));
     } else if (key === 'specials') {
-      return fetch(`/${lang}/data/specials.json`)
+      return fetch(`/data/${lang}/specials.json`)
         .then(res => res.json())
         .then(data => ({
           type: 'specials',
           seasonKey: key,
           seasonNumber: null,
-          episodes: data.specials // fixed: it's an array, not object with .episodes
+          episodes: data.specials
         }))
         .catch(err => ({ seasonKey: key, error: err }));
     } else {
-      return fetch(`/${lang}/data/${key}.json`)
+      return fetch(`/data/${lang}/${key}.json`)
         .then(res => res.json())
         .then(data => ({
           type: 'season',
@@ -96,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       episodes.forEach((ep, i) => {
         let epId, epUrl, title;
+
         if (type === 'fan') {
           epId = `F0${String(i).padStart(2, '0')}`;
           epUrl = ep.video_url;
