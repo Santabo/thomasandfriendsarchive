@@ -1,9 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
   const lang = window.LANG_CODE || 'en-gb'; // Use global lang code, fallback to en-gb
 
-  // Use zero-padded season keys for consistent matching and filenames
   const sections = [
-    ...Array.from({ length: 22 }, (_, i) => `season${String(i + 1).padStart(2, '0')}`),
+    ...Array.from({ length: 22 }, (_, i) => `season${i + 1}`),
     'specials',
     'fan'
   ];
@@ -86,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const wrapper = document.createElement('div');
       wrapper.className = 'season';
       wrapper.dataset.series = seasonKey;
-      wrapper.style.display = seasonKey === 'season01' ? 'block' : 'none';
+      wrapper.style.display = seasonKey === 'season1' ? 'block' : 'none';
 
       const content = document.createElement('div');
       content.className = type === 'fan' ? 'fan-content' : 'season-content';
@@ -158,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (episodeLink) {
         openVideoModal(episodeLink.dataset.url, epId);
 
-        const seasonNum = epId.slice(0, 2);
+        const seasonNum = epId.slice(0, 2).replace(/^0+/, '') || '1';
         document.querySelectorAll('.selector-btn').forEach(b => {
           b.classList.toggle('active', b.dataset.target === `season${seasonNum}`);
         });
@@ -207,10 +206,10 @@ document.addEventListener('DOMContentLoaded', () => {
           openVideoModal(episodeEl.dataset.url, epId);
           // Set active series tab for correct season
           document.querySelectorAll('.selector-btn').forEach(b => {
-            b.classList.toggle('active', b.dataset.target === `season${String(seasonPart).padStart(2, '0')}`);
+            b.classList.toggle('active', b.dataset.target === `season${parseInt(seasonPart, 10)}`);
           });
           document.querySelectorAll('.season').forEach(s => {
-            s.style.display = s.dataset.series === `season${String(seasonPart).padStart(2, '0')}` ? 'block' : 'none';
+            s.style.display = s.dataset.series === `season${parseInt(seasonPart, 10)}` ? 'block' : 'none';
           });
         } else {
           // If episode not found in DOM, redirect to main language root page:
