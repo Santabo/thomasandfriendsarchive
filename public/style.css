@@ -63,12 +63,14 @@ section {
 h2 {
   font-size: 1.75rem;
   color: #005eb8;
-  margin-bottom: 1rem;
+  margin: 2rem 0 1rem 0;
   border-bottom: 3px solid #ffbf00;
   display: inline-block;
   padding-bottom: 0.25rem;
-  padding-left: 0.25rem;
+  padding-left: 0;
+  text-align: left;
 }
+
 
 /* EPISODE SECTION */
 .season {
