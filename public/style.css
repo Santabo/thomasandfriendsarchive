@@ -67,6 +67,7 @@ h2 {
   border-bottom: 3px solid #ffbf00;
   display: inline-block;
   padding-bottom: 0.25rem;
+  padding-left: 0.25rem;
 }
 
 /* EPISODE SECTION */
@@ -313,6 +314,7 @@ h2 {
   }
 }
 
+/* CREDITS SECTION */
 .credits-grid {
   display: flex;
   flex-wrap: wrap;
@@ -343,4 +345,3 @@ h2 {
   font-size: 1.05rem;
   color: #005eb8;
 }
-
