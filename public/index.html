@@ -203,57 +203,61 @@
     </div>
   </div>
 
-  <script>
-    window.addEventListener("DOMContentLoaded", () => {
-      const modal = document.getElementById("terms-modal");
-      const acceptBtn = document.getElementById("accept-terms");
+<script>
+  window.addEventListener("DOMContentLoaded", () => {
+    const modal = document.getElementById("terms-modal");
+    const acceptBtn = document.getElementById("accept-terms");
 
-      if (!localStorage.getItem("acceptedTerms") && modal && acceptBtn) {
-        modal.style.display = "flex";
-        document.body.style.overflow = "hidden";
-
-        acceptBtn.addEventListener("click", () => {
-          localStorage.setItem("acceptedTerms", "yes");
-          modal.remove();
-          document.body.style.overflow = "";
-        });
-      }
-    });
-
-    function openGame(url) {
-      const modal = document.getElementById("video-modal");
-      const modalContent = modal.querySelector(".modal-content");
-      const iframe = document.getElementById("modal-video");
-
-      // Cleanup old embed
-      const oldEmbed = modalContent.querySelector("ruffle-player, embed");
-      if (oldEmbed) oldEmbed.remove();
-
-      iframe.style.display = "none";
-
-      if (url.toLowerCase().endsWith('.swf')) {
-        const ruffle = window.RufflePlayer?.newest() || window.RufflePlayer?.createPlayer();
-        ruffle.style.width = "100%";
-        ruffle.style.height = "100%";
-        ruffle.load(url);
-        modalContent.appendChild(ruffle);
-      } else {
-        iframe.src = url;
-        iframe.style.display = "block";
-      }
-
-      modal.classList.remove("hidden");
+    if (!localStorage.getItem("acceptedTerms") && modal && acceptBtn) {
+      modal.style.display = "flex";
       document.body.style.overflow = "hidden";
 
-      document.getElementById("modal-close").onclick = () => {
-        iframe.src = "";
-        const r = modalContent.querySelector("ruffle-player, embed");
-        if (r) r.remove();
-        modal.classList.add("hidden");
+      acceptBtn.addEventListener("click", () => {
+        localStorage.setItem("acceptedTerms", "yes");
+        modal.remove();
         document.body.style.overflow = "";
-      };
+      });
     }
-  </script>
+  });
+
+  function openGame(url) {
+    const modal = document.getElementById("video-modal");
+    const ruffleContainer = document.getElementById("ruffle-container");
+    const iframe = document.getElementById("modal-video");
+
+    // Cleanup previous content
+    ruffleContainer.innerHTML = "";
+    iframe.src = "";
+
+    if (url.toLowerCase().endsWith(".swf")) {
+      // Show Ruffle, hide iframe
+      ruffleContainer.classList.remove("hidden");
+      iframe.classList.add("hidden");
+
+      const ruffle = window.RufflePlayer?.newest() || window.RufflePlayer?.createPlayer();
+      ruffle.style.width = "100%";
+      ruffle.style.height = "100%";
+      ruffle.load(url);
+      ruffleContainer.appendChild(ruffle);
+    } else {
+      // Show iframe, hide Ruffle
+      iframe.src = url;
+      iframe.classList.remove("hidden");
+      ruffleContainer.classList.add("hidden");
+    }
+
+    modal.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+
+    document.getElementById("modal-close").onclick = () => {
+      iframe.src = "";
+      ruffleContainer.innerHTML = "";
+      modal.classList.add("hidden");
+      document.body.style.overflow = "";
+    };
+  }
+</script>
+
 
   <script src="/scripts/discordWidget.js" defer></script>
   <script src="/scripts/episodes.js" defer></script>
