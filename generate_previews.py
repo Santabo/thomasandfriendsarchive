@@ -4,6 +4,7 @@ import html
 
 DATA_DIR = "public/data/en-gb"
 OUTPUT_BASE_DIR = "public/en-gb/episodes"
+OUTPUT_JACK_DIR = "public/en-gb/jackandthepack"
 OUTPUT_SPECIALS_DIR = "public/en-gb/specials"
 BASE_EPISODE_URL = "https://thomasarchive.vercel.app/en-gb"
 
@@ -19,7 +20,6 @@ def generate_redirect_html(ep_code, title, cover_url, season_num, episode_num):
     title_esc = html.escape(title)
     desc = f"Watch '{title}' from Series {season_num} on the Thomas Archive."
     desc_esc = html.escape(desc)
-    # Redirect to main language root page (modal opens there)
     redirect_url = f"{BASE_EPISODE_URL}/"
 
     return f"""<!DOCTYPE html>
@@ -46,7 +46,6 @@ def generate_redirect_html(ep_code, title, cover_url, season_num, episode_num):
   <link rel="icon" href="{SITE_FAVICON}" type="image/png" />
 
   <script>
-    // Save episode ID to sessionStorage and redirect
     sessionStorage.setItem('openEpisode', '{ep_code}');
     window.location.replace("{redirect_url}");
   </script>
@@ -96,6 +95,39 @@ def main():
 
             print(f"Generated redirect page for episode {ep_code}: {title}")
 
+    # Generate redirects for Jack & the Pack
+    jack_path = os.path.join(DATA_DIR, "jackandthepack.json")
+    if os.path.exists(jack_path):
+        with open(jack_path, "r", encoding="utf-8") as f:
+            jack_data = json.load(f)
+
+        episodes = jack_data.get("jackandthepack", {}).get("episodes", [])
+        if not episodes:
+            print("No episodes found in jackandthepack.json")
+        else:
+            for ep in episodes:
+                ep_num = ep.get("episode_number")
+                if ep_num is None:
+                    continue
+
+                ep_num_str = str(ep_num).zfill(2)
+                ep_code = f"JACK{ep_num_str}"
+
+                title = ep.get("uk_title", f"Jack Episode {ep_num_str}")
+                cover = ep.get("cover", "")
+
+                html_content = generate_redirect_html(
+                    ep_code, title, cover, "Jack & the Sodor Construction Company", ep_num_str
+                )
+
+                output_dir = os.path.join(OUTPUT_JACK_DIR, ep_num_str)
+                ensure_dir(output_dir)
+
+                with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as out_file:
+                    out_file.write(html_content)
+
+                print(f"Generated redirect page for Jack & the Pack episode {ep_code}: {title}")
+
     # Generate redirects for specials
     specials_path = os.path.join(DATA_DIR, "specials.json")
     if os.path.exists(specials_path):
@@ -111,7 +143,7 @@ def main():
                 if ep_num is None:
                     continue
                 ep_num_str = str(ep_num).zfill(2)
-                ep_code = f"SPL{ep_num_str}"  # Special episode code prefix
+                ep_code = f"SPL{ep_num_str}"
 
                 title = ep.get("uk_title", f"Special {ep_num_str}")
                 cover = ep.get("cover", "")
