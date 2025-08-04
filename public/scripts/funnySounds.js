@@ -3,7 +3,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const sectionSounds = {
     "#games > h2": "https://web.archive.org/web/20170606204654oe_/http://play.thomasandfriends.com/en-gb/Images/STH_HP_Games_tcm1402-195019.mp3",
     "#completion-stats > h2": "/audio/completionProgress.mp3",
-    "#episodes > h2": "/audio/episodes.mp3",
+    "#episodes-heading": "/audio/episodes.mp3",
     "#credits > h2": "/audio/specialThanks.mp3"
   };
 
