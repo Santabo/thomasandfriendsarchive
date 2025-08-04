@@ -12,6 +12,10 @@
       "destination": "/data/en-gb/:path*"
     },
     {
+      "source": "/en-gb/",
+      "destination": "/index.html"
+    },
+    {
       "source": "/en-gb/:path*",
       "destination": "/index.html"
     }
