@@ -195,60 +195,74 @@
     </div>
   </div>
 
-  <script>
-    window.addEventListener("DOMContentLoaded", () => {
-      const modal = document.getElementById("terms-modal");
-      const acceptBtn = document.getElementById("accept-terms");
+<script>
+  window.addEventListener("DOMContentLoaded", () => {
+    const modal = document.getElementById("terms-modal");
+    const acceptBtn = document.getElementById("accept-terms");
 
-      if (!localStorage.getItem("acceptedTerms") && modal && acceptBtn) {
-        modal.style.display = "flex";
-        document.body.style.overflow = "hidden";
+    if (!localStorage.getItem("acceptedTerms") && modal && acceptBtn) {
+      modal.style.display = "flex";
+      document.body.style.overflow = "hidden";
 
-        acceptBtn.addEventListener("click", () => {
-          localStorage.setItem("acceptedTerms", "yes");
-          modal.remove();
-          document.body.style.overflow = "";
-        });
-      }
-    });
+      acceptBtn.addEventListener("click", () => {
+        localStorage.setItem("acceptedTerms", "yes");
+        modal.remove();
+        document.body.style.overflow = "";
+      });
+    }
 
-function openGame(url) {
-  const modal = document.getElementById("video-modal");
+    // New event listener for the close button
+    document.getElementById("modal-close").onclick = closeGame;
+  });
 
-  // Remove existing iframe if any
-  let oldIframe = document.getElementById("modal-video");
-  if (oldIframe) {
-    oldIframe.remove();
+  function openGame(url) {
+    const modal = document.getElementById("video-modal");
+    const modalContent = modal.querySelector(".modal-content");
+    
+    // Clear any existing content to ensure a fresh start
+    modalContent.innerHTML = '';
+    
+    // Re-create the close button
+    const closeButton = document.createElement("button");
+    closeButton.id = "modal-close";
+    closeButton.setAttribute("aria-label", "Close video modal");
+    closeButton.innerHTML = "&times;";
+    closeButton.onclick = closeGame;
+    modalContent.appendChild(closeButton);
+
+    // Create a new iframe fresh every time
+    const iframe = document.createElement("iframe");
+    iframe.id = "modal-video";
+    iframe.title = "Game player";
+    iframe.allow = "autoplay; fullscreen";
+    iframe.allowFullscreen = true;
+    iframe.style.width = "100%";
+    iframe.style.height = "100%";
+    iframe.frameBorder = "0";
+    iframe.src = url;
+
+    // Append iframe to modal content
+    modalContent.appendChild(iframe);
+
+    modal.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
   }
 
-  // Create a new iframe fresh every time
-  const iframe = document.createElement("iframe");
-  iframe.id = "modal-video";
-  iframe.title = "Game player";
-  iframe.allow = "autoplay; fullscreen";
-  iframe.allowFullscreen = true;
-  iframe.style.width = "100%";
-  iframe.style.height = "100%";
-  iframe.frameBorder = "0";
-  iframe.src = url;
+  function closeGame() {
+    const modal = document.getElementById("video-modal");
+    const modalContent = modal.querySelector(".modal-content");
+    const closeButton = document.getElementById("modal-close");
 
-  // Append iframe to modal content (inside .modal-content)
-  const modalContent = modal.querySelector(".modal-content");
-  modalContent.appendChild(iframe);
+    // Remove the iframe and any other content to prevent freezing
+    modalContent.innerHTML = '';
 
-  modal.classList.remove("hidden");
-  document.body.style.overflow = "hidden";
-
-  // Setup close button handler
-  document.getElementById("modal-close").onclick = () => {
-    // Remove iframe from DOM to fully unload
-    iframe.remove();
+    // Re-add the close button for the next time the modal is opened
+    modalContent.appendChild(closeButton);
+    
     modal.classList.add("hidden");
     document.body.style.overflow = "";
-  };
-}
-
-  </script>
+  }
+</script>
 
   <script src="/scripts/discordWidget.js" defer></script>
   <script src="/scripts/episodes.js" defer></script>
