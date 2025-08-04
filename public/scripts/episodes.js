@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const lang = window.LANG_CODE || 'en-gb';
 
   const sections = [
-    ...Array.from({ length: 22 }, (_, i) => `season${i + 1}`),
+    ...Array.from({ length: 23 }, (_, i) => `season${i + 1}`),
     'jackandthepack',
     'specials',
     'fan'
