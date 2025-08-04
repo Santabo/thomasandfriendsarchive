@@ -199,7 +199,11 @@
   window.addEventListener("DOMContentLoaded", () => {
     const modal = document.getElementById("terms-modal");
     const acceptBtn = document.getElementById("accept-terms");
+    const videoModal = document.getElementById("video-modal");
+    const modalContent = videoModal.querySelector(".modal-content");
+    const modalCloseButton = document.getElementById("modal-close");
 
+    // Handle the terms modal
     if (!localStorage.getItem("acceptedTerms") && modal && acceptBtn) {
       modal.style.display = "flex";
       document.body.style.overflow = "hidden";
@@ -211,24 +215,40 @@
       });
     }
 
-    // New event listener for the close button
-    document.getElementById("modal-close").onclick = closeGame;
+    // Set up the close button for the video modal once, on page load
+    modalCloseButton.addEventListener("click", () => {
+      // Clear the modal's content to ensure a full reset
+      // This is the most crucial part for preventing crashes and freezes
+      modalContent.innerHTML = '';
+      
+      // Re-create the close button and append it back to the modal
+      const newCloseButton = document.createElement("button");
+      newCloseButton.id = "modal-close";
+      newCloseButton.setAttribute("aria-label", "Close video modal");
+      newCloseButton.innerHTML = "&times;";
+      modalContent.appendChild(newCloseButton);
+      
+      // Re-attach the event listener to the new button
+      newCloseButton.addEventListener("click", this);
+
+      videoModal.classList.add("hidden");
+      document.body.style.overflow = "";
+    });
   });
 
+  // This function now just focuses on opening the modal with new content
   function openGame(url) {
-    const modal = document.getElementById("video-modal");
-    const modalContent = modal.querySelector(".modal-content");
+    const videoModal = document.getElementById("video-modal");
+    const modalContent = videoModal.querySelector(".modal-content");
     
     // Clear any existing content to ensure a fresh start
-    modalContent.innerHTML = '';
+    modalContent.innerHTML = '<button id="modal-close" aria-label="Close video modal">&times;</button>';
     
-    // Re-create the close button
-    const closeButton = document.createElement("button");
-    closeButton.id = "modal-close";
-    closeButton.setAttribute("aria-label", "Close video modal");
-    closeButton.innerHTML = "&times;";
-    closeButton.onclick = closeGame;
-    modalContent.appendChild(closeButton);
+    // Re-assign the close button handler to the newly created button
+    document.getElementById("modal-close").addEventListener("click", () => {
+      // The handler for closing the modal is now a separate, robust function
+      closeModal();
+    });
 
     // Create a new iframe fresh every time
     const iframe = document.createElement("iframe");
@@ -244,22 +264,18 @@
     // Append iframe to modal content
     modalContent.appendChild(iframe);
 
-    modal.classList.remove("hidden");
+    videoModal.classList.remove("hidden");
     document.body.style.overflow = "hidden";
   }
-
-  function closeGame() {
-    const modal = document.getElementById("video-modal");
-    const modalContent = modal.querySelector(".modal-content");
-    const closeButton = document.getElementById("modal-close");
-
-    // Remove the iframe and any other content to prevent freezing
-    modalContent.innerHTML = '';
-
-    // Re-add the close button for the next time the modal is opened
-    modalContent.appendChild(closeButton);
+  
+  function closeModal() {
+    const videoModal = document.getElementById("video-modal");
+    const modalContent = videoModal.querySelector(".modal-content");
     
-    modal.classList.add("hidden");
+    // Clear all content to ensure no lingering processes
+    modalContent.innerHTML = '';
+    
+    videoModal.classList.add("hidden");
     document.body.style.overflow = "";
   }
 </script>
