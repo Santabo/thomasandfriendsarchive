@@ -120,9 +120,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let episodeLink = '';
         if (type === 'season') {
-          const seasonStr = String(seasonNumber ?? 0).padStart(2, '0');
           const epNumStr = String(ep.episode_number).padStart(2, '0');
-          episodeLink = `/${lang}/episodes/${seasonStr}/${epNumStr}`;
+          if (seasonKey === 'jackandthepack') {
+            episodeLink = `/${lang}/jackandthepack/${epNumStr}`;
+          } else {
+            const seasonStr = String(seasonNumber ?? 0).padStart(2, '0');
+            episodeLink = `/${lang}/episodes/${seasonStr}/${epNumStr}`;
+          }
         } else if (type === 'specials') {
           episodeLink = `/${lang}/specials/${String(ep.episode_number).padStart(2, '0')}`;
         } else if (type === 'fan') {
@@ -220,6 +224,20 @@ document.addEventListener('DOMContentLoaded', () => {
           } else {
             window.location.replace(`/${lang}/`);
           }
+        } else if (section === 'jackandthepack' && part1) {
+          const epId = `00${String(part1).padStart(2, '0')}`;
+          const episodeEl = container.querySelector(`[data-epid="${epId}"] a.video-link`);
+          if (episodeEl) {
+            openVideoModal(episodeEl.dataset.url, epId);
+            document.querySelectorAll('.selector-btn').forEach(b => {
+              b.classList.toggle('active', b.dataset.target === 'jackandthepack');
+            });
+            document.querySelectorAll('.season').forEach(s => {
+              s.style.display = s.dataset.series === 'jackandthepack' ? 'block' : 'none';
+            });
+          } else {
+            window.location.replace(`/${lang}/`);
+          }
         } else if (section === 'specials' && part1) {
           const epId = `SPL${String(part1).padStart(2, '0')}`;
           const episodeEl = container.querySelector(`[data-epid="${epId}"] a.video-link`);
@@ -269,6 +287,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentUrl = new URL(window.location);
     if (epId.startsWith('SPL')) {
       currentUrl.pathname = `/${lang}/specials/${epId.slice(3)}`;
+    } else if (epId.startsWith('00')) {
+      currentUrl.pathname = `/${lang}/jackandthepack/${String(epId.slice(2)).padStart(2, '0')}`;
     } else {
       currentUrl.pathname = `/${lang}/episodes/${epId.slice(0, 2)}/${String(epId.slice(2)).padStart(2, '0')}`;
     }
