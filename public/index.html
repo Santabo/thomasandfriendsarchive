@@ -212,19 +212,42 @@
       }
     });
 
-    function openGame(url) {
-      const modal = document.getElementById("video-modal");
-      const iframe = document.getElementById("modal-video");
-      iframe.src = url;
-      modal.classList.remove("hidden");
-      document.body.style.overflow = "hidden";
+function openGame(url) {
+  const modal = document.getElementById("video-modal");
 
-      document.getElementById("modal-close").onclick = () => {
-        iframe.src = "";
-        modal.classList.add("hidden");
-        document.body.style.overflow = "";
-      };
-    }
+  // Remove existing iframe if any
+  let oldIframe = document.getElementById("modal-video");
+  if (oldIframe) {
+    oldIframe.remove();
+  }
+
+  // Create a new iframe fresh every time
+  const iframe = document.createElement("iframe");
+  iframe.id = "modal-video";
+  iframe.title = "Game player";
+  iframe.allow = "autoplay; fullscreen";
+  iframe.allowFullscreen = true;
+  iframe.style.width = "100%";
+  iframe.style.height = "100%";
+  iframe.frameBorder = "0";
+  iframe.src = url;
+
+  // Append iframe to modal content (inside .modal-content)
+  const modalContent = modal.querySelector(".modal-content");
+  modalContent.appendChild(iframe);
+
+  modal.classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+
+  // Setup close button handler
+  document.getElementById("modal-close").onclick = () => {
+    // Remove iframe from DOM to fully unload
+    iframe.remove();
+    modal.classList.add("hidden");
+    document.body.style.overflow = "";
+  };
+}
+
   </script>
 
   <script src="/scripts/discordWidget.js" defer></script>
