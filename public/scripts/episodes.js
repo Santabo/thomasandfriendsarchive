@@ -1,8 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const lang = window.LANG_CODE || 'en-gb'; // Use global lang code, fallback to en-gb
+  const lang = window.LANG_CODE || 'en-gb';
 
   const sections = [
     ...Array.from({ length: 22 }, (_, i) => `season${i + 1}`),
+    'jackandthepack',
     'specials',
     'fan'
   ];
@@ -19,19 +20,24 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // --- NEW: Check sessionStorage for redirected episode ID ---
   const openEpisodeIdFromRedirect = sessionStorage.getItem('openEpisode');
   if (openEpisodeIdFromRedirect) {
-    sessionStorage.removeItem('openEpisode'); // clear so it doesn't trigger again on reload
-    window.__openEpisodeIdFromRedirect = openEpisodeIdFromRedirect; // store globally for later use
+    sessionStorage.removeItem('openEpisode');
+    window.__openEpisodeIdFromRedirect = openEpisodeIdFromRedirect;
   }
-  // ------------------------------------------------------------
 
   sections.forEach((key, i) => {
-    const label =
-      key === 'fan' ? 'Fan Creations'
-      : key === 'specials' ? 'Specials'
-      : `Series ${i + 1}`;
+    let label;
+    if (key === 'fan') {
+      label = 'Fan Creations';
+    } else if (key === 'specials') {
+      label = 'Specials';
+    } else if (key === 'jackandthepack') {
+      label = lang === 'en-gb' ? 'Jack & the Sodor Construction Company' : 'Jack & the Pack';
+    } else {
+      label = `Series ${i + 1}`;
+    }
+
     const button = document.createElement('button');
     button.className = 'selector-btn';
     button.textContent = label;
@@ -68,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => ({
           type: 'season',
           seasonKey: key,
-          seasonNumber: index + 1,
+          seasonNumber: key.startsWith('season') ? index + 1 : null,
           episodes: data[key].episodes
         }))
         .catch(err => ({ seasonKey: key, error: err }));
@@ -105,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
           epUrl = ep.link;
           title = ep.uk_title;
         } else {
-          const seasonStr = String(seasonNumber).padStart(2, '0');
+          const seasonStr = String(seasonNumber ?? 0).padStart(2, '0');
           const epNumStr = String(ep.episode_number).padStart(2, '0');
           epId = `${seasonStr}${epNumStr}`;
           epUrl = ep.link;
@@ -114,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let episodeLink = '';
         if (type === 'season') {
-          const seasonStr = String(seasonNumber).padStart(2, '0');
+          const seasonStr = String(seasonNumber ?? 0).padStart(2, '0');
           const epNumStr = String(ep.episode_number).padStart(2, '0');
           episodeLink = `/${lang}/episodes/${seasonStr}/${epNumStr}`;
         } else if (type === 'specials') {
@@ -147,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
       container.appendChild(wrapper);
     });
 
-    // --- NEW: After episodes added, open modal if redirected ---
+    // --- Handle redirect to specific episode ---
     if (window.__openEpisodeIdFromRedirect) {
       const epId = window.__openEpisodeIdFromRedirect;
       delete window.__openEpisodeIdFromRedirect;
@@ -157,7 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
         openVideoModal(episodeLink.dataset.url, epId);
 
         if (epId.startsWith('SPL')) {
-          // Specials
           document.querySelectorAll('.selector-btn').forEach(b => {
             b.classList.toggle('active', b.dataset.target === 'specials');
           });
@@ -165,7 +170,6 @@ document.addEventListener('DOMContentLoaded', () => {
             s.style.display = s.dataset.series === 'specials' ? 'block' : 'none';
           });
         } else {
-          // Normal seasons
           const seasonNum = epId.slice(0, 2).replace(/^0+/, '') || '1';
           document.querySelectorAll('.selector-btn').forEach(b => {
             b.classList.toggle('active', b.dataset.target === `season${seasonNum}`);
@@ -174,13 +178,9 @@ document.addEventListener('DOMContentLoaded', () => {
             s.style.display = s.dataset.series === `season${seasonNum}` ? 'block' : 'none';
           });
         }
-      } else {
-        console.warn(`Redirected episode ID ${epId} not found in DOM.`);
       }
     }
-    // ------------------------------------------------------------
 
-    // Series selector buttons logic
     document.querySelectorAll('.selector-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const target = btn.dataset.target;
@@ -192,7 +192,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Attach click handlers on video links (no href, act like buttons)
     container.querySelectorAll('a.video-link').forEach(link => {
       link.style.cursor = 'pointer';
       link.removeAttribute('href');
@@ -203,7 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Parse URL path for episode details (instead of query string)
     const pathSegments = window.location.pathname.split('/').filter(Boolean);
     if (pathSegments.length >= 3) {
       const [langInPath, section, part1, part2] = pathSegments;
@@ -270,17 +268,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const currentUrl = new URL(window.location);
     if (epId.startsWith('SPL')) {
-      // Specials URL format
       currentUrl.pathname = `/${lang}/specials/${epId.slice(3)}`;
     } else {
-      // Normal episodes URL format
       currentUrl.pathname = `/${lang}/episodes/${epId.slice(0, 2)}/${String(epId.slice(2)).padStart(2, '0')}`;
     }
     currentUrl.search = '';
     window.history.replaceState({}, '', currentUrl.toString());
   }
 
-  // Modal close & video link click handlers
   document.addEventListener('click', e => {
     if (e.target.id === 'modal-close') {
       iframe.src = '';
