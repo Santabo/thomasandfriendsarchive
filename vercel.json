@@ -12,12 +12,23 @@
       "destination": "/data/en-gb/:path*"
     },
     {
-      "source": "/en-gb",
+      "source": "/en-gb/:path*",
       "destination": "/index.html"
-    },
+    }
+  ],
+  "headers": [
     {
-      "source": "/en-gb/",
-      "destination": "/index.html"
+      "source": "/games/the-build-engine-game/The_Build_Engine_Game.swf",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/x-shockwave-flash"
+        },
+        {
+          "key": "Content-Disposition",
+          "value": "inline"
+        }
+      ]
     }
   ]
 }
