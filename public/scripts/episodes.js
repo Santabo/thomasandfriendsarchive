@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.__openEpisodeIdFromRedirect = openEpisodeIdFromRedirect;
   }
 
-  // Create selector buttons for seasons and sections
+  // Build selector buttons
   sections.forEach((key, i) => {
     let label;
     if (key === 'fan') {
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   container.before(selector);
 
-  // Fetch all season/section data asynchronously
+  // Fetch all season/section data
   const fetchSeasonData = sections.map((key, index) => {
     if (key === 'fan') {
       return fetch('/data/fanContent.json')
@@ -90,7 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Create season wrapper container
       const wrapper = document.createElement('div');
       wrapper.className = 'season';
       wrapper.dataset.series = seasonKey;
@@ -99,12 +98,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const content = document.createElement('div');
       content.className = type === 'fan' ? 'fan-content' : 'season-content';
 
-      // Sort episodes for seasons and specials
       if (type === 'season' || type === 'specials') {
         episodes.sort((a, b) => a.episode_number - b.episode_number);
       }
 
-      // Populate episodes
       episodes.forEach((ep, i) => {
         let epId, epUrl, title;
         if (type === 'fan') {
@@ -115,6 +112,11 @@ document.addEventListener('DOMContentLoaded', () => {
           epId = `SPL${String(ep.episode_number).padStart(2, '0')}`;
           epUrl = ep.link;
           title = ep.uk_title;
+        } else if (seasonKey === 'jackandthepack') {
+          // Jack & the Pack episode IDs start with '00' + ep number padded 2
+          epId = `00${String(ep.episode_number).padStart(2, '0')}`;
+          epUrl = ep.link;
+          title = `E${String(ep.episode_number).padStart(2, '0')}: ${ep.uk_title || ep.title || 'Jack & Pack Episode'}`;
         } else {
           const seasonStr = String(seasonNumber ?? 0).padStart(2, '0');
           const epNumStr = String(ep.episode_number).padStart(2, '0');
@@ -138,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
           episodeLink = `/${lang}/fan/${String(i + 1).padStart(2, '0')}`;
         }
 
-        const cover = ep.cover;
+        const cover = ep.cover || '';
 
         const div = document.createElement('div');
         div.className = 'episode';
@@ -160,88 +162,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
       wrapper.appendChild(content);
       container.appendChild(wrapper);
-
-      // --- Open episode modal if URL matches this season ---
-      const pathSegments = window.location.pathname.split('/').filter(Boolean);
-      if (pathSegments.length >= 3) {
-        const [langInPath, section, part1, part2] = pathSegments;
-        if (langInPath === lang) {
-          if (section === 'episodes' && part1 && part2 && seasonKey === `season${parseInt(part1, 10)}`) {
-            const epId = String(part1).padStart(2, '0') + String(part2).padStart(2, '0');
-            const episodeEl = wrapper.querySelector(`[data-epid="${epId}"] a.video-link`);
-            if (episodeEl) {
-              openVideoModal(episodeEl.dataset.url, epId);
-              document.querySelectorAll('.selector-btn').forEach(b => {
-                b.classList.toggle('active', b.dataset.target === `season${parseInt(part1, 10)}`);
-              });
-              document.querySelectorAll('.season').forEach(s => {
-                s.style.display = s.dataset.series === `season${parseInt(part1, 10)}` ? 'block' : 'none';
-              });
-            } else {
-              window.location.replace(`/${lang}/`);
-            }
-          } else if (section === 'jackandthepack' && seasonKey === 'jackandthepack' && part1) {
-            const epId = `00${String(part1).padStart(2, '0')}`;
-            const episodeEl = wrapper.querySelector(`[data-epid="${epId}"] a.video-link`);
-            if (episodeEl) {
-              openVideoModal(episodeEl.dataset.url, epId);
-              document.querySelectorAll('.selector-btn').forEach(b => {
-                b.classList.toggle('active', b.dataset.target === 'jackandthepack');
-              });
-              document.querySelectorAll('.season').forEach(s => {
-                s.style.display = s.dataset.series === 'jackandthepack' ? 'block' : 'none';
-              });
-            } else {
-              window.location.replace(`/${lang}/`);
-            }
-          } else if (section === 'specials' && seasonKey === 'specials' && part1) {
-            const epId = `SPL${String(part1).padStart(2, '0')}`;
-            const episodeEl = wrapper.querySelector(`[data-epid="${epId}"] a.video-link`);
-            if (episodeEl) {
-              openVideoModal(episodeEl.dataset.url, epId);
-              document.querySelectorAll('.selector-btn').forEach(b => {
-                b.classList.toggle('active', b.dataset.target === 'specials');
-              });
-              document.querySelectorAll('.season').forEach(s => {
-                s.style.display = s.dataset.series === 'specials' ? 'block' : 'none';
-              });
-            } else {
-              window.location.replace(`/${lang}/`);
-            }
-          }
-        }
-      }
     });
 
-    // --- Handle redirect via sessionStorage (if any) ---
+    // After all seasons/sections loaded, set up interaction and URL handling:
+
+    // Handle sessionStorage redirect open episode
     if (window.__openEpisodeIdFromRedirect) {
       const epId = window.__openEpisodeIdFromRedirect;
       delete window.__openEpisodeIdFromRedirect;
-
       const episodeLink = container.querySelector(`a.video-link[data-epid="${epId}"]`);
       if (episodeLink) {
         openVideoModal(episodeLink.dataset.url, epId);
-
-        if (epId.startsWith('SPL')) {
-          document.querySelectorAll('.selector-btn').forEach(b => {
-            b.classList.toggle('active', b.dataset.target === 'specials');
-          });
-          document.querySelectorAll('.season').forEach(s => {
-            s.style.display = s.dataset.series === 'specials' ? 'block' : 'none';
-          });
-        } else {
-          const seasonNum = epId.slice(0, 2).replace(/^0+/, '') || '1';
-          document.querySelectorAll('.selector-btn').forEach(b => {
-            b.classList.toggle('active', b.dataset.target === `season${seasonNum}`);
-          });
-          document.querySelectorAll('.season').forEach(s => {
-            s.style.display = s.dataset.series === `season${seasonNum}` ? 'block' : 'none';
-          });
-        }
+        activateSelectorAndSeasonByEpId(epId);
       }
     }
 
-    // --- Selector buttons event ---
+    // Selector button clicks
     document.querySelectorAll('.selector-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const target = btn.dataset.target;
@@ -253,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // --- Episode links open modal ---
+    // Episode clicks open modal
     container.querySelectorAll('a.video-link').forEach(link => {
       link.style.cursor = 'pointer';
       link.removeAttribute('href');
@@ -262,9 +198,13 @@ document.addEventListener('DOMContentLoaded', () => {
         openVideoModal(link.dataset.url, link.dataset.epid);
       });
     });
-  });
 
-  // --- Function to open video modal and update URL ---
+    // Now handle URL direct navigation once DOM is ready:
+    handleDirectUrlOpen();
+
+  }); // end Promise.all
+
+  // Helper: open modal and update URL
   function openVideoModal(url, epId) {
     let embedUrl = url;
 
@@ -304,7 +244,76 @@ document.addEventListener('DOMContentLoaded', () => {
     window.history.replaceState({}, '', currentUrl.toString());
   }
 
-  // --- Modal close handlers ---
+  // Helper: Activate correct selector button and show season based on epId
+  function activateSelectorAndSeasonByEpId(epId) {
+    if (epId.startsWith('SPL')) {
+      document.querySelectorAll('.selector-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.target === 'specials');
+      });
+      document.querySelectorAll('.season').forEach(s => {
+        s.style.display = s.dataset.series === 'specials' ? 'block' : 'none';
+      });
+    } else if (epId.startsWith('00')) {
+      document.querySelectorAll('.selector-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.target === 'jackandthepack');
+      });
+      document.querySelectorAll('.season').forEach(s => {
+        s.style.display = s.dataset.series === 'jackandthepack' ? 'block' : 'none';
+      });
+    } else {
+      const seasonNum = epId.slice(0, 2).replace(/^0+/, '') || '1';
+      document.querySelectorAll('.selector-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.target === `season${seasonNum}`);
+      });
+      document.querySelectorAll('.season').forEach(s => {
+        s.style.display = s.dataset.series === `season${seasonNum}` ? 'block' : 'none';
+      });
+    }
+  }
+
+  // Parse URL on load and open matching episode modal if found
+  function handleDirectUrlOpen() {
+    const pathSegments = window.location.pathname.split('/').filter(Boolean);
+    if (pathSegments.length >= 3) {
+      const [langInPath, section, part1, part2] = pathSegments;
+      if (langInPath === lang) {
+        if (section === 'episodes' && part1 && part2) {
+          const epId = String(part1).padStart(2, '0') + String(part2).padStart(2, '0');
+          const episodeEl = container.querySelector(`[data-epid="${epId}"] a.video-link`);
+          if (episodeEl) {
+            openVideoModal(episodeEl.dataset.url, epId);
+            activateSelectorAndSeasonByEpId(epId);
+          } else {
+            console.log('Episode element not found for', epId);
+            // Optionally redirect home or show error
+            // window.location.replace(`/${lang}/`);
+          }
+        } else if (section === 'jackandthepack' && part1) {
+          const epId = `00${String(part1).padStart(2, '0')}`;
+          const episodeEl = container.querySelector(`[data-epid="${epId}"] a.video-link`);
+          if (episodeEl) {
+            openVideoModal(episodeEl.dataset.url, epId);
+            activateSelectorAndSeasonByEpId(epId);
+          } else {
+            console.log('Jack & Pack episode element not found for', epId);
+            // window.location.replace(`/${lang}/`);
+          }
+        } else if (section === 'specials' && part1) {
+          const epId = `SPL${String(part1).padStart(2, '0')}`;
+          const episodeEl = container.querySelector(`[data-epid="${epId}"] a.video-link`);
+          if (episodeEl) {
+            openVideoModal(episodeEl.dataset.url, epId);
+            activateSelectorAndSeasonByEpId(epId);
+          } else {
+            console.log('Specials episode element not found for', epId);
+            // window.location.replace(`/${lang}/`);
+          }
+        }
+      }
+    }
+  }
+
+  // Modal close handlers
   document.addEventListener('click', e => {
     if (e.target.id === 'modal-close') {
       iframe.src = '';
