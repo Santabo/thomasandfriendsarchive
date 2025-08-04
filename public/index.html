@@ -206,6 +206,15 @@
   </div>
 </div>
 
+<div id="video-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="video-title">
+  <div class="modal-content">
+    <button id="modal-close" aria-label="Close video modal">&times;</button>
+    <iframe id="modal-video" title="Video player" allow="autoplay" allowfullscreen style="display:none;"></iframe>
+    <!-- Ruffle container is empty by default -->
+    <div id="modal-ruffle"></div>
+  </div>
+</div>
+
 <script>
   window.addEventListener("DOMContentLoaded", () => {
     const modal = document.getElementById("terms-modal");
@@ -223,45 +232,47 @@
     }
   });
 
-  let rufflePlayerInstance = null;
-  let rufflePlayerElement = null;
+  let ruffleInstance = null;
+  let rufflePlayer = null;
 
   function openGame(url) {
     const modal = document.getElementById("video-modal");
     const iframe = document.getElementById("modal-video");
     const ruffleContainer = document.getElementById("modal-ruffle");
 
-    // Destroy existing Ruffle instance and remove element
-    if (rufflePlayerInstance) {
-      rufflePlayerInstance.destroy();
-      rufflePlayerInstance = null;
-    }
-    if (rufflePlayerElement) {
-      rufflePlayerElement.remove();
-      rufflePlayerElement = null;
-    }
-
-    // Reset iframe and hide containers
-    iframe.src = "";
+    // Reset iframe and hide both containers initially
     iframe.style.display = "none";
+    iframe.src = "";
     ruffleContainer.style.display = "none";
     ruffleContainer.innerHTML = "";
 
+    // Destroy existing Ruffle player if any, and clean up
+    if (ruffleInstance) {
+      ruffleInstance.destroy();
+      ruffleInstance = null;
+    }
+    if (rufflePlayer) {
+      rufflePlayer.remove();
+      rufflePlayer = null;
+    }
+
     if (url.toLowerCase().endsWith('.swf')) {
+      // Create a new Ruffle instance fresh for this session
       const ruffle = window.RufflePlayer?.newest() || window.RufflePlayer?.createPlayer();
       if (ruffle) {
-        rufflePlayerElement = ruffle.createPlayer();
-        rufflePlayerElement.style.width = "100%";
-        rufflePlayerElement.style.height = "100%";
-        ruffleContainer.appendChild(rufflePlayerElement);
-        rufflePlayerInstance = rufflePlayerElement;
-        rufflePlayerInstance.load(url);
+        rufflePlayer = ruffle.createPlayer();
+        rufflePlayer.style.width = "100%";
+        rufflePlayer.style.height = "100%";
+        ruffleContainer.appendChild(rufflePlayer);
+        ruffleInstance = rufflePlayer;
+        rufflePlayer.load(url);
         ruffleContainer.style.display = "block";
       } else {
         ruffleContainer.innerHTML = "<p style='color:white;'>Ruffle failed to load.</p>";
         ruffleContainer.style.display = "block";
       }
     } else {
+      // For normal iframe URLs like YouTube or Google Drive
       iframe.src = url;
       iframe.style.display = "block";
     }
@@ -270,17 +281,17 @@
     document.body.style.overflow = "hidden";
 
     document.getElementById("modal-close").onclick = () => {
-      // Cleanup on close
+      // Cleanup on close:
       iframe.src = "";
       iframe.style.display = "none";
 
-      if (rufflePlayerInstance) {
-        rufflePlayerInstance.destroy();
-        rufflePlayerInstance = null;
+      if (ruffleInstance) {
+        ruffleInstance.destroy();
+        ruffleInstance = null;
       }
-      if (rufflePlayerElement) {
-        rufflePlayerElement.remove();
-        rufflePlayerElement = null;
+      if (rufflePlayer) {
+        rufflePlayer.remove();
+        rufflePlayer = null;
       }
       ruffleContainer.innerHTML = "";
       ruffleContainer.style.display = "none";
@@ -290,6 +301,7 @@
     };
   }
 </script>
+
 
 
 
