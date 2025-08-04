@@ -207,64 +207,80 @@
   </div>
 
   <script>
-    window.addEventListener("DOMContentLoaded", () => {
-      const modal = document.getElementById("terms-modal");
-      const acceptBtn = document.getElementById("accept-terms");
+  window.addEventListener("DOMContentLoaded", () => {
+    const modal = document.getElementById("terms-modal");
+    const acceptBtn = document.getElementById("accept-terms");
 
-      if (!localStorage.getItem("acceptedTerms") && modal && acceptBtn) {
-        modal.style.display = "flex";
-        document.body.style.overflow = "hidden";
+    if (!localStorage.getItem("acceptedTerms") && modal && acceptBtn) {
+      modal.style.display = "flex";
+      document.body.style.overflow = "hidden";
 
-        acceptBtn.addEventListener("click", () => {
-          localStorage.setItem("acceptedTerms", "yes");
-          modal.remove();
-          document.body.style.overflow = "";
-        });
+      acceptBtn.addEventListener("click", () => {
+        localStorage.setItem("acceptedTerms", "yes");
+        modal.remove();
+        document.body.style.overflow = "";
+      });
+    }
+  });
+
+  let rufflePlayerInstance = null;
+
+  function openGame(url) {
+    const modal = document.getElementById("video-modal");
+    const iframe = document.getElementById("modal-video");
+    const ruffleContainer = document.getElementById("modal-ruffle");
+
+    // Clean up any existing Ruffle player instance before opening a new one
+    if (rufflePlayerInstance) {
+      rufflePlayerInstance.destroy();
+      rufflePlayerInstance = null;
+      ruffleContainer.innerHTML = "";
+      ruffleContainer.style.display = "none";
+    }
+
+    // Reset iframe
+    iframe.src = "";
+    iframe.style.display = "none";
+
+    if (url.toLowerCase().endsWith('.swf')) {
+      const ruffle = window.RufflePlayer?.newest() || window.RufflePlayer?.createPlayer();
+      if (ruffle) {
+        rufflePlayerInstance = ruffle.createPlayer();
+        rufflePlayerInstance.style.width = "100%";
+        rufflePlayerInstance.style.height = "100%";
+        ruffleContainer.appendChild(rufflePlayerInstance);
+        rufflePlayerInstance.load(url);
+        ruffleContainer.style.display = "block";
+      } else {
+        ruffleContainer.innerHTML = "<p style='color:white;'>Ruffle failed to load.</p>";
+        ruffleContainer.style.display = "block";
       }
-    });
+    } else {
+      iframe.src = url;
+      iframe.style.display = "block";
+    }
 
-    function openGame(url) {
-      const modal = document.getElementById("video-modal");
-      const iframe = document.getElementById("modal-video");
-      const ruffleContainer = document.getElementById("modal-ruffle");
+    modal.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
 
-      // Reset
+    document.getElementById("modal-close").onclick = () => {
+      // Cleanup on modal close
       iframe.src = "";
       iframe.style.display = "none";
+
+      if (rufflePlayerInstance) {
+        rufflePlayerInstance.destroy();
+        rufflePlayerInstance = null;
+      }
       ruffleContainer.innerHTML = "";
       ruffleContainer.style.display = "none";
 
-      if (url.toLowerCase().endsWith('.swf')) {
-        const ruffle = window.RufflePlayer?.newest() || window.RufflePlayer?.createPlayer();
-        if (ruffle) {
-          const player = ruffle.createPlayer();
-          player.style.width = "100%";
-          player.style.height = "100%";
-          ruffleContainer.appendChild(player);
-          player.load(url);
-          ruffleContainer.style.display = "block";
-        } else {
-          ruffleContainer.innerHTML = "<p style='color:white;'>Ruffle failed to load.</p>";
-          ruffleContainer.style.display = "block";
-        }
-      } else {
-        iframe.src = url;
-        iframe.style.display = "block";
-      }
+      modal.classList.add("hidden");
+      document.body.style.overflow = "";
+    };
+  }
+</script>
 
-      modal.classList.remove("hidden");
-      document.body.style.overflow = "hidden";
-
-      document.getElementById("modal-close").onclick = () => {
-        iframe.src = "";
-        ruffleContainer.innerHTML = "";
-        iframe.style.display = "none";
-        ruffleContainer.style.display = "none";
-        modal.classList.add("hidden");
-        document.body.style.overflow = "";
-      };
-    }
-  </script>
 
   <script src="/scripts/discordWidget.js" defer></script>
   <script src="/scripts/episodes.js" defer></script>
