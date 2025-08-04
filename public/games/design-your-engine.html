@@ -4,29 +4,47 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Design Your Engine Game</title>
-  <link rel="stylesheet" href="https://raw.githubusercontent.com/Santabo/thomasandfriendsarchive/473cceb765f1828afc4e687a41b98a328eafb2b9/public/style.css" />
+  <meta name="description" content="Play the 'Design Your Engine' game featuring your favorite Thomas & Friends characters." />
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="icon" href="https://i.ibb.co/SDBYYshc/image-2025-07-09-212116843.png" type="image/png" />
+
   <style>
-    /* Game Frame Styling */
-    .game-frame-container {
-      width: 100%;
-      max-width: 960px;
-      margin: 2rem auto;
-      aspect-ratio: 2 / 1; /* Matches 1800x900 */
-      border: 4px solid #005eb8;
-      border-radius: 16px;
-      overflow: hidden;
-      background: #000;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    @font-face {
+      font-family: 'Flange BQ Bold';
+      src: url('/flangebq_bold.ttf') format('truetype');
+      font-weight: bold;
+      font-style: normal;
     }
 
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      display: block;
+    body {
+      font-family: 'Flange BQ Bold', sans-serif;
+      background-color: #f4f6fa;
+      margin: 0;
+      padding: 0;
+      color: #222;
     }
 
-    /* Back Button */
+    header {
+      background: #005eb8;
+      padding: 2rem 1rem;
+      text-align: center;
+      color: white;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      font-size: 1.25rem;
+      margin: 0;
+    }
+
+    main {
+      padding: 2rem 1rem;
+    }
+
     .back-button {
       display: inline-block;
       background: #ffcf00;
@@ -36,8 +54,8 @@
       border-radius: 10px;
       text-decoration: none;
       font-size: 1rem;
+      margin-bottom: 2rem;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      margin-bottom: 1.5rem;
       transition: background 0.2s ease;
     }
 
@@ -45,33 +63,48 @@
       background: #f1b700;
     }
 
-    /* Header text adjustments */
-    header .container {
+    .game-frame-container {
+      max-width: 100%;
+      width: 100%;
+      max-width: 1800px;
+      aspect-ratio: 2 / 1;
+      margin: 0 auto;
+      border: 4px solid #005eb8;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #000;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .game-frame-container iframe {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border: none;
+    }
+
+    footer {
+      background: #005eb8;
+      color: white;
       text-align: center;
-    }
-
-    header h1 {
-      font-size: 2.25rem;
-      margin: 0.5rem 0 0.25rem;
-    }
-
-    header p {
-      font-size: 1.2rem;
-      font-weight: normal;
-      margin: 0;
-      color: #fff;
-    }
-
-    /* Footer spacing */
-    footer .container {
-      text-align: center;
+      padding: 1.5rem 1rem;
+      margin-top: 3rem;
+      font-size: 0.9rem;
       line-height: 1.5;
     }
 
-    /* Responsive */
+    footer a {
+      color: #ffcf00;
+      text-decoration: underline;
+    }
+
     @media (max-width: 768px) {
-      .game-frame-container {
-        aspect-ratio: 16 / 9;
+      header h1 {
+        font-size: 2rem;
+      }
+
+      header p {
+        font-size: 1rem;
       }
 
       .back-button {
@@ -79,36 +112,31 @@
         padding: 0.5rem 1rem;
       }
 
-      header h1 {
-        font-size: 1.75rem;
-      }
-
-      header p {
-        font-size: 1rem;
+      .game-frame-container {
+        aspect-ratio: 16 / 9;
       }
     }
   </style>
 </head>
 <body>
   <header>
-    <div class="container">
-      <h1>Thomas Archive</h1>
-      <p>🚂 Design Your Engine Game</p>
-    </div>
+    <h1>Thomas Archive</h1>
+    <p>🚂 Design Your Engine Game</p>
   </header>
 
   <main>
-    <section style="text-align: center;">
+    <div style="text-align: center;">
       <a href="/games" class="back-button">← Back to Games</a>
-      <div class="game-frame-container">
-        <iframe
-          src="https://web.archive.org/web/20180910214619if_/https://play.thomasandfriends.com/Resources/games/design-your-engine/index.html"
-          title="Design Your Engine Game"
-          allow="autoplay; fullscreen"
-          allowfullscreen>
-        </iframe>
-      </div>
-    </section>
+    </div>
+
+    <div class="game-frame-container">
+      <iframe
+        src="https://web.archive.org/web/20180910214619if_/https://play.thomasandfriends.com/Resources/games/design-your-engine/index.html"
+        title="Design Your Engine Game"
+        allow="autoplay; fullscreen"
+        allowfullscreen>
+      </iframe>
+    </div>
   </main>
 
   <footer>
