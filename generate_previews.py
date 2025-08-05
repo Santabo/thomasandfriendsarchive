@@ -16,6 +16,10 @@ def generate_redirect_html(ep_code, title, cover_url, season_num, episode_num, l
     desc_esc = html.escape(desc)
     redirect_url = f"https://thomasarchive.vercel.app/{lang_code}/"
 
+    # For TUGS, redirect to /tugs/{episode_num} instead of language root
+    if ep_code.startswith("TG"):
+        redirect_url = f"https://thomasarchive.vercel.app/tugs/{episode_num}/"
+
     return f"""<!DOCTYPE html>
 <html lang="{lang_code}">
 <head>
@@ -160,6 +164,49 @@ def process_language(lang_code, country_name):
 
                 print(f"✅ Generated SPL{ep_num_str}: {title}")
 
+def process_tugs():
+    tugs_data_path = "public/data/tugs.json"
+    output_tugs_dir = "public/tugs"
+
+    print("\n🚢 Processing: TUGS")
+
+    if not os.path.exists(tugs_data_path):
+        print("⚠️ TUGS data file not found")
+        return
+
+    with open(tugs_data_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    episodes = data.get("tugs", {}).get("episodes", [])
+    if not episodes:
+        print("⚠️ No TUGS episodes found")
+        return
+
+    for ep in episodes:
+        ep_num = ep.get("episode_number")
+        if ep_num is None:
+            continue
+
+        ep_num_str = str(ep_num).zfill(2)
+        ep_code = f"TG{ep_num_str}"
+        title = ep.get("uk_title", f"TUGS Episode {ep_num_str}")
+        cover = ep.get("cover", "")
+
+        # season_num can be a fixed string for TUGS since it is not a season/series
+        season_num = "TUGS"
+
+        html_content = generate_redirect_html(
+            ep_code, title, cover, season_num, ep_num_str, "en-gb", "TUGS"
+        )
+
+        output_dir = os.path.join(output_tugs_dir, ep_num_str)
+        ensure_dir(output_dir)
+
+        with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as out_file:
+            out_file.write(html_content)
+
+        print(f"✅ Generated TG{ep_num_str}: {title}")
+
 def main():
     languages = {
         "en-gb": "UK",
@@ -169,7 +216,9 @@ def main():
     for lang_code, country_name in languages.items():
         process_language(lang_code, country_name)
 
-    print("\n🎉 All redirect pages generated for all languages!")
+    process_tugs()
+
+    print("\n🎉 All redirect pages generated for all languages and TUGS!")
 
 if __name__ == "__main__":
     main()
