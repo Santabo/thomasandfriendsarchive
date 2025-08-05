@@ -30,6 +30,14 @@
     {
       "source": "/en-us/:path*",
       "destination": "/index.html"
+    },
+    {
+      "source": "/tugs",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/tugs/:path*",
+      "destination": "/index.html"
     }
   ],
   "headers": [
