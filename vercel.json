@@ -18,6 +18,18 @@
     {
       "source": "/en-gb/:path*",
       "destination": "/index.html"
+    },
+    {
+      "source": "/en-us/data/:path*",
+      "destination": "/data/en-us/:path*"
+    },
+    {
+      "source": "/en-us/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en-us/:path*",
+      "destination": "/index.html"
     }
   ],
   "headers": [
