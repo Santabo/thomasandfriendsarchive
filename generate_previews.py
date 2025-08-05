@@ -2,12 +2,6 @@ import json
 import os
 import html
 
-DATA_DIR = "public/data/en-gb"
-OUTPUT_BASE_DIR = "public/en-gb/episodes"
-OUTPUT_JACK_DIR = "public/en-gb/jackandthepack"
-OUTPUT_SPECIALS_DIR = "public/en-gb/specials"
-BASE_EPISODE_URL = "https://thomasarchive.vercel.app/en-gb"
-
 SITE_TITLE = "Thomas the Tank Engine Archive"
 SITE_DESC = "Complete collection of Thomas the Tank Engine episodes, specials, and fan-made content."
 SITE_FAVICON = "https://i.ibb.co/SDBYYshc/image-2025-07-09-212116843.png"
@@ -16,14 +10,14 @@ def ensure_dir(path):
     if not os.path.exists(path):
         os.makedirs(path)
 
-def generate_redirect_html(ep_code, title, cover_url, season_num, episode_num):
+def generate_redirect_html(ep_code, title, cover_url, season_num, episode_num, lang_code, country_name):
     title_esc = html.escape(title)
     desc = f"Watch '{title}' from Series {season_num} on the Thomas Archive."
     desc_esc = html.escape(desc)
-    redirect_url = f"{BASE_EPISODE_URL}/"
+    redirect_url = f"https://thomasarchive.vercel.app/{lang_code}/"
 
     return f"""<!DOCTYPE html>
-<html lang="en">
+<html lang="{lang_code}">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -32,14 +26,14 @@ def generate_redirect_html(ep_code, title, cover_url, season_num, episode_num):
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="video.other" />
-  <meta property="og:title" content="{title_esc} (UK)" />
+  <meta property="og:title" content="{title_esc} ({country_name})" />
   <meta property="og:description" content="{desc_esc}" />
   <meta property="og:image" content="{html.escape(cover_url)}" />
   <meta property="og:url" content="{redirect_url}" />
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="{title_esc} (UK)" />
+  <meta name="twitter:title" content="{title_esc} ({country_name})" />
   <meta name="twitter:description" content="{desc_esc}" />
   <meta name="twitter:image" content="{html.escape(cover_url)}" />
 
@@ -56,21 +50,28 @@ def generate_redirect_html(ep_code, title, cover_url, season_num, episode_num):
 </html>
 """
 
-def main():
-    # Generate redirects for seasons
-    for filename in os.listdir(DATA_DIR):
+def process_language(lang_code, country_name):
+    data_dir = f"public/data/{lang_code}"
+    output_base_dir = f"public/{lang_code}/episodes"
+    output_jack_dir = f"public/{lang_code}/jackandthepack"
+    output_specials_dir = f"public/{lang_code}/specials"
+
+    print(f"\n🌍 Processing: {lang_code.upper()} ({country_name})")
+
+    # Seasons
+    for filename in os.listdir(data_dir):
         if not filename.startswith("season") or not filename.endswith(".json"):
             continue
 
-        season_num = filename[len("season") : -len(".json")]
-        season_str = str(season_num).zfill(2)
+        season_num = filename[len("season"):-len(".json")]
+        season_str = season_num.zfill(2)
 
-        with open(os.path.join(DATA_DIR, filename), "r", encoding="utf-8") as f:
+        with open(os.path.join(data_dir, filename), "r", encoding="utf-8") as f:
             data = json.load(f)
 
         episodes = data.get(f"season{season_num}", {}).get("episodes", [])
         if not episodes:
-            print(f"No episodes found in {filename}")
+            print(f"⚠️ No episodes found in {filename}")
             continue
 
         for ep in episodes:
@@ -84,26 +85,26 @@ def main():
             cover = ep.get("cover", "")
 
             html_content = generate_redirect_html(
-                ep_code, title, cover, season_str, ep_num_str
+                ep_code, title, cover, season_str, ep_num_str, lang_code, country_name
             )
 
-            output_dir = os.path.join(OUTPUT_BASE_DIR, season_str, ep_num_str)
+            output_dir = os.path.join(output_base_dir, season_str, ep_num_str)
             ensure_dir(output_dir)
 
             with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as out_file:
                 out_file.write(html_content)
 
-            print(f"Generated redirect page for episode {ep_code}: {title}")
+            print(f"✅ Generated episode {ep_code}: {title}")
 
-    # Generate redirects for Jack & the Pack
-    jack_path = os.path.join(DATA_DIR, "jackandthepack.json")
+    # Jack and the Pack
+    jack_path = os.path.join(data_dir, "jackandthepack.json")
     if os.path.exists(jack_path):
         with open(jack_path, "r", encoding="utf-8") as f:
             jack_data = json.load(f)
 
         episodes = jack_data.get("jackandthepack", {}).get("episodes", [])
         if not episodes:
-            print("No episodes found in jackandthepack.json")
+            print("⚠️ No Jack episodes found")
         else:
             for ep in episodes:
                 ep_num = ep.get("episode_number")
@@ -112,55 +113,63 @@ def main():
 
                 ep_num_str = str(ep_num).zfill(2)
                 ep_code = f"JACK{ep_num_str}"
-
                 title = ep.get("uk_title", f"Jack Episode {ep_num_str}")
                 cover = ep.get("cover", "")
 
                 html_content = generate_redirect_html(
-                    ep_code, title, cover, "Jack & the Sodor Construction Company", ep_num_str
+                    ep_code, title, cover, "Jack & the Sodor Construction Company", ep_num_str, lang_code, country_name
                 )
 
-                output_dir = os.path.join(OUTPUT_JACK_DIR, ep_num_str)
+                output_dir = os.path.join(output_jack_dir, ep_num_str)
                 ensure_dir(output_dir)
 
                 with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as out_file:
                     out_file.write(html_content)
 
-                print(f"Generated redirect page for Jack & the Pack episode {ep_code}: {title}")
+                print(f"✅ Generated JACK{ep_num_str}: {title}")
 
-    # Generate redirects for specials
-    specials_path = os.path.join(DATA_DIR, "specials.json")
+    # Specials
+    specials_path = os.path.join(data_dir, "specials.json")
     if os.path.exists(specials_path):
         with open(specials_path, "r", encoding="utf-8") as f:
             specials_data = json.load(f)
 
         specials = specials_data.get("specials", {}).get("episodes", [])
         if not specials:
-            print("No specials episodes found in specials.json")
+            print("⚠️ No specials found")
         else:
             for ep in specials:
                 ep_num = ep.get("episode_number")
                 if ep_num is None:
                     continue
+
                 ep_num_str = str(ep_num).zfill(2)
                 ep_code = f"SPL{ep_num_str}"
-
                 title = ep.get("uk_title", f"Special {ep_num_str}")
                 cover = ep.get("cover", "")
 
                 html_content = generate_redirect_html(
-                    ep_code, title, cover, "Specials", ep_num_str
+                    ep_code, title, cover, "Specials", ep_num_str, lang_code, country_name
                 )
 
-                output_dir = os.path.join(OUTPUT_SPECIALS_DIR, ep_num_str)
+                output_dir = os.path.join(output_specials_dir, ep_num_str)
                 ensure_dir(output_dir)
 
                 with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as out_file:
                     out_file.write(html_content)
 
-                print(f"Generated redirect page for special {ep_code}: {title}")
+                print(f"✅ Generated SPL{ep_num_str}: {title}")
 
-    print("All redirect pages generated!")
+def main():
+    languages = {
+        "en-gb": "UK",
+        "en-us": "US"
+    }
+
+    for lang_code, country_name in languages.items():
+        process_language(lang_code, country_name)
+
+    print("\n🎉 All redirect pages generated for all languages!")
 
 if __name__ == "__main__":
     main()
