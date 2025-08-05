@@ -1,9 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
   const lang = window.LANG_CODE || 'en-gb';
 
+  // Add 'tugs' in sections array, after jackandthepack and before specials
   const sections = [
     ...Array.from({ length: 24 }, (_, i) => `season${i + 1}`),
     'jackandthepack',
+    'tugs',           // <-- added TUGS here
     'specials',
     'fan'
   ];
@@ -26,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.__openEpisodeIdFromRedirect = openEpisodeIdFromRedirect;
   }
 
-  // Build selector buttons
+  // Build selector buttons with label for TUGS
   sections.forEach((key, i) => {
     let label;
     if (key === 'fan') {
@@ -35,6 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
       label = 'Specials';
     } else if (key === 'jackandthepack') {
       label = lang === 'en-gb' ? 'Jack & the Sodor Construction Company' : 'Jack & the Pack';
+    } else if (key === 'tugs') {
+      label = 'TUGS';
     } else {
       label = `Series ${i + 1}`;
     }
@@ -48,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   container.before(selector);
 
-  // Fetch all season/section data
+  // Fetch all season/section data with special case for TUGS loading from /data/tugs.json (language independent)
   const fetchSeasonData = sections.map((key, index) => {
     if (key === 'fan') {
       return fetch('/data/fanContent.json')
@@ -68,6 +72,16 @@ document.addEventListener('DOMContentLoaded', () => {
           seasonKey: key,
           seasonNumber: null,
           episodes: data.specials.episodes
+        }))
+        .catch(err => ({ seasonKey: key, error: err }));
+    } else if (key === 'tugs') {
+      return fetch('/data/tugs.json') // fixed non-lang path for TUGS
+        .then(res => res.json())
+        .then(data => ({
+          type: 'tugs',
+          seasonKey: key,
+          seasonNumber: null,
+          episodes: data.tugs.episodes
         }))
         .catch(err => ({ seasonKey: key, error: err }));
     } else {
@@ -113,10 +127,13 @@ document.addEventListener('DOMContentLoaded', () => {
           epUrl = ep.link;
           title = ep.uk_title;
         } else if (seasonKey === 'jackandthepack') {
-          // Jack & the Pack episode IDs start with '00' + ep number padded 2
           epId = `00${String(ep.episode_number).padStart(2, '0')}`;
           epUrl = ep.link;
           title = `E${String(ep.episode_number).padStart(2, '0')}: ${ep.uk_title || ep.title || 'Jack & Pack Episode'}`;
+        } else if (seasonKey === 'tugs') {
+          epId = `TG${String(ep.episode_number).padStart(2, '0')}`;
+          epUrl = ep.link;
+          title = ep.uk_title || ep.title || 'TUGS Episode';
         } else {
           const seasonStr = String(seasonNumber ?? 0).padStart(2, '0');
           const epNumStr = String(ep.episode_number).padStart(2, '0');
@@ -138,6 +155,8 @@ document.addEventListener('DOMContentLoaded', () => {
           episodeLink = `/${lang}/specials/${String(ep.episode_number).padStart(2, '0')}`;
         } else if (type === 'fan') {
           episodeLink = `/${lang}/fan/${String(i + 1).padStart(2, '0')}`;
+        } else if (seasonKey === 'tugs') {
+          episodeLink = `/tugs/${String(ep.episode_number).padStart(2, '0')}`;
         }
 
         const cover = ep.cover || '';
@@ -237,6 +256,8 @@ document.addEventListener('DOMContentLoaded', () => {
       currentUrl.pathname = `/${lang}/specials/${epId.slice(3)}`;
     } else if (epId.startsWith('00')) {
       currentUrl.pathname = `/${lang}/jackandthepack/${String(epId.slice(2)).padStart(2, '0')}`;
+    } else if (epId.startsWith('TG')) {
+      currentUrl.pathname = `/tugs/${String(epId.slice(2)).padStart(2, '0')}`;
     } else {
       currentUrl.pathname = `/${lang}/episodes/${epId.slice(0, 2)}/${String(epId.slice(2)).padStart(2, '0')}`;
     }
@@ -259,6 +280,13 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       document.querySelectorAll('.season').forEach(s => {
         s.style.display = s.dataset.series === 'jackandthepack' ? 'block' : 'none';
+      });
+    } else if (epId.startsWith('TG')) {
+      document.querySelectorAll('.selector-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.target === 'tugs');
+      });
+      document.querySelectorAll('.season').forEach(s => {
+        s.style.display = s.dataset.series === 'tugs' ? 'block' : 'none';
       });
     } else {
       const seasonNum = epId.slice(0, 2).replace(/^0+/, '') || '1';
@@ -307,6 +335,15 @@ document.addEventListener('DOMContentLoaded', () => {
           } else {
             console.log('Specials episode element not found for', epId);
             // window.location.replace(`/${lang}/`);
+          }
+        } else if (section === 'tugs' && part1) {
+          const epId = `TG${String(part1).padStart(2, '0')}`;
+          const episodeEl = container.querySelector(`[data-epid="${epId}"] a.video-link`);
+          if (episodeEl) {
+            openVideoModal(episodeEl.dataset.url, epId);
+            activateSelectorAndSeasonByEpId(epId);
+          } else {
+            console.log('Tugs episode element not found for', epId);
           }
         }
       }
