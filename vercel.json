@@ -2,8 +2,7 @@
   "redirects": [
     {
       "source": "/",
-      "destination": "/en-gb",
-      "permanent": true
+      "destination": "/index.html"
     }
   ],
   "rewrites": [
