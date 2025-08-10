@@ -2,22 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Thomas Archive | Watch & Explore</title>
   <meta name="description" content="Complete collection of Thomas the Tank Engine episodes, specials, and fan-made content. Explore by season or enjoy curated fan creations." />
   <link rel="stylesheet" href="/style.css" />
   <link rel="icon" href="https://i.ibb.co/SDBYYshc/image-2025-07-09-212116843.png" type="image/png" />
-
   <style>
-    :root {
-      --primary-blue: #005eb8;
-      --modal-bg: rgba(0, 0, 0, 0.85);
-      --btn-bg: #007bff;
-      --btn-radius: 6px;
-      --gap: 1.5rem;
-      --max-width: 960px;
-    }
-
     @font-face {
       font-family: 'Flange BQ Bold';
       src: url('/flangebq_bold.ttf') format('truetype');
@@ -25,55 +15,36 @@
       font-style: normal;
     }
 
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background: #f8f8f8;
-      line-height: 1.5;
-      color: #222;
-    }
-
-    /* Modal base styles */
-    .modal {
+    /* Video modal styles */
+    #video-modal {
+      display: none;
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background: var(--modal-bg);
-      display: none;
+      background: rgba(0, 0, 0, 0.85);
       justify-content: center;
       align-items: center;
       z-index: 1000;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
     }
 
-    .modal.active {
+    #video-modal:not(.hidden) {
       display: flex;
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .modal-content {
-      background: #000;
-      border-radius: 8px;
-      overflow: hidden;
-      width: 90%;
-      max-width: var(--max-width);
-      aspect-ratio: 16 / 9;
-      position: relative;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
     }
 
     #video-modal .modal-content {
+      position: relative;
+      width: 90%;
+      max-width: 960px;
+      aspect-ratio: 16 / 9;
       background: #000;
+      border-radius: 8px;
+      overflow: hidden;
     }
 
     #video-modal iframe {
       width: 100%;
       height: 100%;
       border: none;
-      display: block;
     }
 
     #modal-close {
@@ -85,252 +56,58 @@
       background: transparent;
       border: none;
       cursor: pointer;
-      line-height: 1;
-      padding: 0;
-      user-select: none;
-    }
-
-    /* Terms Modal styles */
-    #terms-modal .modal-content {
-      background: #fff;
-      color: #222;
-      padding: 2rem;
-      border-radius: 12px;
-      max-width: 500px;
-      text-align: center;
-      font-size: 1rem;
-      box-shadow: 0 0 10px rgba(0,0,0,0.25);
-      aspect-ratio: auto;
-    }
-
-    #terms-modal a {
-      color: var(--btn-bg);
-      text-decoration: underline;
-    }
-
-    #accept-terms {
-      margin-top: 1.5rem;
-      padding: 0.5rem 1.5rem;
-      font-size: 1rem;
-      border: none;
-      border-radius: var(--btn-radius);
-      background: var(--btn-bg);
-      color: white;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
-
-    #accept-terms:hover,
-    #accept-terms:focus {
-      background: #0056b3;
-      outline: none;
-    }
-
-    /* Header */
-    header .container {
-      max-width: 1000px;
-      margin: 1.5rem auto;
-      padding: 0 1rem;
-      text-align: center;
-    }
-
-    header h1 {
-      font-family: 'Flange BQ Bold', Arial, sans-serif;
-      margin-bottom: 0.25rem;
-      font-weight: 900;
-      font-size: 2.5rem;
-      color: var(--primary-blue);
-    }
-
-    header p {
-      font-size: 1.2rem;
-      margin-top: 0;
-      color: #444;
-    }
-
-    #join-discord {
-      margin-top: 1rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-      font-size: 1rem;
-    }
-
-    #discord-avatars {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-    }
-
-    #discord-invite,
-    .like-button {
-      background: var(--btn-bg);
-      color: white;
-      padding: 0.4rem 1rem;
-      border-radius: var(--btn-radius);
-      text-decoration: none;
-      font-weight: 600;
-      user-select: none;
-      transition: background-color 0.2s ease;
-    }
-
-    #discord-invite:hover,
-    #discord-invite:focus,
-    .like-button:hover,
-    .like-button:focus {
-      background: #0056b3;
-      outline: none;
-    }
-
-    /* Main content container */
-    main > section.container {
-      max-width: 1000px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
-
-    /* Episode list container (you can style accordion in episodes.js) */
-    #episode-list {
-      margin-top: 1rem;
+      z-index: 10;
     }
 
     /* Games grid */
     .game-grid {
       display: flex;
       flex-wrap: wrap;
-      gap: var(--gap);
-      justify-content: center;
+      gap: 1.5rem;
     }
 
     .game-item {
-      flex: 1 1 280px;
-      max-width: 320px;
       text-align: center;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .game-item a {
-      color: inherit;
-      text-decoration: none;
-      display: block;
-      transition: transform 0.15s ease;
-      outline-offset: 2px;
-    }
-
-    .game-item a:hover,
-    .game-item a:focus {
-      transform: scale(1.05);
-      outline: none;
-      text-decoration: underline;
+      flex: 1 1 300px;
     }
 
     .game-item img {
-      width: 100%;
+      max-width: 100%;
       height: auto;
       border-radius: 8px;
-      display: block;
+      cursor: pointer;
     }
 
     .game-item strong {
+      display: block;
       margin-top: 0.5rem;
-      display: block;
+      color: #005eb8;
       font-size: 1.1rem;
-      color: var(--primary-blue);
-    }
-
-    /* Completion stats */
-    #completion-stats .completion-item {
-      margin-bottom: 1rem;
-    }
-
-    .progress-bar {
-      background: #ddd;
-      border-radius: 10px;
-      overflow: hidden;
-      height: 20px;
-      max-width: 400px;
-      width: 100%;
-    }
-
-    .progress-fill {
-      background: var(--primary-blue);
-      height: 100%;
-      color: white;
-      font-weight: 700;
-      line-height: 20px;
-      text-align: center;
-      white-space: nowrap;
-      transition: width 0.3s ease;
-    }
-
-    /* Credits grid */
-    .credits-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: center;
-    }
-
-    .credit-item {
-      width: 120px;
-      text-align: center;
-      font-size: 0.9rem;
-      user-select: none;
-    }
-
-    .credit-item img {
-      width: 100%;
-      border-radius: 8px;
-      margin-bottom: 0.25rem;
-      display: block;
-      aspect-ratio: 1/1;
-      object-fit: cover;
-    }
-
-    footer {
-      background: #222;
-      color: #ccc;
-      font-size: 0.9rem;
-      padding: 1rem 0;
-      text-align: center;
-      user-select: none;
-    }
-
-    footer a {
-      color: #69c;
-      text-decoration: underline;
-    }
-
-    /* Accessibility focus */
-    a:focus-visible,
-    button:focus-visible {
-      outline: 3px solid var(--btn-bg);
-      outline-offset: 2px;
     }
   </style>
 
   <script>
-    // Extract language code from URL pathname or default to en-gb
-    window.LANG_CODE = (function() {
-      const match = window.location.pathname.match(/^\/([a-z]{2}-[a-z]{2})(\/|$)/i);
-      return match ? match[1].toLowerCase() : 'en-gb';
-    })();
+    // Detect language code from URL
+    const pathMatch = window.location.pathname.match(/^\/([a-z]{2}-[a-z]{2})(\/|$)/i);
+    window.LANG_CODE = pathMatch ? pathMatch[1].toLowerCase() : "en-gb";
   </script>
 </head>
 
 <body>
   <!-- Terms modal -->
-  <div id="terms-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="terms-heading" tabindex="-1">
-    <div class="modal-content" role="document">
+  <div id="terms-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="terms-heading" style="
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.8); display: none; align-items: center; justify-content: center; z-index: 9999;">
+    <div style="background: white; padding: 2rem; border-radius: 12px; max-width: 500px; text-align: center;">
       <h2 id="terms-heading">Welcome to the Thomas Archive</h2>
-      <p>
+      <p style="margin: 1rem 0;">
         Before entering, you must agree to our 
-        <a href="/terms-of-use.html" target="_blank" rel="noopener noreferrer">Terms of Use</a>.
+        <a href="/terms-of-use.html" target="_blank" rel="noopener">Terms of Use</a>.
       </p>
-      <button id="accept-terms" type="button">I Accept</button>
+      <button id="accept-terms" style="
+        padding: 0.5rem 1.5rem; font-size: 1rem; border: none; border-radius: 6px; background: #007bff; color: white; cursor: pointer;">
+        I Accept
+      </button>
     </div>
   </div>
 
@@ -340,32 +117,32 @@
       <p>A soon-to-be complete collection of episodes, specials, and select fan creations</p>
     </div>
 
-    <section id="join-discord" aria-label="Join our Discord community">
-      <div id="discord-avatars" aria-hidden="true"></div>
-      <a id="discord-invite" href="https://discord.gg/" target="_blank" rel="noopener noreferrer">🚂 Join The Discord</a>
-      <a class="like-button" href="https://discordserver.info/859512547379118120/like" target="_blank" rel="noopener noreferrer" role="button" aria-pressed="false">❤️ Like Server</a>
-      <script src="https://discordserver.info/like.js" defer></script>
+    <section id="join-discord">
+      <div id="discord-avatars"></div>
+      <a id="discord-invite" href="https://discord.gg/" target="_blank" rel="noopener">🚂 Join The Discord</a>
+      <a class="like-button" href="https://discordserver.info/859512547379118120/like" onClick="like(this); return false;" target="_blank" rel="noopener">❤️ Like Server</a>
+      <script src="https://discordserver.info/like.js"></script>
     </section>
   </header>
 
   <main>
-    <section id="episodes" class="container" aria-labelledby="episodes-heading">
-      <h2 id="episodes-heading">Episodes</h2>
-      <div id="episode-list" class="season-accordion" tabindex="0" aria-live="polite">
-        <!-- Episodes inserted dynamically -->
+    <section id="episodes" aria-labelledby="episodes-heading">
+      <div class="container">
+        <h2 id="episodes-heading">Episodes</h2>
+        <div id="episode-list" class="season-accordion">
+          <!-- Episodes inserted dynamically -->
+        </div>
       </div>
     </section>
 
-    <section id="games" class="container" aria-labelledby="games-heading">
-      <h2 id="games-heading">Games</h2>
-      <div class="game-grid" role="list">
-        <div class="game-item" role="listitem">
-          <a href="/games/design-your-engine.html" tabindex="0">
+    <section id="games" class="container">
+      <h2>Games</h2>
+      <div class="game-grid">
+        <div class="game-item">
+          <a href="/games/design-your-engine.html">
             <img
               src="https://i.ibb.co/RVTz5bL/Game-Promo-Sm-Design-Your-Train-348x196-1-tcm1402-266391.jpg"
               alt="Design Your Engine"
-              loading="lazy"
-              decoding="async"
             />
             <strong>Design Your Engine</strong>
           </a>
@@ -373,49 +150,31 @@
       </div>
     </section>
 
-    <section id="completion-stats" class="container" aria-labelledby="completion-stats-heading">
-      <h2 id="completion-stats-heading">Completion Progress</h2>
+    <section id="completion-stats" class="container">
+      <h2>Completion Progress</h2>
       <div class="completion-item">
         <span>UK English Dub</span>
-        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" aria-label="UK English Dub completion 100%">
+        <div class="progress-bar">
           <div class="progress-fill" style="width: 100%;">100%</div>
         </div>
       </div>
       <div class="completion-item">
         <span>US English Dub</span>
-        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="9.1" aria-label="US English Dub completion 9.1%">
+        <div class="progress-bar">
           <div class="progress-fill" style="width: 9.1%;">9.1%</div>
         </div>
       </div>
     </section>
 
-    <section id="credits" class="container" aria-labelledby="credits-heading">
-      <h2 id="credits-heading">Special Thanks</h2>
-      <div class="credits-grid" role="list">
-        <div class="credit-item" role="listitem">
-          <img src="https://i.ibb.co/1f92j2FV/8c353d9155de9a11d9d86f7e6ad831e9.webp" alt="foxStorm1" loading="lazy" decoding="async" />
-          <div><strong>foxStorm1</strong></div>
-        </div>
-        <div class="credit-item" role="listitem">
-          <img src="https://i.ibb.co/zhXz8w1X/10f4845240de63414acf4b856b7a68b7.webp" alt="koreandub" loading="lazy" decoding="async" />
-          <div><strong>koreandub</strong></div>
-        </div>
-        <div class="credit-item" role="listitem">
-          <img src="https://i.ibb.co/jvsd53Kc/0af0796b865c1f13d7ca3c587034fb0c.webp" alt="talez_chip" loading="lazy" decoding="async" />
-          <div><strong>talez_chip</strong></div>
-        </div>
-        <div class="credit-item" role="listitem">
-          <img src="https://i.ibb.co/0yzmsBgb/b86405872c7f0cc601d6da5f7b37ae95.webp" alt="oliver11gwr" loading="lazy" decoding="async" />
-          <div><strong>oliver11gwr</strong></div>
-        </div>
-        <div class="credit-item" role="listitem">
-          <img src="https://i.ibb.co/1fy2BkSd/fd5b9ea17afa191eaa93f94dc68e4b8b.webp" alt="kyle_the_hyena" loading="lazy" decoding="async" />
-          <div><strong>kyle_the_hyena</strong></div>
-        </div>
-        <div class="credit-item" role="listitem">
-          <img src="https://i.ibb.co/ymVRBqZZ/fc4932b57dda5cb5dff0c05ab18d5678.webp" alt="tugboatanni" loading="lazy" decoding="async" />
-          <div><strong>tugboatanni</strong></div>
-        </div>
+    <section id="credits" class="container">
+      <h2>Special Thanks</h2>
+      <div class="credits-grid">
+        <div class="credit-item"><img src="https://i.ibb.co/1f92j2FV/8c353d9155de9a11d9d86f7e6ad831e9.webp" alt="foxStorm1"><div><strong>foxStorm1</strong></div></div>
+        <div class="credit-item"><img src="https://i.ibb.co/zhXz8w1X/10f4845240de63414acf4b856b7a68b7.webp" alt="koreandub"><div><strong>koreandub</strong></div></div>
+        <div class="credit-item"><img src="https://i.ibb.co/jvsd53Kc/0af0796b865c1f13d7ca3c587034fb0c.webp" alt="talez_chip"><div><strong>talez_chip</strong></div></div>
+        <div class="credit-item"><img src="https://i.ibb.co/0yzmsBgb/b86405872c7f0cc601d6da5f7b37ae95.webp" alt="oliver11gwr"><div><strong>oliver11gwr</strong></div></div>
+        <div class="credit-item"><img src="https://i.ibb.co/1fy2BkSd/fd5b9ea17afa191eaa93f94dc68e4b8b.webp" alt="kyle_the_hyena"><div><strong>kyle_the_hyena</strong></div></div>
+        <div class="credit-item"><img src="https://i.ibb.co/ymVRBqZZ/fc4932b57dda5cb5dff0c05ab18d5678.webp" alt="tugboatanni"><div><strong>tugboatanni</strong></div></div>
       </div>
     </section>
   </main>
@@ -431,102 +190,45 @@
   </footer>
 
   <!-- Video modal -->
-  <div id="video-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="video-title" tabindex="-1">
+  <div id="video-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="video-title">
     <div class="modal-content">
-      <button id="modal-close" aria-label="Close video modal" type="button">&times;</button>
-      <iframe
-        id="modal-video"
-        title="Video player"
-        allow="autoplay"
-        allowfullscreen
-        loading="lazy"
-        decoding="async"
-      ></iframe>
+      <button id="modal-close" aria-label="Close video modal">&times;</button>
+      <iframe id="modal-video" title="Video player" allow="autoplay" allowfullscreen></iframe>
     </div>
   </div>
 
   <script>
-    // Terms modal logic with focus trap and removal on accept
-    document.addEventListener("DOMContentLoaded", () => {
+    // Show terms modal if not accepted yet
+    window.addEventListener("DOMContentLoaded", () => {
       const modal = document.getElementById("terms-modal");
       const acceptBtn = document.getElementById("accept-terms");
 
       if (!localStorage.getItem("acceptedTerms") && modal && acceptBtn) {
-        modal.classList.add("active");
+        modal.style.display = "flex";
         document.body.style.overflow = "hidden";
-        acceptBtn.focus();
 
         acceptBtn.addEventListener("click", () => {
           localStorage.setItem("acceptedTerms", "yes");
-          modal.classList.remove("active");
           modal.remove();
           document.body.style.overflow = "";
-        });
-
-        // Trap focus inside the modal while open
-        modal.addEventListener("keydown", e => {
-          if (e.key === "Tab") {
-            const focusable = modal.querySelectorAll('a, button, [tabindex]:not([tabindex="-1"])');
-            const first = focusable[0];
-            const last = focusable[focusable.length - 1];
-            if (e.shiftKey) {
-              if (document.activeElement === first) {
-                e.preventDefault();
-                last.focus();
-              }
-            } else {
-              if (document.activeElement === last) {
-                e.preventDefault();
-                first.focus();
-              }
-            }
-          }
         });
       }
     });
 
-    // Video modal open/close with autoplay and URL embed conversions
-    (() => {
+    // Open video modal and set iframe source
+    function openGame(url) {
       const modal = document.getElementById("video-modal");
       const iframe = document.getElementById("modal-video");
-      const closeBtn = document.getElementById("modal-close");
+      iframe.src = url;
+      modal.classList.remove("hidden");
+      document.body.style.overflow = "hidden";
 
-      function closeModal() {
+      document.getElementById("modal-close").onclick = () => {
         iframe.src = "";
-        modal.classList.remove("active");
+        modal.classList.add("hidden");
         document.body.style.overflow = "";
-        closeBtn.removeEventListener("click", closeModal);
-        document.removeEventListener("keydown", onEsc);
-      }
-
-      function onEsc(e) {
-        if (e.key === "Escape") closeModal();
-      }
-
-      window.openGame = function (url) {
-        // Support YouTube and Google Drive embed links with autoplay
-        if (/youtu\.be\/|youtube\.com/.test(url)) {
-          const idMatch = url.match(/(?:youtu\.be\/|youtube\.com.*v=)([\w-]+)/);
-          if (idMatch) {
-            url = `https://www.youtube-nocookie.com/embed/${idMatch[1]}?autoplay=1`;
-          }
-        } else if (/drive\.google\.com/.test(url)) {
-          // Example: Convert Google Drive share link to embed format
-          const idMatch = url.match(/\/d\/([^/]+)\//);
-          if (idMatch) {
-            url = `https://drive.google.com/file/d/${idMatch[1]}/preview`;
-          }
-        }
-
-        iframe.src = url;
-        modal.classList.add("active");
-        document.body.style.overflow = "hidden";
-        closeBtn.focus();
-
-        closeBtn.addEventListener("click", closeModal);
-        document.addEventListener("keydown", onEsc);
       };
-    })();
+    }
   </script>
 
   <script src="/scripts/discordWidget.js" defer></script>
@@ -534,5 +236,6 @@
   <script src="/scripts/fanContent.js" defer></script>
   <script src="/scripts/funnySounds.js" defer></script>
   <script src="/scripts/geoRedirect.js" defer></script>
+
 </body>
 </html>
