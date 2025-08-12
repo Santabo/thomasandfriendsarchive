@@ -84,6 +84,17 @@
       color: #005eb8;
       font-size: 1.1rem;
     }
+
+    /* Preload fade-in animation */
+    img[data-preload] {
+      opacity: 0;
+      transform: scale(0.98);
+      transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+    }
+    img[data-preload].loaded {
+      opacity: 1;
+      transform: scale(1);
+    }
   </style>
 
   <script>
@@ -213,6 +224,25 @@
           document.body.style.overflow = "";
         });
       }
+    });
+
+    // Preload all images and fade them in together
+    window.addEventListener("DOMContentLoaded", () => {
+      const images = Array.from(document.querySelectorAll("img"));
+      let loadedCount = 0;
+      images.forEach(img => img.setAttribute("data-preload", ""));
+      const checkAllLoaded = () => {
+        loadedCount++;
+        if (loadedCount === images.length) {
+          images.forEach(img => img.classList.add("loaded"));
+        }
+      };
+      images.forEach(img => {
+        const temp = new Image();
+        temp.onload = checkAllLoaded;
+        temp.onerror = checkAllLoaded;
+        temp.src = img.src;
+      });
     });
 
     // Open video modal and set iframe source
