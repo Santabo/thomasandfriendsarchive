@@ -365,9 +365,19 @@ h2 {
   top: 0;
   left: 0;
   width: 100%;
-  height: 60px; /* Covers standard YouTube title bar */
+  /* Approx height of YouTube top bar. Adjust if needed. */
+  height: 60px; 
   background: #000;
-  z-index: 20; /* Above the iframe */
-  display: none; /* Hidden by default */
-  pointer-events: auto; /* Blocks clicking/hovering the title area */
+  z-index: 20; /* Ensure it sits above iframe */
+  
+  /* Start hidden, transition opacity smoothly */
+  opacity: 0;
+  pointer-events: none; /* Let clicks pass through when hidden */
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* When active class is added by JS, show it and block clicks to title */
+#title-shield.active {
+  opacity: 1;
+  pointer-events: auto; 
 }
