@@ -43,7 +43,8 @@
       {
         "title": "Bonus: Who's That Engine?",
         "url": "https://www.youtube.com/embed/B13danUewg4?si=7NtBPqqphMXTTnXf",
-        "is_direct_link": true
+        "is_direct_link": true,
+        "hide_embed_title": true
       }
     ]
   }
