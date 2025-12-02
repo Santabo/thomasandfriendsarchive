@@ -1,19 +1,25 @@
 document.addEventListener('DOMContentLoaded', () => {
     const dvdContainer = document.querySelector('.dvd-grid');
     const modal = document.getElementById("video-modal");
+    const modalContent = document.querySelector("#video-modal .modal-content"); // Needed for hover detection
     const iframe = document.getElementById("modal-video");
     const closeBtn = document.getElementById("modal-close");
     const statusDiv = document.getElementById("queue-status");
     const controlsDiv = document.getElementById("modal-controls");
     const btnNext = document.getElementById("btn-next");
     const btnPrev = document.getElementById("btn-prev");
-    const titleShield = document.getElementById("title-shield"); // GET THE SHIELD
+    const titleShield = document.getElementById("title-shield");
     
     // Get Language from URL (default to en-gb)
     const lang = window.LANG_CODE || 'en-gb';
 
     let currentQueue = [];
     let currentTrackIndex = 0;
+
+    // --- SHIELD & TIMER VARIABLES ---
+    let shieldTimeout;
+    let isHoveringModal = false;
+    let isShieldNeededForTrack = false;
 
     // --- 1. FETCH AND RENDER DVDS ---
     fetch('/data/dvds.json')
@@ -145,9 +151,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.overflow = "";
         currentQueue = [];
         
+        // Reset Shield state
+        clearTimeout(shieldTimeout);
+        if(titleShield) titleShield.classList.remove("active");
+        isShieldNeededForTrack = false;
+
         if(statusDiv) statusDiv.innerHTML = "";
         if(controlsDiv) controlsDiv.style.display = "none";
-        if(titleShield) titleShield.style.display = "none"; // Hide shield on close
     }
 
     if(closeBtn) closeBtn.addEventListener('click', closeModal);
@@ -155,6 +165,38 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.addEventListener('click', (e) => {
             if (e.target === modal) closeModal();
         });
+    }
+
+    // --- HOVER HANDLERS FOR SHIELD ---
+    if(modalContent && titleShield) {
+        // When mouse enters modal content area
+        modalContent.addEventListener('mouseenter', () => {
+            isHoveringModal = true;
+            // If this track needs a shield, show it immediately and stop hide timer
+            if(isShieldNeededForTrack) {
+                clearTimeout(shieldTimeout);
+                titleShield.classList.add("active");
+            }
+        });
+
+        // When mouse leaves modal content area
+        modalContent.addEventListener('mouseleave', () => {
+            isHoveringModal = false;
+            // If this track needs a shield, start timer to hide it
+            if(isShieldNeededForTrack) {
+                startShieldTimer();
+            }
+        });
+    }
+
+    function startShieldTimer() {
+        clearTimeout(shieldTimeout);
+        // Hide after 3 seconds, unless currently hovering
+        shieldTimeout = setTimeout(() => {
+            if(!isHoveringModal && titleShield) {
+                titleShield.classList.remove("active");
+            }
+        }, 3000); 
     }
 
     function formatVideoUrl(url) {
@@ -171,12 +213,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentQueue.length === 0) return;
         const track = currentQueue[currentTrackIndex];
         
-        // --- TOGGLE SHIELD LOGIC ---
+        // --- SHIELD LOGIC ON LOAD ---
+        clearTimeout(shieldTimeout); // Clear previous timers
+        
         if (titleShield) {
             if (track.hide_embed_title) {
-                titleShield.style.display = "block";
+                isShieldNeededForTrack = true;
+                // Show immediately on load
+                titleShield.classList.add("active");
+                // Start timer to hide it
+                startShieldTimer();
             } else {
-                titleShield.style.display = "none";
+                isShieldNeededForTrack = false;
+                titleShield.classList.remove("active");
             }
         }
 
