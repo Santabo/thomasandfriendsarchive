@@ -3,6 +3,7 @@
     "id": "dinos",
     "title": "Dinos & Discoveries",
     "spine_color": "#0d4e24",
+    "regions": ["en-gb"],
     "covers": {
       "en-gb": "https://i.ibb.co/rRhbsmcC/image.png",
       "en-us": "https://i.ibb.co/Y4nSRQgr/Dinosand-Discoveries.webp",
@@ -40,39 +41,9 @@
         "episode_number": 25 
       },
       {
-        "title": "Bonus: Who's That Engine",
+        "title": "Bonus: Who's That Engine?",
         "url": "https://www.youtube.com/embed/B13danUewg4?si=7NtBPqqphMXTTnXf",
         "is_direct_link": true
-      }
-    ]
-  },
-  {
-    "id": "chocolate",
-    "title": "Percy's Chocolate Crunch",
-    "spine_color": "#5e3200",
-    "covers": {
-      "default": "https://i.ibb.co/wznz47L/percys-choc-crunch.jpg"
-    },
-    "tracks": [
-      { 
-        "title": "Percy's Chocolate Crunch", 
-        "season_id": "season6", 
-        "episode_number": 1 
-      },
-      { 
-        "title": "Thomas, Percy & The Squeak", 
-        "season_id": "season6", 
-        "episode_number": 2 
-      },
-      { 
-        "title": "Gordon Takes a Tumble", 
-        "season_id": "season6", 
-        "episode_number": 3 
-      },
-      { 
-        "title": "Buffer Bashing", 
-        "season_id": "season6", 
-        "episode_number": 4 
       }
     ]
   }
