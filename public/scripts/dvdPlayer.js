@@ -22,6 +22,11 @@ document.addEventListener('DOMContentLoaded', () => {
             dvdContainer.innerHTML = '';
 
             dvds.forEach(dvd => {
+                // REGION CHECK: If 'regions' is defined, ensure current lang is allowed.
+                if (dvd.regions && !dvd.regions.includes(lang)) {
+                    return; // Skip this DVD for this region
+                }
+
                 const dvdItem = document.createElement('div');
                 dvdItem.className = 'dvd-item';
                 
@@ -79,8 +84,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Construct path: /en-gb/data/season18.json
                 const url = `/${lang}/data/${seasonId}.json`;
                 const response = await fetch(url);
+                if (!response.ok) throw new Error(`Season not found: ${seasonId}`);
                 const data = await response.json();
-                // Store in cache (handle structure: data.season18.episodes or data[key].episodes)
+                
+                // Normalize data structure
                 seasonDataCache[seasonId] = data[seasonId] ? data[seasonId].episodes : data.episodes;
             }));
             
@@ -91,20 +98,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 
                 const episodes = seasonDataCache[track.season_id];
-                if (!episodes) return null; // Failed to load season
+                if (!episodes) return null;
 
                 const epData = episodes.find(e => e.episode_number === track.episode_number);
                 
                 if (epData) {
                     return {
-                        title: track.title, // Use DVD track title, or fallback to epData.uk_title
+                        title: track.title, // Always use DVD track title to avoid spoilers
                         url: epData.link
                     };
                 } else {
                     console.warn(`Episode not found: ${track.season_id} #${track.episode_number}`);
                     return null;
                 }
-            }).filter(item => item !== null); // Remove missing tracks
+            }).filter(item => item !== null); 
 
             // 4. Start Player
             if (currentQueue.length > 0) {
@@ -116,7 +123,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (err) {
             console.error("Error fetching season data for DVD:", err);
-            alert("Error loading DVD data. Please try again.");
+            // Hide alert if it's just a 404 for a missing US season file
+            if(lang !== 'en-us') alert("Error loading DVD data. Please try again.");
         }
     }
 
@@ -133,14 +141,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function openModal() {
         modal.classList.remove("hidden");
         modal.style.display = "flex";
-        document.body.style.overflow = "hidden"; // Disable scroll
+        document.body.style.overflow = "hidden";
     }
 
     function closeModal() {
         iframe.src = "";
         modal.classList.add("hidden");
         modal.style.display = "none";
-        document.body.style.overflow = ""; // Re-enable scroll
+        document.body.style.overflow = "";
         currentQueue = [];
         if(statusDiv) statusDiv.innerHTML = "";
         if(controlsDiv) controlsDiv.style.display = "none";
@@ -153,20 +161,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Helper to format URLs (Youtube / Google Drive)
+    // Helper to format URLs
     function formatVideoUrl(url) {
         if (!url) return "";
         
         // Handle Google Drive
         if (url.includes('drive.google.com')) {
-            // Convert /view to /preview
             return url.replace('/view', '/preview');
         }
         
         // Handle YouTube
         if (url.includes('youtube.com') || url.includes('youtu.be')) {
             const separator = url.includes('?') ? '&' : '?';
-            return `${url}${separator}autoplay=1`;
+            // added modestbranding=1 to attempt to reduce title visibility
+            return `${url}${separator}autoplay=1&modestbranding=1&rel=0`; 
         }
         
         return url;
@@ -178,6 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         iframe.src = formatVideoUrl(track.url);
         
+        // Display the safe title from the JSON, not the YouTube title
         if(statusDiv) statusDiv.innerHTML = `Playing: ${track.title} <span style="font-size:0.8em">(${currentTrackIndex+1}/${currentQueue.length})</span>`;
         
         if(btnPrev) btnPrev.disabled = currentTrackIndex === 0;
