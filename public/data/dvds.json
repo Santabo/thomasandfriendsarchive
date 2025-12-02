@@ -12,36 +12,36 @@
       { 
         "title": "Marion & The Dinosaurs", 
         "season_id": "season18", 
-        "episode_number": 6 
+        "episode_number": 23 
       },
       { 
         "title": "Millie & The Volcano", 
         "season_id": "season18", 
-        "episode_number": 8 
+        "episode_number": 26 
       },
       { 
         "title": "Timothy & The Rainbow Truck", 
         "season_id": "season18", 
-        "episode_number": 9 
+        "episode_number": 22 
       },
       { 
         "title": "Samson at the Scrap Yard", 
         "season_id": "season18", 
-        "episode_number": 10 
+        "episode_number": 24 
       },
       { 
         "title": "Emily Saves the World", 
         "season_id": "season18", 
-        "episode_number": 12 
+        "episode_number": 21 
       },
       { 
         "title": "Samson Sent for Scrap", 
         "season_id": "season18", 
-        "episode_number": 13 
+        "episode_number": 25 
       },
       {
-        "title": "Bonus: Guess Who?",
-        "url": "https://www.youtube.com/embed/VIDEO_ID_BONUS",
+        "title": "Bonus: Who's That Engine",
+        "url": "https://www.youtube.com/watch?v=B13danUewg4",
         "is_direct_link": true
       }
     ]
