@@ -21,10 +21,11 @@
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(0, 0, 0, 0.92);
       justify-content: center;
       align-items: center;
       z-index: 1000;
+      flex-direction: column;
     }
 
     #video-modal:not(.hidden) {
@@ -39,24 +40,73 @@
       background: #000;
       border-radius: 8px;
       overflow: hidden;
+      box-shadow: 0 0 30px rgba(0,0,0,0.8);
+      display: flex;
+      flex-direction: column;
     }
 
     #video-modal iframe {
       width: 100%;
       height: 100%;
       border: none;
+      flex-grow: 1;
+      position: relative;
+      z-index: 1;
     }
 
     #modal-close {
       position: absolute;
-      top: 0.5rem;
-      right: 0.75rem;
+      top: -35px;
+      right: 0;
       font-size: 2rem;
       color: white;
       background: transparent;
       border: none;
       cursor: pointer;
-      z-index: 10;
+      z-index: 25;
+      line-height: 1;
+    }
+
+    /* Canvas Static Layer */
+    #static-canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 5;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    /* Queue Controls */
+    #modal-controls {
+      display: none; /* Hidden by default */
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 15px;
+      width: 100%;
+    }
+    .queue-btn {
+      background: #005eb8;
+      color: white;
+      border: none;
+      padding: 0.8rem 2rem;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+      border: 2px solid #004494;
+    }
+    .queue-btn:hover { background: #004494; transform: scale(1.05); }
+    .queue-btn:disabled { background: #444; border-color: #555; cursor: not-allowed; opacity: 0.6; transform: none; }
+
+    #queue-status {
+      color: #fff;
+      text-align: center;
+      margin-bottom: 10px;
+      font-family: 'Flange BQ Bold', sans-serif;
+      font-size: 1.2rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
     }
 
     /* Games grid */
@@ -105,7 +155,6 @@
 </head>
 
 <body>
-  <!-- Terms modal -->
   <div id="terms-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="terms-heading" style="
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0, 0, 0, 0.8); display: none; align-items: center; justify-content: center; z-index: 9999;">
@@ -141,57 +190,17 @@
       <div class="container">
         <h2 id="episodes-heading">Episodes</h2>
         <div id="episode-list" class="season-accordion">
-          <!-- Episodes inserted dynamically -->
-        </div>
+          </div>
       </div>
     </section>
 
     <section id="dvd-collection" class="container">
-  <h2>DVD Collection</h2>
-  <p>Select a DVD case to play the full disc queue (Episodes & Bonus Features).</p>
-  
-  <div class="dvd-grid">
-    
-    <div class="dvd-item" onclick="playDvd('dinos')">
-      <div class="dvd-case">
-        <div class="dvd-spine" style="background-color: #0d4e24;">DINOS & DISCOVERIES</div>
-        <div class="dvd-face dvd-front">
-          <img src="https://i.ibb.co/hK8RjZq/dinos-discoveries.jpg" alt="Dinos & Discoveries Cover" onerror="this.src='https://via.placeholder.com/400x600?text=Dinos+Cover'">
+      <h2>DVD Collection</h2>
+      <p>Select a DVD case to play the full disc queue (Episodes & Bonus Features).</p>
+      
+      <div class="dvd-grid">
         </div>
-      </div>
-      <div class="dvd-info">
-        <h3>Dinos & Discoveries</h3>
-        <ul class="tracklist">
-          <li>1. Marion & The Dinosaurs</li>
-          <li>2. Millie & The Volcano</li>
-          <li>3. Timothy & The Rainbow Truck</li>
-          <li>4. Samson at the Scrap Yard</li>
-          <li>5. Emily Saves the World</li>
-          <li>6. Samson Sent for Scrap</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="dvd-item" onclick="playDvd('chocolate')">
-      <div class="dvd-case">
-        <div class="dvd-spine" style="background-color: #5e3200;">PERCY'S CHOC CRUNCH</div>
-        <div class="dvd-face dvd-front">
-          <img src="https://i.ibb.co/wznz47L/percys-choc-crunch.jpg" alt="Percy's Chocolate Crunch Cover" onerror="this.src='https://via.placeholder.com/400x600?text=Chocolate+Cover'">
-        </div>
-      </div>
-      <div class="dvd-info">
-        <h3>Percy's Chocolate Crunch</h3>
-        <ul class="tracklist">
-          <li>1. Percy's Chocolate Crunch</li>
-          <li>2. Thomas, Percy & The Squeak</li>
-          <li>3. Gordon Takes a Tumble</li>
-          <li>4. Bonus: Buffer Bashing</li>
-        </ul>
-      </div>
-    </div>
-
-  </div>
-</section>
+    </section>
 
     <section id="games" class="container">
       <h2>Games</h2>
@@ -224,7 +233,7 @@
       </div>
     </section>
 
-<section id="credits" class="container">
+    <section id="credits" class="container">
       <h2>Special Thanks</h2>
       <div class="credits-grid">
         <div class="credit-item"><img src="https://i.ibb.co/1f92j2FV/8c353d9155de9a11d9d86f7e6ad831e9.webp" alt="foxStorm1"><div><strong>foxStorm1</strong></div></div>
@@ -248,11 +257,20 @@
     </div>
   </footer>
 
-  <!-- Video modal -->
   <div id="video-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="video-title">
     <div class="modal-content">
       <button id="modal-close" aria-label="Close video modal">&times;</button>
+      
+      <canvas id="static-canvas"></canvas>
+      
+      <div id="queue-status"></div>
+
       <iframe id="modal-video" title="Video player" allow="autoplay" allowfullscreen></iframe>
+
+      <div id="modal-controls">
+        <button id="btn-prev" class="queue-btn" onclick="prevTrack()">⏮ Prev</button>
+        <button id="btn-next" class="queue-btn" onclick="nextTrack()">Next ⏭</button>
+      </div>
     </div>
   </div>
 
@@ -293,10 +311,17 @@
       });
     });
 
-    // Open video modal and set iframe source
+    // Helper for single games (basic modal open)
     function openGame(url) {
       const modal = document.getElementById("video-modal");
       const iframe = document.getElementById("modal-video");
+      const controls = document.getElementById("modal-controls");
+      const status = document.getElementById("queue-status");
+      
+      // Hide queue specific stuff
+      if(controls) controls.style.display = "none";
+      if(status) status.innerHTML = "";
+
       iframe.src = url;
       modal.classList.remove("hidden");
       document.body.style.overflow = "hidden";
@@ -314,6 +339,5 @@
   <script src="/scripts/fanContent.js" defer></script>
   <script src="/scripts/funnySounds.js" defer></script>
   <script src="/scripts/geoRedirect.js" defer></script>
-
-</body>
+  <script src="/scripts/dvdPlayer.js" defer></script> </body>
 </html>
