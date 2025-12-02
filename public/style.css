@@ -358,3 +358,16 @@ h2 {
   h2 { font-size: 1.3rem; }
   .season-content, .fan-content { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
 }
+
+/* --- Title Shield (Hides YouTube Spoilers) --- */
+#title-shield {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px; /* Covers standard YouTube title bar */
+  background: #000;
+  z-index: 20; /* Above the iframe */
+  display: none; /* Hidden by default */
+  pointer-events: auto; /* Blocks clicking/hovering the title area */
+}
