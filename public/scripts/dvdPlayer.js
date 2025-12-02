@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const controlsDiv = document.getElementById("modal-controls");
     const btnNext = document.getElementById("btn-next");
     const btnPrev = document.getElementById("btn-prev");
+    const titleShield = document.getElementById("title-shield"); // GET THE SHIELD
     
     // Get Language from URL (default to en-gb)
     const lang = window.LANG_CODE || 'en-gb';
@@ -22,15 +23,13 @@ document.addEventListener('DOMContentLoaded', () => {
             dvdContainer.innerHTML = '';
 
             dvds.forEach(dvd => {
-                // REGION CHECK: If 'regions' is defined, ensure current lang is allowed.
                 if (dvd.regions && !dvd.regions.includes(lang)) {
-                    return; // Skip this DVD for this region
+                    return; 
                 }
 
                 const dvdItem = document.createElement('div');
                 dvdItem.className = 'dvd-item';
                 
-                // Select Cover based on Language
                 let coverImage = dvd.covers['default'];
                 if (dvd.covers[lang]) {
                     coverImage = dvd.covers[lang];
@@ -68,9 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- 2. DATA RESOLUTION LOGIC ---
-    
     async function prepareAndPlayDvd(dvd) {
-        // 1. Identify which Season JSONs we need to fetch
         const seasonsToFetch = [...new Set(dvd.tracks
             .filter(t => !t.is_direct_link && t.season_id)
             .map(t => t.season_id)
@@ -78,23 +75,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const seasonDataCache = {};
 
-        // 2. Fetch required Season Data
         try {
             await Promise.all(seasonsToFetch.map(async (seasonId) => {
-                // Construct path: /en-gb/data/season18.json
                 const url = `/${lang}/data/${seasonId}.json`;
                 const response = await fetch(url);
                 if (!response.ok) throw new Error(`Season not found: ${seasonId}`);
                 const data = await response.json();
-                
-                // Normalize data structure
                 seasonDataCache[seasonId] = data[seasonId] ? data[seasonId].episodes : data.episodes;
             }));
             
-            // 3. Build the Playable Queue
             currentQueue = dvd.tracks.map(track => {
                 if (track.is_direct_link) {
-                    return { title: track.title, url: track.url };
+                    return { 
+                        title: track.title, 
+                        url: track.url, 
+                        hide_embed_title: track.hide_embed_title || false 
+                    };
                 }
                 
                 const episodes = seasonDataCache[track.season_id];
@@ -104,16 +100,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (epData) {
                     return {
-                        title: track.title, // Always use DVD track title to avoid spoilers
-                        url: epData.link
+                        title: track.title, 
+                        url: epData.link,
+                        hide_embed_title: false
                     };
                 } else {
-                    console.warn(`Episode not found: ${track.season_id} #${track.episode_number}`);
                     return null;
                 }
             }).filter(item => item !== null); 
 
-            // 4. Start Player
             if (currentQueue.length > 0) {
                 currentTrackIndex = 0;
                 startPlayerUI();
@@ -122,9 +117,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
         } catch (err) {
-            console.error("Error fetching season data for DVD:", err);
-            // Hide alert if it's just a 404 for a missing US season file
-            if(lang !== 'en-us') alert("Error loading DVD data. Please try again.");
+            console.error("Error fetching season data:", err);
+            if(lang !== 'en-us') alert("Error loading DVD data.");
         }
     }
 
@@ -150,8 +144,10 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.style.display = "none";
         document.body.style.overflow = "";
         currentQueue = [];
+        
         if(statusDiv) statusDiv.innerHTML = "";
         if(controlsDiv) controlsDiv.style.display = "none";
+        if(titleShield) titleShield.style.display = "none"; // Hide shield on close
     }
 
     if(closeBtn) closeBtn.addEventListener('click', closeModal);
@@ -161,22 +157,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Helper to format URLs
     function formatVideoUrl(url) {
         if (!url) return "";
-        
-        // Handle Google Drive
-        if (url.includes('drive.google.com')) {
-            return url.replace('/view', '/preview');
-        }
-        
-        // Handle YouTube
+        if (url.includes('drive.google.com')) return url.replace('/view', '/preview');
         if (url.includes('youtube.com') || url.includes('youtu.be')) {
             const separator = url.includes('?') ? '&' : '?';
-            // added modestbranding=1 to attempt to reduce title visibility
             return `${url}${separator}autoplay=1&modestbranding=1&rel=0`; 
         }
-        
         return url;
     }
 
@@ -184,9 +171,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentQueue.length === 0) return;
         const track = currentQueue[currentTrackIndex];
         
+        // --- TOGGLE SHIELD LOGIC ---
+        if (titleShield) {
+            if (track.hide_embed_title) {
+                titleShield.style.display = "block";
+            } else {
+                titleShield.style.display = "none";
+            }
+        }
+
         iframe.src = formatVideoUrl(track.url);
         
-        // Display the safe title from the JSON, not the YouTube title
         if(statusDiv) statusDiv.innerHTML = `Playing: ${track.title} <span style="font-size:0.8em">(${currentTrackIndex+1}/${currentQueue.length})</span>`;
         
         if(btnPrev) btnPrev.disabled = currentTrackIndex === 0;
