@@ -205,7 +205,7 @@ h2 {
 }
 .credit-item strong { font-size: 1.05rem; color: #005eb8; }
 
-/* --- NEW: 3D DVD SECTION STYLES --- */
+/* --- DVD 3D SECTION STYLES --- */
 .dvd-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -276,9 +276,9 @@ h2 {
 .tracklist { list-style: none; padding: 0; margin: 0; font-size: 0.85rem; color: #555; text-align: left; }
 .tracklist li { padding: 4px 0; border-bottom: 1px solid #eee; }
 
-/* --- NEW: MODAL QUEUE & CANVAS --- */
+/* --- MODAL QUEUE --- */
 .modal {
-  background: rgba(0, 0, 0, 0.92); /* Darker background for cinema feel */
+  background: rgba(0, 0, 0, 0.9);
   display: none;
   position: fixed;
   top: 0; left: 0;
@@ -300,7 +300,7 @@ h2 {
   box-shadow: 0 0 30px rgba(0,0,0,0.8);
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* Essential for canvas */
+  overflow: hidden;
 }
 .modal iframe {
   width: 100%;
@@ -308,17 +308,6 @@ h2 {
   border: none;
   flex-grow: 1;
   z-index: 1;
-}
-
-/* Canvas Static Layer */
-#static-canvas {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  z-index: 5;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
 }
 
 /* Queue Controls */
