@@ -3,26 +3,77 @@
     "id": "dinos",
     "title": "Dinos & Discoveries",
     "spine_color": "#0d4e24",
-    "cover_url": "https://i.ibb.co/hK8RjZq/dinos-discoveries.jpg",
+    "covers": {
+      "en-gb": "https://i.ibb.co/rRhbsmcC/image.png",
+      "en-us": "https://i.ibb.co/Y4nSRQgr/Dinosand-Discoveries.webp",
+      "default": "https://i.ibb.co/rRhbsmcC/image.png"
+    },
     "tracks": [
-      { "title": "Marion & The Dinosaurs", "url": "https://www.youtube.com/embed/VIDEO_ID_1" },
-      { "title": "Millie & The Volcano", "url": "https://www.youtube.com/embed/VIDEO_ID_2" },
-      { "title": "Timothy & The Rainbow Truck", "url": "https://www.youtube.com/embed/VIDEO_ID_3" },
-      { "title": "Samson at the Scrap Yard", "url": "https://www.youtube.com/embed/VIDEO_ID_4" },
-      { "title": "Emily Saves the World", "url": "https://www.youtube.com/embed/VIDEO_ID_5" },
-      { "title": "Samson Sent for Scrap", "url": "https://www.youtube.com/embed/VIDEO_ID_6" }
+      { 
+        "title": "Marion & The Dinosaurs", 
+        "season_id": "season18", 
+        "episode_number": 6 
+      },
+      { 
+        "title": "Millie & The Volcano", 
+        "season_id": "season18", 
+        "episode_number": 8 
+      },
+      { 
+        "title": "Timothy & The Rainbow Truck", 
+        "season_id": "season18", 
+        "episode_number": 9 
+      },
+      { 
+        "title": "Samson at the Scrap Yard", 
+        "season_id": "season18", 
+        "episode_number": 10 
+      },
+      { 
+        "title": "Emily Saves the World", 
+        "season_id": "season18", 
+        "episode_number": 12 
+      },
+      { 
+        "title": "Samson Sent for Scrap", 
+        "season_id": "season18", 
+        "episode_number": 13 
+      },
+      {
+        "title": "Bonus: Guess Who?",
+        "url": "https://www.youtube.com/embed/VIDEO_ID_BONUS",
+        "is_direct_link": true
+      }
     ]
   },
   {
     "id": "chocolate",
     "title": "Percy's Chocolate Crunch",
     "spine_color": "#5e3200",
-    "cover_url": "https://i.ibb.co/wznz47L/percys-choc-crunch.jpg",
+    "covers": {
+      "default": "https://i.ibb.co/wznz47L/percys-choc-crunch.jpg"
+    },
     "tracks": [
-      { "title": "Percy's Chocolate Crunch", "url": "https://www.youtube.com/embed/VIDEO_ID_A" },
-      { "title": "Thomas, Percy & The Squeak", "url": "https://www.youtube.com/embed/VIDEO_ID_B" },
-      { "title": "Gordon Takes a Tumble", "url": "https://www.youtube.com/embed/VIDEO_ID_C" },
-      { "title": "Bonus: Buffer Bashing", "url": "https://www.youtube.com/embed/VIDEO_ID_D" }
+      { 
+        "title": "Percy's Chocolate Crunch", 
+        "season_id": "season6", 
+        "episode_number": 1 
+      },
+      { 
+        "title": "Thomas, Percy & The Squeak", 
+        "season_id": "season6", 
+        "episode_number": 2 
+      },
+      { 
+        "title": "Gordon Takes a Tumble", 
+        "season_id": "season6", 
+        "episode_number": 3 
+      },
+      { 
+        "title": "Buffer Bashing", 
+        "season_id": "season6", 
+        "episode_number": 4 
+      }
     ]
   }
 ]
