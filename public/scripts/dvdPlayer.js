@@ -1,147 +1,166 @@
-// DVD Data Library
-// Replace VIDEO_ID_X with real YouTube IDs or direct MP4 URLs
-const dvdLibrary = {
-  'dinos': {
-    title: "Dinos & Discoveries",
-    tracks: [
-      { title: "Marion & The Dinosaurs", url: "https://www.youtube.com/embed/VIDEO_ID_1" },
-      { title: "Millie & The Volcano", url: "https://www.youtube.com/embed/VIDEO_ID_2" },
-      { title: "Timothy & The Rainbow Truck", url: "https://www.youtube.com/embed/VIDEO_ID_3" },
-      { title: "Samson at the Scrap Yard", url: "https://www.youtube.com/embed/VIDEO_ID_4" },
-      { title: "Emily Saves the World", url: "https://www.youtube.com/embed/VIDEO_ID_5" },
-      { title: "Samson Sent for Scrap", url: "https://www.youtube.com/embed/VIDEO_ID_6" }
-    ]
-  },
-  'chocolate': {
-    title: "Percy's Chocolate Crunch",
-    tracks: [
-      { title: "Percy's Chocolate Crunch", url: "https://www.youtube.com/embed/VIDEO_ID_A" },
-      { title: "Thomas, Percy & The Squeak", url: "https://www.youtube.com/embed/VIDEO_ID_B" },
-      { title: "Gordon Takes a Tumble", url: "https://www.youtube.com/embed/VIDEO_ID_C" },
-      { title: "Bonus: Buffer Bashing", url: "https://www.youtube.com/embed/VIDEO_ID_D" }
-    ]
-  }
-};
+document.addEventListener('DOMContentLoaded', () => {
+    const dvdContainer = document.querySelector('.dvd-grid');
+    const modal = document.getElementById("video-modal");
+    const iframe = document.getElementById("modal-video");
+    const closeBtn = document.getElementById("modal-close");
+    const statusDiv = document.getElementById("queue-status");
+    const controlsDiv = document.getElementById("modal-controls");
+    const btnNext = document.getElementById("btn-next");
+    const btnPrev = document.getElementById("btn-prev");
+    const canvas = document.getElementById("static-canvas");
+    
+    // Safety check if canvas exists (it might not be in index.html yet)
+    const ctx = canvas ? canvas.getContext("2d") : null;
 
-let currentQueue = [];
-let currentTrackIndex = 0;
-let staticAnimationId;
+    let currentQueue = [];
+    let currentTrackIndex = 0;
+    let staticAnimationId;
 
-// DOM Elements
-const modal = document.getElementById("video-modal");
-const iframe = document.getElementById("modal-video");
-const closeBtn = document.getElementById("modal-close");
-const statusDiv = document.getElementById("queue-status");
-const controlsDiv = document.getElementById("modal-controls");
-const btnNext = document.getElementById("btn-next");
-const btnPrev = document.getElementById("btn-prev");
-const canvas = document.getElementById("static-canvas");
-const ctx = canvas ? canvas.getContext("2d") : null;
+    // --- 1. FETCH AND RENDER DVDS ---
+    fetch('/data/dvds.json')
+        .then(response => response.json())
+        .then(dvds => {
+            if (!dvdContainer) return;
+            dvdContainer.innerHTML = ''; // Clear loading/static content
 
-// --- CANVAS STATIC EFFECT ---
-function resizeCanvas() {
-  if(canvas && canvas.parentElement) {
-    canvas.width = canvas.parentElement.offsetWidth;
-    canvas.height = canvas.parentElement.offsetHeight;
-  }
-}
+            dvds.forEach(dvd => {
+                // Create DVD Item
+                const dvdItem = document.createElement('div');
+                dvdItem.className = 'dvd-item';
+                
+                // Build the HTML structure
+                const trackListHtml = dvd.tracks.map((t, i) => 
+                    `<li>${i + 1}. ${t.title}</li>`
+                ).join('');
 
-function drawStatic() {
-  if (!ctx) return;
-  const w = canvas.width;
-  const h = canvas.height;
-  const idata = ctx.createImageData(w, h);
-  const buffer32 = new Uint32Array(idata.data.buffer);
-  const len = buffer32.length;
+                dvdItem.innerHTML = `
+                    <div class="dvd-case">
+                        <div class="dvd-spine" style="background-color: ${dvd.spine_color || '#333'};">
+                            ${dvd.title.toUpperCase()}
+                        </div>
+                        <div class="dvd-face dvd-front">
+                            <img src="${dvd.cover_url}" alt="${dvd.title} Cover" loading="lazy">
+                        </div>
+                    </div>
+                    <div class="dvd-info">
+                        <h3>${dvd.title}</h3>
+                        <ul class="tracklist">
+                            ${trackListHtml}
+                        </ul>
+                    </div>
+                `;
 
-  for (let i = 0; i < len; i++) {
-    if (Math.random() < 0.1) buffer32[i] = 0xffffffff; // White
-    else if(Math.random() < 0.05) buffer32[i] = 0xff000000; // Black
-    else buffer32[i] = 0x00000000; // Transparent
-  }
-  ctx.putImageData(idata, 0, 0);
-  staticAnimationId = requestAnimationFrame(drawStatic);
-}
+                // Add Click Event to Play
+                dvdItem.addEventListener('click', () => {
+                    startDvdQueue(dvd.title, dvd.tracks);
+                });
 
-function playStaticEffect() {
-  if (!canvas) return;
-  resizeCanvas();
-  canvas.style.opacity = "1";
-  drawStatic();
-  
-  // Stop static after 600ms
-  setTimeout(() => {
-    canvas.style.opacity = "0";
-    cancelAnimationFrame(staticAnimationId);
-    if(ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
-  }, 600);
-}
+                dvdContainer.appendChild(dvdItem);
+            });
+        })
+        .catch(err => console.error("Error loading DVDs:", err));
 
-// --- PLAYER LOGIC ---
-window.playDvd = function(dvdId) {
-  const dvd = dvdLibrary[dvdId];
-  if (!dvd) return;
-  currentQueue = dvd.tracks;
-  currentTrackIndex = 0;
-  
-  if(controlsDiv) controlsDiv.style.display = "flex";
-  if(statusDiv) statusDiv.style.display = "block";
-  
-  openModal();
-  loadTrack();
-};
 
-function openModal() {
-  if(modal) {
-    modal.classList.remove("hidden");
-    modal.style.display = "flex"; // Ensure flex display
-    document.body.style.overflow = "hidden";
-    playStaticEffect();
-  }
-}
+    // --- 2. PLAYER LOGIC ---
 
-// Reuse existing close logic from episodes.js or overwrite it here specifically for DVD
-if(closeBtn) {
-  closeBtn.addEventListener('click', () => {
-    iframe.src = "";
-    modal.classList.add("hidden");
-    document.body.style.overflow = "";
-    currentQueue = [];
-    if(statusDiv) statusDiv.innerHTML = "";
-  });
-}
+    function startDvdQueue(title, tracks) {
+        currentQueue = tracks;
+        currentTrackIndex = 0;
+        
+        // Show Controls
+        if(controlsDiv) controlsDiv.style.display = "flex";
+        if(statusDiv) statusDiv.style.display = "block";
+        
+        openModal();
+        loadTrack();
+    }
 
-window.loadTrack = function() {
-  if (currentQueue.length === 0) return;
-  const track = currentQueue[currentTrackIndex];
-  
-  // Delay video load slightly to sync with static fade out
-  setTimeout(() => {
-    // Add autoplay param
-    iframe.src = track.url.includes('?') ? track.url + "&autoplay=1" : track.url + "?autoplay=1";
-  }, 300);
-  
-  if(statusDiv) statusDiv.innerHTML = `Now Playing: ${track.title}`;
-  
-  if(btnPrev) btnPrev.disabled = currentTrackIndex === 0;
-  if(btnNext) btnNext.innerHTML = currentTrackIndex === currentQueue.length - 1 ? "Finish" : "Next ⏭";
-};
+    function openModal() {
+        modal.classList.remove("hidden");
+        modal.style.display = "flex";
+        document.body.style.overflow = "hidden";
+        playStaticEffect();
+    }
 
-window.nextTrack = function() {
-  if (currentTrackIndex < currentQueue.length - 1) {
-    currentTrackIndex++;
-    playStaticEffect();
-    loadTrack();
-  } else {
-    // End of queue
-    closeBtn.click();
-  }
-};
+    function closeModal() {
+        iframe.src = "";
+        modal.classList.add("hidden");
+        modal.style.display = "none";
+        document.body.style.overflow = "";
+        currentQueue = [];
+        if(statusDiv) statusDiv.innerHTML = "";
+    }
 
-window.prevTrack = function() {
-  if (currentTrackIndex > 0) {
-    currentTrackIndex--;
-    playStaticEffect();
-    loadTrack();
-  }
-};
+    // Attach close event
+    if(closeBtn) closeBtn.onclick = closeModal;
+
+    // Navigation Functions
+    window.loadTrack = function() {
+        if (currentQueue.length === 0) return;
+        const track = currentQueue[currentTrackIndex];
+        
+        // Delay slightly for static effect
+        setTimeout(() => {
+            const separator = track.url.includes('?') ? '&' : '?';
+            iframe.src = `${track.url}${separator}autoplay=1`;
+        }, 300);
+        
+        if(statusDiv) statusDiv.innerHTML = `Now Playing: ${track.title} <span style="font-size:0.8em">(${currentTrackIndex+1}/${currentQueue.length})</span>`;
+        
+        if(btnPrev) btnPrev.disabled = currentTrackIndex === 0;
+        if(btnNext) {
+            btnNext.innerHTML = currentTrackIndex === currentQueue.length - 1 ? "Finish" : "Next ⏭";
+        }
+    };
+
+    window.nextTrack = function() {
+        if (currentTrackIndex < currentQueue.length - 1) {
+            currentTrackIndex++;
+            playStaticEffect();
+            loadTrack();
+        } else {
+            closeModal();
+        }
+    };
+
+    window.prevTrack = function() {
+        if (currentTrackIndex > 0) {
+            currentTrackIndex--;
+            playStaticEffect();
+            loadTrack();
+        }
+    };
+
+    // --- 3. CANVAS STATIC EFFECT ---
+    function playStaticEffect() {
+        if (!canvas || !ctx) return;
+        
+        canvas.width = canvas.parentElement.offsetWidth;
+        canvas.height = canvas.parentElement.offsetHeight;
+        canvas.style.opacity = "1";
+        
+        function draw() {
+            const w = canvas.width;
+            const h = canvas.height;
+            const idata = ctx.createImageData(w, h);
+            const buffer32 = new Uint32Array(idata.data.buffer);
+            
+            for (let i = 0; i < buffer32.length; i++) {
+                if (Math.random() < 0.1) buffer32[i] = 0xffffffff; // White
+                else if(Math.random() < 0.05) buffer32[i] = 0xff000000; // Black
+                else buffer32[i] = 0x00000000; // Transparent
+            }
+            ctx.putImageData(idata, 0, 0);
+            staticAnimationId = requestAnimationFrame(draw);
+        }
+        
+        draw();
+
+        // Stop after 600ms
+        setTimeout(() => {
+            canvas.style.opacity = "0";
+            cancelAnimationFrame(staticAnimationId);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }, 600);
+    }
+});
