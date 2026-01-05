@@ -12,7 +12,6 @@
 
     <!-- Core Setup -->
     <script>
-        // Set global language for scripts (Defaults to en-gb if not found in URL)
         const pathMatch = window.location.pathname.match(/^\/([a-z]{2}-[a-z]{2})(\/|$)/i);
         window.LANG_CODE = pathMatch ? pathMatch[1].toLowerCase() : "en-gb";
     </script>
@@ -29,19 +28,18 @@
     </div>
 
     <header>
-        <div class="container">
+        <div class="container fade-in-up">
             <h1>Thomas Archive</h1>
             <p>A comprehensive collection of episodes, specials, and fan creations</p>
             
             <section id="join-discord">
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <div id="discord-avatars"></div>
-                    <!-- Added ID for discordWidget.js -->
-                    <span id="discord-stats" style="font-size: 0.9rem; opacity: 0.9;">Connecting...</span>
+                    <span id="discord-stats" style="font-size: 0.9rem; font-weight: bold;">Loading...</span>
                 </div>
                 <div style="display: flex; gap: 10px;">
                     <a id="discord-invite" href="https://discord.gg/" target="_blank">🚂 Join Discord</a>
-                    <a href="#" class="like-button" style="background:#ff4757; padding:0.4rem 1rem; border-radius:6px; color:white; font-weight:bold; text-decoration:none;">❤️ Like</a>
+                    <a href="#" class="like-button">❤️ Like</a>
                 </div>
             </section>
         </div>
@@ -49,28 +47,21 @@
 
     <main>
         <!-- Episodes Section -->
-        <section id="episodes">
-            <!-- ID added for funnySounds.js -->
+        <section id="episodes" class="fade-in-up" style="animation-delay: 0.1s;">
             <h2 id="episodes-heading">Episodes</h2>
-            
-            <!-- Scripts (episodes.js) will inject the .series-selector here -->
-            <!-- Scripts will populate #episode-list -->
             <div id="episode-list"></div>
         </section>
 
         <!-- DVD Collection -->
-        <section id="dvd-collection">
+        <section id="dvd-collection" class="fade-in-up" style="animation-delay: 0.2s;">
             <h2>DVD Collection</h2>
-            <p>Select a DVD case to play the full disc queue.</p>
-            
-            <!-- Scripts (dvdPlayer.js) will populate .dvd-grid -->
+            <p style="margin-bottom: 2rem; color: #666;">Select a DVD case to play the full disc queue.</p>
             <div class="dvd-grid"></div>
         </section>
 
         <!-- Games -->
-        <section id="games">
+        <section id="games" class="fade-in-up" style="animation-delay: 0.3s;">
             <h2>Games</h2>
-            <!-- Scripts (funnySounds.js) target #games > h2 -->
             <div class="game-grid">
                 <div class="game-item">
                     <a href="#" onclick="openVideo('/games/design-your-engine.html'); return false;">
@@ -78,28 +69,12 @@
                         <strong>Design Your Engine</strong>
                     </a>
                 </div>
-            </div>
-        </section>
-
-        <!-- Stats -->
-        <section id="completion-stats">
-            <h2>Completion Progress</h2>
-            <div class="completion-item">
-                <span>UK English Dub</span>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 100%;">100%</div>
-                </div>
-            </div>
-            <div class="completion-item">
-                <span>US English Dub</span>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 9.1%;">9.1%</div>
-                </div>
+                 <!-- You can add more game items here later -->
             </div>
         </section>
 
         <!-- Credits -->
-        <section id="credits">
+        <section id="credits" class="fade-in-up" style="animation-delay: 0.4s;">
             <h2>Special Thanks</h2>
             <div class="credits-grid">
                 <div class="credit-item">
@@ -128,7 +103,6 @@
     </footer>
 
     <!-- Universal Video Modal -->
-    <!-- Structure required by dvdPlayer.js & episodes.js -->
     <div id="video-modal" class="modal hidden">
         <div class="modal-content">
             <button id="modal-close" aria-label="Close video modal">&times;</button>
@@ -143,11 +117,11 @@
     </div>
 
     <!-- Scripts -->
-    <script src="/scripts/geoRedirect.js"></script> <!-- Run early -->
+    <script src="/scripts/geoRedirect.js"></script>
     <script src="/scripts/discordWidget.js" defer></script>
     <script src="/scripts/episodes.js" defer></script>
     <script src="/scripts/dvdPlayer.js" defer></script>
     <script src="/scripts/funnySounds.js" defer></script>
-    <script src="/scripts/main.js" defer></script> <!-- Terms Modal Logic -->
+    <script src="/scripts/main.js" defer></script>
 </body>
 </html>
