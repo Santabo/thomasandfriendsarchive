@@ -29,11 +29,13 @@ async function loadDiscordWidget() {
     const inviteBtn = document.getElementById("discord-invite");
     if (inviteBtn) inviteBtn.href = data.instant_invite;
 
-    // Update online stats - Fixed text as requested
+    // Update online stats - Anonymous text as requested
     const stats = document.getElementById("discord-stats");
     if (stats) {
-      const count = realMembers.length;
-      stats.textContent = `● ${count} Online`;
+      // Replaced specific number with generic "Online" status
+      stats.textContent = "● Online";
+      stats.style.color = "#43b581"; // Discord green
+      stats.style.fontWeight = "bold";
     }
 
     // Show avatars (up to 8 real members)
@@ -45,16 +47,12 @@ async function loadDiscordWidget() {
         img.src = member.avatar_url || "https://cdn.discordapp.com/embed/avatars/0.png"; // default avatar fallback
         img.alt = `${member.username}'s avatar`;
         img.title = member.username;
-        // Styles are now handled in CSS for better consistency, but inline here for safety if CSS fails
+        // Basic styles, CSS handles the fancy stuff
         img.style.width = "28px";
         img.style.height = "28px";
         img.style.borderRadius = "50%";
-        img.style.border = "2px solid white";
-        img.style.marginLeft = "-8px";
         avatarsContainer.appendChild(img);
       });
-      // Fix first margin
-      if(avatarsContainer.firstChild) avatarsContainer.firstChild.style.marginLeft = "0";
     }
 
   } catch (error) {
