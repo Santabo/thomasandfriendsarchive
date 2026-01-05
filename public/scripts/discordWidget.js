@@ -4,7 +4,7 @@ async function loadDiscordWidget() {
     if (!res.ok) throw new Error("Failed to fetch Discord data");
     const data = await res.json();
 
-    // Bot usernames to exclude
+    // Bot usernames to exclude from counts/lists
     const botUsernames = [
       "Arcane-chan ✨",
       "Birthday Bot",
@@ -25,34 +25,43 @@ async function loadDiscordWidget() {
       member => !botUsernames.includes(member.username)
     );
 
-    // Update invite link
+    // 1. Update invite link
     const inviteBtn = document.getElementById("discord-invite");
     if (inviteBtn) inviteBtn.href = data.instant_invite;
 
-    // Update online stats - Anonymous text as requested
+    // 2. Update online stats (Count restored, text simplified)
     const stats = document.getElementById("discord-stats");
     if (stats) {
-      // Replaced specific number with generic "Online" status
-      stats.textContent = "● Online";
+      const count = realMembers.length;
+      stats.textContent = `● ${count} Online`;
       stats.style.color = "#43b581"; // Discord green
       stats.style.fontWeight = "bold";
     }
 
-    // Show avatars (up to 8 real members)
+    // 3. Clear Widget Avatars (Made anonymous as requested)
     const avatarsContainer = document.getElementById("discord-avatars");
     if (avatarsContainer) {
-      avatarsContainer.innerHTML = ""; // Clear existing avatars
-      realMembers.slice(0, 8).forEach(member => {
-        const img = document.createElement("img");
-        img.src = member.avatar_url || "https://cdn.discordapp.com/embed/avatars/0.png"; // default avatar fallback
-        img.alt = `${member.username}'s avatar`;
-        img.title = member.username;
-        // Basic styles, CSS handles the fancy stuff
-        img.style.width = "28px";
-        img.style.height = "28px";
-        img.style.borderRadius = "50%";
-        avatarsContainer.appendChild(img);
-      });
+      avatarsContainer.innerHTML = ""; 
+    }
+
+    // 4. Update "Special Thanks" Profile Pictures
+    // This looks for users in the Special Thanks section and updates their PFP if they are online in the widget.
+    const creditItems = document.querySelectorAll('.credit-item');
+    if (creditItems.length > 0) {
+        creditItems.forEach(item => {
+            const nameEl = item.querySelector('strong');
+            const imgEl = item.querySelector('img');
+            
+            if (nameEl && imgEl) {
+                const username = nameEl.textContent.trim();
+                // Find matching user in the online list
+                const onlineUser = realMembers.find(m => m.username === username || m.username.toLowerCase() === username.toLowerCase());
+                
+                if (onlineUser && onlineUser.avatar_url) {
+                    imgEl.src = onlineUser.avatar_url;
+                }
+            }
+        });
     }
 
   } catch (error) {
