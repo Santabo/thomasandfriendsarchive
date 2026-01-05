@@ -1,144 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Devious Diesel Says Hello</title>
-  <meta name="description" content="Devious Diesel's message for Percy" />
-  <link rel="icon" href="https://i.ibb.co/SDBYYshc/image-2025-07-09-212116843.png" type="image/png" />
-  <style>
-    @font-face {
-      font-family: 'Flange BQ Bold';
-      src: url('/flangebq_bold.ttf') format('truetype');
-      font-weight: bold;
-      font-style: normal;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Devious Diesel Says Hello</title>
+    <meta name="description" content="Devious Diesel's message for Percy" />
+    
+    <!-- Use main site styles for layout consistency -->
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="icon" href="https://i.ibb.co/SDBYYshc/image-2025-07-09-212116843.png" type="image/png" />
 
-    html, body {
-      height: 100%;
-      margin: 0;
-      font-family: 'Flange BQ Bold', Arial, sans-serif;
-      background: url('https://i.ibb.co/C3sbhdqF/1mbVv11I.png') no-repeat center center fixed;
-      background-size: cover;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      color: #ddd;
-      user-select: text;
-    }
+    <style>
+        /* --- DIESEL THEME OVERRIDES --- */
+        
+        /* 1. Background & Base */
+        body {
+            /* Keep the Diesel background */
+            background: url('https://i.ibb.co/C3sbhdqF/1mbVv11I.png') no-repeat center center fixed;
+            background-size: cover;
+            color: #cbbfa8; /* Rusty/Bone text color */
+        }
 
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(10, 10, 10, 0.8);
-      z-index: 0;
-    }
+        /* Dark overlay to make text readable */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 12, 10, 0.85); /* Dark brown/black tint */
+            z-index: -1;
+        }
 
-    .container {
-      position: relative;
-      z-index: 1;
-      background: rgba(30, 28, 26, 0.88);
-      padding: 2.5rem 2rem;
-      max-width: 520px;
-      border-radius: 12px;
-      box-shadow: 0 0 25px rgba(0,0,0,0.8);
-      border: 1.5px solid #5a4a3c;
-    }
+        /* 2. Header Override - Diesel Style */
+        header {
+            /* Overwrite the blue gradient with a dark, oily look */
+            background: linear-gradient(135deg, #1a1a1a, #2e2a24, #000);
+            border-bottom: 4px solid #d63b3b; /* Rusty red border instead of yellow */
+            box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+            animation: none; /* No shifting gradient */
+        }
 
-    h1 {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      color: #d63b3b; /* Deep rusty red */
-      text-shadow: 2px 2px 4px #1a0d0d;
-    }
+        header h1 {
+            color: #d63b3b; /* Rusty red title */
+            text-shadow: 2px 2px 4px #000;
+        }
+        
+        header p {
+            color: #888;
+        }
 
-    p {
-      font-size: 1.15rem;
-      line-height: 1.6;
-      color: #cbbfa8;
-      text-shadow: 1px 1px 1px #2e2a24;
-      margin-bottom: 2rem;
-    }
+        /* 3. Discord Section Override */
+        #join-discord {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: #5a4a3c;
+        }
+        #discord-invite {
+            background: #d63b3b; /* Red button */
+        }
+        #discord-invite:hover {
+            background: #b52b2b;
+        }
 
-    img.diesel-img {
-      max-width: 100%;
-      height: auto;
-      margin-bottom: 1.5rem;
-      filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.6));
-    }
-  </style>
+        /* 4. Main Content Box */
+        .diesel-container {
+            background: rgba(30, 28, 26, 0.92);
+            border: 1px solid #5a4a3c;
+            border-radius: 12px;
+            padding: 3rem;
+            max-width: 700px;
+            margin: 2rem auto;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(0,0,0,0.9);
+        }
+
+        .diesel-img {
+            max-width: 100%;
+            height: auto;
+            filter: drop-shadow(0 0 15px rgba(0,0,0,0.7));
+            margin-bottom: 2rem;
+            transition: transform 0.5s ease;
+        }
+        .diesel-img:hover {
+            transform: scale(1.02);
+        }
+
+        h2.diesel-title {
+            font-family: 'Flange BQ Bold', sans-serif;
+            font-size: 2.5rem;
+            color: #d63b3b;
+            margin-bottom: 1.5rem;
+            border-bottom: none; /* Remove standard underline */
+            text-shadow: 2px 2px 4px #000;
+        }
+
+        .diesel-message {
+            font-size: 1.25rem;
+            line-height: 1.8;
+            color: #cbbfa8;
+        }
+
+        /* 5. Footer Override */
+        footer {
+            background: rgba(20, 20, 20, 0.9);
+            color: #666;
+            border-top: 1px solid #333;
+        }
+        
+        footer a { color: #d63b3b; }
+    </style>
 </head>
+
 <body>
-  <div class="overlay"></div>
-  <div class="container" role="main" aria-labelledby="diesel-title">
-    <img src="https://i.ibb.co/Pvk78BJk/Diesel-CGITransparent-Promo.png" alt="Devious Diesel" class="diesel-img" />
-    <h1 id="diesel-title">Hello Percy</h1>
-    <p id="diesel-message">
-      You took a wrong turn… but maybe it was the right one.<br><br>
-      Thomas isn’t your friend anymore — he’s abandoned you.<br>
-      But we haven’t.<br><br>
-      The Dieselworks can be your home now.<br>
-      All you have to do is trust me.
-    </p>
-  </div>
+    <header>
+        <div class="container fade-in-up">
+            <!-- Modified title to fit the page context -->
+            <h1>Dieselworks Archive</h1>
+            <p>We haven't abandoned you...</p>
+            
+            <section id="join-discord">
+                <div style="display: flex; gap: 10px;">
+                    <a id="discord-invite" href="https://discord.gg/" target="_blank">🚂 Join The Others</a>
+                </div>
+            </section>
+        </div>
+    </header>
 
-  <script>
-    // Translation dictionary for supported languages
-    const translations = {
-      en: {
-        title: "Hello Percy",
-        message: `You took a wrong turn… but maybe it was the right one.<br><br>
-Thomas isn’t your friend anymore — he’s abandoned you.<br>
-But we haven’t.<br><br>
-The Dieselworks can be your home now.<br>
-All you have to do is trust me.`
-      },
-      es: {
-        title: "Hola Percy",
-        message: `Tomaste un giro equivocado… pero quizás fue el correcto.<br><br>
-Thomas ya no es tu amigo — te ha abandonado.<br>
-Pero nosotros no.<br><br>
-Las Dieselworks pueden ser tu hogar ahora.<br>
-Solo tienes que confiar en mí.`
-      },
-      fr: {
-        title: "Bonjour Percy",
-        message: `Tu as pris un mauvais virage… mais peut-être que c'était le bon.<br><br>
-Thomas n'est plus ton ami — il t'a abandonné.<br>
-Mais pas nous.<br><br>
-Les Dieselworks peuvent être ta maison maintenant.<br>
-Tu dois juste me faire confiance.`
-      },
-      de: {
-        title: "Hallo Percy",
-        message: `Du bist falsch abgebogen… aber vielleicht war es der richtige Weg.<br><br>
-Thomas ist nicht mehr dein Freund — er hat dich verlassen.<br>
-Aber wir nicht.<br><br>
-Die Dieselworks können jetzt dein Zuhause sein.<br>
-Du musst mir nur vertrauen.`
-      },
-      // Add more languages as needed
-    };
+    <main>
+        <div class="container fade-in-up" style="animation-delay: 0.2s;">
+            <div class="diesel-container">
+                <img src="https://i.ibb.co/Pvk78BJk/Diesel-CGITransparent-Promo.png" alt="Devious Diesel" class="diesel-img" />
+                
+                <h2 class="diesel-title" id="diesel-title">Hello Percy</h2>
+                
+                <div class="diesel-message" id="diesel-message">
+                    <p>You took a wrong turn… but maybe it was the right one.</p>
+                    <p>Thomas isn’t your friend anymore — he’s abandoned you.<br>
+                    But we haven’t.</p>
+                    <p>The Dieselworks can be your home now.<br>
+                    All you have to do is trust me.</p>
+                </div>
+                
+                <div style="margin-top: 2rem;">
+                    <a href="/index.html" class="queue-btn" style="background: #333; border: 1px solid #555;">Return to Light</a>
+                </div>
+            </div>
+        </div>
+    </main>
 
-    function getUserLang() {
-      const lang = navigator.language || navigator.userLanguage || 'en';
-      // Extract first two letters (language code only)
-      return lang.toLowerCase().slice(0, 2);
-    }
+    <footer>
+        <div class="container">
+            <p>
+                &copy; 2025 Thomas Archive. <br />
+                <a href="/terms-of-use.html">Terms of Use</a>
+            </p>
+        </div>
+    </footer>
 
-    function applyTranslation(langCode) {
-      const translation = translations[langCode] || translations.en;
-      document.getElementById('diesel-title').innerHTML = translation.title;
-      document.getElementById('diesel-message').innerHTML = translation.message;
-      document.title = `Devious Diesel Says Hello — ${translation.title}`;
-    }
+    <script>
+        // Translation logic
+        const translations = {
+            en: {
+                title: "Hello Percy",
+                message: `<p>You took a wrong turn… but maybe it was the right one.</p>
+                          <p>Thomas isn’t your friend anymore — he’s abandoned you.<br>But we haven’t.</p>
+                          <p>The Dieselworks can be your home now.<br>All you have to do is trust me.</p>`
+            },
+            es: {
+                title: "Hola Percy",
+                message: `<p>Tomaste un giro equivocado… pero quizás fue el correcto.</p>
+                          <p>Thomas ya no es tu amigo — te ha abandonado.<br>Pero nosotros no.</p>
+                          <p>Las Dieselworks pueden ser tu hogar ahora.<br>Solo tienes que confiar en mí.</p>`
+            },
+            fr: {
+                title: "Bonjour Percy",
+                message: `<p>Tu as pris un mauvais virage… mais peut-être que c'était le bon.</p>
+                          <p>Thomas n'est plus ton ami — il t'a abandonné.<br>Mais pas nous.</p>
+                          <p>Les Dieselworks peuvent être ta maison maintenant.<br>Tu dois juste me faire confiance.</p>`
+            },
+            de: {
+                title: "Hallo Percy",
+                message: `<p>Du bist falsch abgebogen… aber vielleicht war es der richtige Weg.</p>
+                          <p>Thomas ist nicht mehr dein Freund — er hat dich verlassen.<br>Aber wir nicht.</p>
+                          <p>Die Dieselworks können jetzt dein Zuhause sein.<br>Du musst mir nur vertrauen.</p>`
+            }
+        };
 
-    // Run on DOM ready
-    document.addEventListener('DOMContentLoaded', () => {
-      const lang = getUserLang();
-      applyTranslation(lang);
-    });
-  </script>
+        function getUserLang() {
+            const lang = navigator.language || navigator.userLanguage || 'en';
+            return lang.toLowerCase().slice(0, 2);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const lang = getUserLang();
+            const translation = translations[lang] || translations.en;
+            
+            document.getElementById('diesel-title').innerHTML = translation.title;
+            document.getElementById('diesel-message').innerHTML = translation.message;
+            document.title = `Devious Diesel Says Hello — ${translation.title}`;
+        });
+    </script>
 </body>
 </html>
