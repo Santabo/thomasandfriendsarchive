@@ -11,101 +11,172 @@
     <link rel="icon" href="https://i.ibb.co/SDBYYshc/image-2025-07-09-212116843.png" type="image/png" />
 
     <style>
-        /* --- DIESEL THEME OVERRIDES --- */
+        /* --- DIESELWORKS THEME OVERHAUL --- */
         
-        /* 1. Background & Base */
+        /* 1. Atmospheric Background */
         body {
-            /* Keep the Diesel background */
             background: url('https://i.ibb.co/C3sbhdqF/1mbVv11I.png') no-repeat center center fixed;
             background-size: cover;
-            color: #cbbfa8; /* Rusty/Bone text color */
+            color: #e0d8c8; /* Bone white text */
+            overflow-x: hidden;
         }
 
-        /* Dark overlay to make text readable */
+        /* Vignette & Tint Overlay */
         body::before {
             content: '';
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 12, 10, 0.85); /* Dark brown/black tint */
+            /* Radial gradient for spotlight effect + noise texture feel */
+            background: radial-gradient(circle at center, rgba(30, 20, 10, 0.6) 0%, rgba(0, 0, 0, 0.95) 90%);
             z-index: -1;
+            pointer-events: none;
         }
 
-        /* 2. Header Override - Diesel Style */
+        /* 2. Header - Oily Industrial Look */
         header {
-            /* Overwrite the blue gradient with a dark, oily look */
-            background: linear-gradient(135deg, #1a1a1a, #2e2a24, #000);
-            border-bottom: 4px solid #d63b3b; /* Rusty red border instead of yellow */
-            box-shadow: 0 4px 20px rgba(0,0,0,0.8);
-            animation: none; /* No shifting gradient */
+            background: linear-gradient(180deg, #111 0%, #2a2520 100%);
+            border-bottom: 3px solid #8b0000; /* Blood/Rust red */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.9);
+            padding-bottom: 2rem; /* Little more space */
         }
 
         header h1 {
-            color: #d63b3b; /* Rusty red title */
-            text-shadow: 2px 2px 4px #000;
+            color: #d63b3b;
+            font-family: 'Flange BQ Bold', Impact, sans-serif;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            text-transform: uppercase;
         }
         
         header p {
-            color: #888;
+            color: #8a7f70;
+            font-style: italic;
+            font-family: 'Segoe UI', serif;
         }
 
-        /* 3. Discord Section Override */
+        /* 3. Discord Section - Darker Integration */
         #join-discord {
-            background: rgba(0, 0, 0, 0.4);
-            border-color: #5a4a3c;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #443a30;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
         }
         #discord-invite {
-            background: #d63b3b; /* Red button */
+            background: #8b0000;
+            border: 1px solid #ff4444;
+            box-shadow: 0 0 10px rgba(139, 0, 0, 0.4);
+            text-shadow: 1px 1px 0 #000;
         }
         #discord-invite:hover {
-            background: #b52b2b;
+            background: #a30000;
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(139, 0, 0, 0.6);
         }
 
-        /* 4. Main Content Box */
+        /* 4. Main Content Container - The "Iron Box" */
         .diesel-container {
-            background: rgba(30, 28, 26, 0.92);
+            position: relative;
+            background: linear-gradient(160deg, #2b2622 0%, #1a1614 100%);
             border: 1px solid #5a4a3c;
-            border-radius: 12px;
-            padding: 3rem;
-            max-width: 700px;
-            margin: 2rem auto;
+            /* Double border effect using box-shadow */
+            box-shadow: 
+                0 0 0 4px #1a1614, 
+                0 0 0 5px #5a4a3c,
+                0 20px 50px rgba(0,0,0,1);
+            border-radius: 4px; /* Sharper corners for industrial look */
+            padding: 3.5rem 2rem;
+            max-width: 650px;
+            margin: 4rem auto;
             text-align: center;
-            box-shadow: 0 0 50px rgba(0,0,0,0.9);
         }
+
+        /* Rusty rivets in corners (Pseudo-elements) */
+        .diesel-container::after, .diesel-container::before {
+            content: '';
+            position: absolute;
+            width: 10px; height: 10px;
+            background: #333;
+            border-radius: 50%;
+            box-shadow: inset 1px 1px 2px rgba(255,255,255,0.1), 1px 1px 2px rgba(0,0,0,0.5);
+            top: 15px;
+        }
+        .diesel-container::before { left: 15px; }
+        .diesel-container::after { right: 15px; }
 
         .diesel-img {
             max-width: 100%;
             height: auto;
-            filter: drop-shadow(0 0 15px rgba(0,0,0,0.7));
+            /* Enhanced shadow for depth */
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.8));
             margin-bottom: 2rem;
-            transition: transform 0.5s ease;
+            transform: scale(1);
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), filter 0.6s ease;
         }
         .diesel-img:hover {
-            transform: scale(1.02);
+            transform: scale(1.05);
+            filter: drop-shadow(0 15px 30px rgba(0,0,0,1));
         }
 
+        /* Typography */
         h2.diesel-title {
             font-family: 'Flange BQ Bold', sans-serif;
-            font-size: 2.5rem;
-            color: #d63b3b;
+            font-size: 3rem;
+            background: linear-gradient(to bottom, #ff5555, #8b0000);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent; /* Gradient text */
             margin-bottom: 1.5rem;
-            border-bottom: none; /* Remove standard underline */
-            text-shadow: 2px 2px 4px #000;
+            border: none;
+            padding: 0;
+            text-transform: uppercase;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
         }
 
         .diesel-message {
-            font-size: 1.25rem;
-            line-height: 1.8;
-            color: #cbbfa8;
+            font-size: 1.3rem;
+            line-height: 1.7;
+            color: #dcd0c0;
+            font-weight: 300;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 2rem 0;
+            margin: 0 1rem;
         }
 
-        /* 5. Footer Override */
-        footer {
-            background: rgba(20, 20, 20, 0.9);
-            color: #666;
-            border-top: 1px solid #333;
+        /* 5. "Return" Button - The Escape Hatch */
+        .escape-btn {
+            display: inline-block;
+            margin-top: 2.5rem;
+            padding: 1rem 2.5rem;
+            font-family: 'Flange BQ Bold', sans-serif;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 2px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 0 10px rgba(0,0,0,1);
         }
         
-        footer a { color: #d63b3b; }
+        .escape-btn:hover {
+            color: #fff;
+            border-color: #fff;
+            box-shadow: 0 0 20px rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Footer Override */
+        footer {
+            background: #0d0b0a;
+            color: #444;
+            border-top: 1px solid #222;
+        }
+        footer a { color: #666; transition: color 0.2s; }
+        footer a:hover { color: #d63b3b; }
+
     </style>
 </head>
 
@@ -139,8 +210,9 @@
                     All you have to do is trust me.</p>
                 </div>
                 
-                <div style="margin-top: 2rem;">
-                    <a href="/index.html" class="queue-btn" style="background: #333; border: 1px solid #555;">Return to Light</a>
+                <div>
+                    <!-- Updated text to be thematic -->
+                    <a href="/index.html" class="escape-btn">Return to the Main Line</a>
                 </div>
             </div>
         </div>
