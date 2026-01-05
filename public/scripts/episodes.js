@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const sections = [
     ...Array.from({ length: 24 }, (_, i) => `season${i + 1}`),
     'jackandthepack',
-    'tugs',           // <-- added TUGS here
+    'tugs',            // <-- added TUGS here
     'specials',
     'fan'
   ];
