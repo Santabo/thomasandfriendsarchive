@@ -108,7 +108,7 @@ h2 {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 3rem;
+  gap: 4rem; /* Increased gap for 3D rotation space */
   padding: 2rem 1rem;
   perspective: 1200px; /* Perspective on container for scene */
 }
@@ -144,7 +144,7 @@ h2 {
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-  border-radius: 2px 4px 4px 2px;
+  border-radius: 0 4px 4px 0;
   overflow: hidden;
   box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
   /* The front face is the default plane */
@@ -155,13 +155,14 @@ h2 {
 .dvd-spine {
   position: absolute;
   top: 0; 
-  left: 0;
+  left: -24px; /* Move to the left of the front cover */
   width: 24px; /* Spine Thickness */
   height: 100%;
   background: #222;
-  /* Math: Rotate -90deg so it sticks out to the left. 
-     Transform origin left means it pivots on the left edge of the front cover */
-  transform-origin: left;
+  
+  /* Pivot from the right edge (which touches the front cover's left edge) */
+  transform-origin: right;
+  /* Rotate back 90 degrees */
   transform: rotateY(-90deg);
   
   /* Flexbox for text */
@@ -314,13 +315,52 @@ h2 {
   text-decoration: none;
   color: white;
   transition: background 0.3s ease, transform 0.2s;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 #discord-invite:hover { background: #4752c4; transform: translateY(-2px); }
 
 .like-button {
-  transition: transform 0.2s;
+  background: #ff4757;
+  padding: 0.5rem 1.2rem;
+  border-radius: 20px;
+  font-weight: bold;
+  text-decoration: none;
+  color: white;
+  transition: transform 0.2s, background 0.2s;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
-.like-button:hover { transform: scale(1.1); }
+.like-button:hover { background: #ff2e43; transform: translateY(-2px); }
+
+/* SPECIAL THANKS / CREDITS (Fixed) */
+.credits-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+}
+.credit-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 120px;
+  text-align: center;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.credit-item:hover { transform: scale(1.1); }
+
+.credit-item img {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  border: 3px solid #005eb8;
+  margin-bottom: 0.8rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  background: white;
+  object-fit: cover;
+}
+.credit-item strong {
+  color: #333;
+  font-size: 0.9rem;
+}
 
 /* FOOTER */
 footer {
