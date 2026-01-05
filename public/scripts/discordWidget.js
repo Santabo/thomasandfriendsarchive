@@ -29,11 +29,11 @@ async function loadDiscordWidget() {
     const inviteBtn = document.getElementById("discord-invite");
     if (inviteBtn) inviteBtn.href = data.instant_invite;
 
-    // Update online stats with real users only
+    // Update online stats - Fixed text as requested
     const stats = document.getElementById("discord-stats");
     if (stats) {
       const count = realMembers.length;
-      stats.textContent = `🎉 ${count} real member${count !== 1 ? "s" : ""} online right now!`;
+      stats.textContent = `● ${count} Online`;
     }
 
     // Show avatars (up to 8 real members)
@@ -45,18 +45,22 @@ async function loadDiscordWidget() {
         img.src = member.avatar_url || "https://cdn.discordapp.com/embed/avatars/0.png"; // default avatar fallback
         img.alt = `${member.username}'s avatar`;
         img.title = member.username;
-        img.style.width = "24px";
-        img.style.height = "24px";
+        // Styles are now handled in CSS for better consistency, but inline here for safety if CSS fails
+        img.style.width = "28px";
+        img.style.height = "28px";
         img.style.borderRadius = "50%";
-        img.style.marginRight = "4px";
+        img.style.border = "2px solid white";
+        img.style.marginLeft = "-8px";
         avatarsContainer.appendChild(img);
       });
+      // Fix first margin
+      if(avatarsContainer.firstChild) avatarsContainer.firstChild.style.marginLeft = "0";
     }
 
   } catch (error) {
     console.error("Discord widget error:", error);
     const stats = document.getElementById("discord-stats");
-    if (stats) stats.textContent = "⚠️ Unable to load Discord info right now.";
+    if (stats) stats.textContent = "";
   }
 }
 
