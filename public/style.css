@@ -26,7 +26,7 @@ body {
   animation: fadeInUp 0.8s ease-out forwards;
 }
 
-/* HEADER - More Lively */
+/* HEADER */
 header {
   background: linear-gradient(135deg, #007bff, #005eb8, #004494);
   background-size: 200% 200%;
@@ -64,7 +64,7 @@ h2 {
   padding-bottom: 0.25rem;
 }
 
-/* GAMES SECTION (Fixed) */
+/* GAMES SECTION */
 .game-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -103,14 +103,14 @@ h2 {
   background: #fff;
 }
 
-/* DVD 3D SECTION (Improved) */
+/* DVD 3D SECTION - FIXED ROTATION */
 .dvd-grid {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 4rem; /* Increased gap for 3D rotation space */
+  gap: 4rem; 
   padding: 2rem 1rem;
-  perspective: 1200px; /* Perspective on container for scene */
+  perspective: 1200px;
 }
 
 .dvd-item {
@@ -118,14 +118,17 @@ h2 {
   height: 300px;
   position: relative;
   cursor: pointer;
-  transform-style: preserve-3d; /* Key for children 3D */
+  transform-style: preserve-3d;
   transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  /* Initial state: Angled like on a shelf */
-  transform: rotateY(-25deg);
+  /* CORRECTED ROTATION: 
+     rotateY(30deg) makes the right side go back and left side come forward/visible.
+     This reveals the spine which we will attach to the left.
+  */
+  transform: rotateY(30deg); 
 }
 
 .dvd-item:hover {
-  /* On hover: Face forward and pop out */
+  /* Face front on hover */
   transform: rotateY(0deg) translateZ(20px) scale(1.05);
   z-index: 10;
 }
@@ -144,10 +147,9 @@ h2 {
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-  border-radius: 0 4px 4px 0;
+  border-radius: 0 4px 4px 0; /* Slight rounding on right edge */
   overflow: hidden;
   box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
-  /* The front face is the default plane */
 }
 .dvd-face.dvd-front img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -155,17 +157,18 @@ h2 {
 .dvd-spine {
   position: absolute;
   top: 0; 
-  left: -24px; /* Move to the left of the front cover */
-  width: 24px; /* Spine Thickness */
+  /* Attach to LEFT edge */
+  left: 0; 
+  width: 28px; /* Spine Thickness */
   height: 100%;
   background: #222;
   
-  /* Pivot from the right edge (which touches the front cover's left edge) */
-  transform-origin: right;
-  /* Rotate back 90 degrees */
+  /* Pivot from the left edge of the spine itself */
+  transform-origin: left;
+  /* Rotate -90deg to form the side box */
   transform: rotateY(-90deg);
   
-  /* Flexbox for text */
+  /* Visuals */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -176,10 +179,10 @@ h2 {
   letter-spacing: 1.5px;
   text-transform: uppercase;
   border-right: 1px solid rgba(255,255,255,0.1);
-  box-shadow: inset 2px 0 10px rgba(0,0,0,0.5);
+  box-shadow: inset 0 0 15px rgba(0,0,0,0.7);
 }
 
-/* DVD Info tooltip (hidden until hover) */
+/* DVD Info tooltip */
 .dvd-info {
   position: absolute;
   bottom: -10px;
@@ -319,19 +322,7 @@ h2 {
 }
 #discord-invite:hover { background: #4752c4; transform: translateY(-2px); }
 
-.like-button {
-  background: #ff4757;
-  padding: 0.5rem 1.2rem;
-  border-radius: 20px;
-  font-weight: bold;
-  text-decoration: none;
-  color: white;
-  transition: transform 0.2s, background 0.2s;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-.like-button:hover { background: #ff2e43; transform: translateY(-2px); }
-
-/* SPECIAL THANKS / CREDITS (Fixed) */
+/* CREDITS */
 .credits-grid {
   display: flex;
   flex-wrap: wrap;
