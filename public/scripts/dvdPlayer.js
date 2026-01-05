@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     `<li>${i + 1}. ${t.title}</li>`
                 ).join('');
 
+                // Spine text kept in HTML for accessibility but hidden via CSS
                 dvdItem.innerHTML = `
                     <div class="dvd-case">
                         <div class="dvd-spine" style="background-color: ${dvd.spine_color || '#333'};">
@@ -61,6 +62,21 @@ document.addEventListener('DOMContentLoaded', () => {
                         </ul>
                     </div>
                 `;
+
+                // Splash Screen Logic for Dinos & Discoveries
+                if (dvd.title.toLowerCase().includes("dinos") && dvd.title.toLowerCase().includes("discoveries")) {
+                    dvdItem.addEventListener('mouseenter', () => {
+                        const splash = document.getElementById('dvd-splash-bg');
+                        if(splash) {
+                            splash.style.backgroundImage = "url('https://i.ibb.co/0R6mFYXz/image.png')";
+                            splash.style.opacity = '0.7'; 
+                        }
+                    });
+                    dvdItem.addEventListener('mouseleave', () => {
+                        const splash = document.getElementById('dvd-splash-bg');
+                        if(splash) splash.style.opacity = '0';
+                    });
+                }
 
                 dvdItem.addEventListener('click', () => {
                     prepareAndPlayDvd(dvd);
