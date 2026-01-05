@@ -13,6 +13,7 @@ body {
   color: #333;
   line-height: 1.6;
   overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
 /* ANIMATIONS */
@@ -37,6 +38,7 @@ header {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   position: relative;
   z-index: 10;
+  overflow: hidden; /* Contain steam */
 }
 @keyframes gradientShift {
   0% { background-position: 0% 50%; }
@@ -44,10 +46,39 @@ header {
   100% { background-position: 0% 50%; }
 }
 
+.header-title-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
 header h1 { 
-  font-size: 2.5rem; 
+  font-size: 2.8rem; 
   margin-bottom: 0.5rem; 
   text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  position: relative;
+  z-index: 2;
+}
+
+/* STEAM ANIMATION */
+.steam-puff {
+    position: absolute;
+    top: -20px;
+    left: 80%;
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 70%);
+    border-radius: 50%;
+    filter: blur(10px);
+    opacity: 0;
+    z-index: 1;
+    animation: rise 4s infinite ease-out;
+}
+.delay-1 { animation-delay: 2s; left: 85%; width: 40px; height: 40px; }
+
+@keyframes rise {
+    0% { transform: translateY(0) scale(1); opacity: 0; }
+    30% { opacity: 0.6; }
+    100% { transform: translateY(-80px) scale(2.5); opacity: 0; }
 }
 
 /* MAIN CONTENT */
@@ -58,248 +89,72 @@ section { margin-bottom: 4rem; }
 h2 {
   font-size: 1.8rem;
   color: #005eb8;
-  margin: 1rem 0 1.5rem 0;
+  margin: 0; /* Reset margin for flex layout */
   border-bottom: 4px solid #ffbf00;
   display: inline-block;
   padding-bottom: 0.25rem;
 }
 
-/* GAMES SECTION */
-.game-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2rem;
-  padding: 1rem 0;
+/* EPISODE HEADER AREA */
+.section-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
 }
 
-.game-item {
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
-  text-align: center;
-  border: 1px solid rgba(0,0,0,0.05);
+/* SEARCH BAR */
+.search-wrapper {
+    position: relative;
+    max-width: 300px;
+    flex-grow: 1;
+}
+#episode-search {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    padding-right: 2.5rem;
+    border: 2px solid #ddd;
+    border-radius: 20px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+#episode-search:focus {
+    outline: none;
+    border-color: #005eb8;
+    box-shadow: 0 0 0 3px rgba(0, 94, 184, 0.1);
+}
+.search-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.5;
+    pointer-events: none;
 }
 
-.game-item:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
-}
-
-.game-item a { text-decoration: none; color: inherit; display: block; }
-
-.game-item img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-.game-item strong {
-  display: block;
-  padding: 1.2rem;
-  color: #005eb8;
-  font-size: 1.15rem;
-  background: #fff;
-}
-
-/* DVD 3D SECTION - FIXED SPINE DEPTH */
-/* Container for the collection needs relative positioning for the splash bg */
-#dvd-collection {
-  position: relative;
-}
-
-/* Splash Background Styling */
-#dvd-splash-bg {
-  position: absolute;
-  top: 0; 
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100vw; /* Stretch full width */
-  height: 100%;
-  max-width: 1400px;
-  background-size: cover;
-  background-position: center top;
-  background-repeat: no-repeat;
-  opacity: 0;
-  transition: opacity 0.5s ease-in-out;
-  z-index: 0; /* Behind grid */
-  pointer-events: none;
-  /* Fade out at the bottom to blend with page */
-  mask-image: linear-gradient(to bottom, black 20%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 100%);
-}
-
-.dvd-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 4rem; 
-  padding: 2rem 1rem;
-  perspective: 1200px;
-  position: relative;
-  z-index: 1; /* Above splash */
-}
-
-.dvd-item {
-  width: 200px;
-  height: 300px;
-  position: relative;
-  cursor: pointer;
-  transform-style: preserve-3d;
-  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  /* Default view: Angled to show spine */
-  transform: rotateY(30deg); 
-}
-
-.dvd-item:hover {
-  /* Face front on hover */
-  transform: rotateY(0deg) translateZ(20px) scale(1.05);
-  z-index: 10;
-}
-
-.dvd-case {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0; left: 0;
-  transform-style: preserve-3d;
-}
-
-/* Front Cover */
-.dvd-face.dvd-front {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
-  border-radius: 0 4px 4px 0;
-  overflow: hidden;
-  box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
-  z-index: 2; /* Ensure front is visually on top of spine seam */
-}
-.dvd-face.dvd-front img { width: 100%; height: 100%; object-fit: cover; }
-
-/* The Spine */
-.dvd-spine {
-  position: absolute;
-  top: 0; 
-  left: 0; 
-  width: 28px;
-  height: 100%;
-  background: #222;
-  
-  /* Use the custom spine texture */
-  background-image: url('https://i.ibb.co/ch5SXKnh/image.png');
-  background-size: cover;
-  background-position: center;
-  
-  /* Pivot from the LEFT edge (0,0) */
-  transform-origin: left;
-  /* Rotate 90deg positive: This swings the spine BACKWARDS into the Z-space */
-  transform: rotateY(90deg);
-  
-  /* Hide the text since we are using the image */
-  color: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-right: 1px solid rgba(255,255,255,0.1);
-  box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
-}
-
-/* DVD Info tooltip */
-.dvd-info {
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%) translateY(20px);
-  width: 240px;
-  background: white;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s, transform 0.3s;
-  z-index: -1;
-}
-.dvd-item:hover .dvd-info {
-  opacity: 1;
-  transform: translateX(-50%) translateY(100%);
-  pointer-events: auto;
-  z-index: 20;
-}
-.dvd-info h3 { margin: 0 0 0.5rem 0; font-size: 1rem; color: #005eb8; }
-.tracklist { list-style: none; padding: 0; margin: 0; font-size: 0.8rem; color: #555; text-align: left; }
-.tracklist li { padding: 3px 0; border-bottom: 1px solid #eee; }
-
-/* EPISODE SECTION */
-.season {
-  background: white;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  margin-bottom: 1.5rem;
-}
-.season-toggle {
-  background: #005eb8;
-  color: white;
-  padding: 1rem;
-  font-size: 1.2rem;
-  border: none;
-  width: 100%;
-  text-align: left;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.season-toggle:hover { background: #004a99; }
-
-.season-content, .fan-content {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 1rem;
-  padding: 1.5rem;
-  background: #f8faff;
-}
-
-.episode, .fan-item {
-  background: #ffffff;
-  border-radius: 8px;
-  overflow: hidden;
-  text-align: center;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  cursor: pointer;
-}
-.episode:hover, .fan-item:hover { 
-  transform: translateY(-4px); 
-  box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-}
-.episode img, .fan-item img {
-  width: 100%;
-  aspect-ratio: 16/9;
-  object-fit: cover;
-  display: block;
-}
-.episode h3, .fan-item h3 {
-  padding: 0.8rem 0.5rem;
-  font-size: 0.95rem;
-  color: #333;
-  margin: 0;
-}
-
-/* SERIES SELECTOR */
+/* SERIES SELECTOR - STICKY */
 .series-selector {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap; /* Horizontal scroll on mobile */
+  overflow-x: auto;
   gap: 0.8rem;
   margin-bottom: 2rem;
-  justify-content: center;
+  padding: 1rem 0;
+  position: sticky; /* Sticky Magic */
+  top: 0;
+  background: rgba(242, 247, 252, 0.95); /* Match bg color with blur */
+  backdrop-filter: blur(5px);
+  z-index: 90;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  /* Hide scrollbar visually but allow scroll */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
+.series-selector::-webkit-scrollbar { display: none; }
+
 .selector-btn {
   background: #ffcf00;
   color: #222;
@@ -309,6 +164,8 @@ h2 {
   border-radius: 20px;
   cursor: pointer;
   font-family: 'Flange BQ Bold', sans-serif;
+  white-space: nowrap; /* Don't wrap text */
+  flex-shrink: 0;
   transition: all 0.2s ease;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
@@ -319,150 +176,160 @@ h2 {
   box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
 }
 
+/* EPISODES & GAMES */
+.season-content, .fan-content, .game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* slightly larger minimum */
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+.episode, .fan-item, .game-item {
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  border: 1px solid rgba(0,0,0,0.02);
+}
+.episode:hover, .fan-item:hover, .game-item:hover { 
+  transform: translateY(-6px); 
+  box-shadow: 0 12px 20px rgba(0,0,0,0.1);
+}
+.episode img, .fan-item img, .game-item img {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  display: block;
+}
+.episode h3, .fan-item h3, .game-item strong {
+  padding: 0.8rem 0.5rem;
+  font-size: 0.95rem;
+  color: #333;
+  margin: 0;
+  display: block;
+}
+
+/* DVD 3D SECTION */
+#dvd-collection { position: relative; }
+
+/* Splash Background Styling - IMPROVED */
+#dvd-splash-bg {
+  position: absolute;
+  top: -10%; /* Start slightly higher */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw; 
+  height: 120%; /* Taller to cover scrolls */
+  background-size: cover; /* Ensure it covers properly */
+  background-position: center 20%; /* Focus on top-center */
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  z-index: 0;
+  pointer-events: none;
+  /* Add vignette to reduce perceived blur at edges and focus center */
+  box-shadow: inset 0 0 150px 100px #f2f7fc; 
+  filter: contrast(1.1) saturate(1.1); /* Pop colors */
+}
+
+.dvd-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4rem; 
+  padding: 2rem 1rem;
+  perspective: 1200px;
+  position: relative;
+  z-index: 1;
+}
+
+.dvd-item {
+  width: 200px;
+  height: 300px;
+  position: relative;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: rotateY(30deg); 
+}
+
+.dvd-item:hover {
+  transform: rotateY(0deg) translateZ(20px) scale(1.05);
+  z-index: 10;
+}
+
+.dvd-case {
+  width: 100%; height: 100%; position: absolute; top: 0; left: 0; transform-style: preserve-3d;
+}
+
+/* Front Cover */
+.dvd-face.dvd-front {
+  position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
+  border-radius: 0 4px 4px 0; overflow: hidden;
+  box-shadow: 5px 5px 15px rgba(0,0,0,0.3); z-index: 2;
+}
+.dvd-face.dvd-front img { width: 100%; height: 100%; object-fit: cover; }
+
+/* The Spine */
+.dvd-spine {
+  position: absolute; top: 0; left: 0; width: 28px; height: 100%; background: #222;
+  background-image: url('https://i.ibb.co/ch5SXKnh/image.png');
+  background-size: cover; background-position: center;
+  transform-origin: left; transform: rotateY(90deg);
+  border-right: 1px solid rgba(255,255,255,0.1);
+  box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+}
+
+/* DVD Info tooltip */
+.dvd-info {
+  position: absolute; bottom: -10px; left: 50%; width: 240px; background: white; padding: 1rem;
+  border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); opacity: 0; pointer-events: none;
+  transition: opacity 0.3s, transform 0.3s; z-index: -1; transform: translateX(-50%) translateY(20px);
+}
+.dvd-item:hover .dvd-info { opacity: 1; transform: translateX(-50%) translateY(100%); pointer-events: auto; z-index: 20; }
+.dvd-info h3 { margin: 0 0 0.5rem 0; font-size: 1rem; color: #005eb8; }
+.tracklist { list-style: none; padding: 0; margin: 0; font-size: 0.8rem; color: #555; text-align: left; }
+.tracklist li { padding: 3px 0; border-bottom: 1px solid #eee; }
+
 /* DISCORD BAR */
 #join-discord {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(5px);
-  padding: 0.5rem 1rem;
-  border-radius: 12px;
-  display: inline-flex;
-  align-items: center;
-  gap: 1rem;
-  font-size: 0.95rem;
-  margin-top: 1rem;
-  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(5px);
+  padding: 0.5rem 1rem; border-radius: 12px; display: inline-flex; align-items: center;
+  gap: 1rem; font-size: 0.95rem; margin-top: 1rem; border: 1px solid rgba(255,255,255,0.2);
 }
 #discord-avatars img { width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; margin-left: -5px; }
 #discord-avatars img:first-child { margin-left: 0; }
-
 #discord-invite {
-  background: #5865f2;
-  padding: 0.5rem 1.2rem;
-  border-radius: 20px;
-  font-weight: bold;
-  text-decoration: none;
-  color: white;
-  transition: background 0.3s ease, transform 0.2s;
+  background: #5865f2; padding: 0.5rem 1.2rem; border-radius: 20px; font-weight: bold;
+  text-decoration: none; color: white; transition: background 0.3s ease, transform 0.2s;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 #discord-invite:hover { background: #4752c4; transform: translateY(-2px); }
 
 /* CREDITS */
-.credits-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 2rem;
-}
-.credit-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 120px;
-  text-align: center;
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
+.credits-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; }
+.credit-item { display: flex; flex-direction: column; align-items: center; width: 120px; text-align: center; transition: transform 0.3s; }
 .credit-item:hover { transform: scale(1.1); }
-
-.credit-item img {
-  width: 80px; height: 80px;
-  border-radius: 50%;
-  border: 3px solid #005eb8;
-  margin-bottom: 0.8rem;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-  background: white;
-  object-fit: cover;
-}
-.credit-item strong {
-  color: #333;
-  font-size: 0.9rem;
-}
+.credit-item img { width: 80px; height: 80px; border-radius: 50%; border: 3px solid #005eb8; margin-bottom: 0.8rem; object-fit: cover; }
 
 /* FOOTER */
-footer {
-  background: #e9ecef;
-  text-align: center;
-  padding: 2rem;
-  font-size: 0.9rem;
-  color: #666;
-  margin-top: 4rem;
-}
+footer { background: #e9ecef; text-align: center; padding: 2rem; font-size: 0.9rem; color: #666; margin-top: 4rem; }
 
 /* MODAL */
-.modal {
-  background: rgba(0, 0, 0, 0.95);
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  flex-direction: column;
-}
+.modal { background: rgba(0, 0, 0, 0.95); display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; justify-content: center; align-items: center; z-index: 1000; flex-direction: column; }
 .modal:not(.hidden) { display: flex; animation: fadeIn 0.3s; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-.modal-content {
-  position: relative;
-  width: 90%;
-  max-width: 960px;
-  aspect-ratio: 16 / 9;
-  background: #000;
-  border-radius: 8px;
-  box-shadow: 0 0 30px rgba(0,0,0,0.8);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
+.modal-content { position: relative; width: 90%; max-width: 960px; aspect-ratio: 16 / 9; background: #000; border-radius: 8px; box-shadow: 0 0 30px rgba(0,0,0,0.8); display: flex; flex-direction: column; overflow: hidden; }
 .modal iframe { width: 100%; height: 100%; border: none; flex-grow: 1; z-index: 1; }
-
-#modal-controls {
-  display: none;
-  justify-content: center;
-  gap: 1.5rem;
-  margin-top: 15px;
-  width: 100%;
-}
-.queue-btn {
-  background: #005eb8;
-  color: white;
-  border: none;
-  padding: 0.8rem 2rem;
-  border-radius: 30px;
-  cursor: pointer;
-  font-weight: bold;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-  border: 2px solid #004494;
-  transition: transform 0.2s;
-}
+#modal-controls { display: none; justify-content: center; gap: 1.5rem; margin-top: 15px; width: 100%; }
+.queue-btn { background: #005eb8; color: white; border: none; padding: 0.8rem 2rem; border-radius: 30px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: 2px solid #004494; transition: transform 0.2s; }
 .queue-btn:hover { background: #004494; transform: scale(1.05); }
 .queue-btn:disabled { background: #444; border-color: #555; cursor: not-allowed; opacity: 0.6; transform: none; }
-
-#queue-status {
-  color: #fff;
-  text-align: center;
-  margin-bottom: 10px;
-  font-family: 'Flange BQ Bold', sans-serif;
-  font-size: 1.2rem;
-}
-#modal-close {
-  position: absolute;
-  top: -40px; right: 0;
-  font-size: 2.5rem;
-  color: white;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  z-index: 25;
-  line-height: 1;
-  transition: transform 0.2s;
-}
+#queue-status { color: #fff; text-align: center; margin-bottom: 10px; font-family: 'Flange BQ Bold', sans-serif; font-size: 1.2rem; }
+#modal-close { position: absolute; top: -40px; right: 0; font-size: 2.5rem; color: white; background: transparent; border: none; cursor: pointer; z-index: 25; line-height: 1; transition: transform 0.2s; }
 #modal-close:hover { transform: rotate(90deg); color: #ffbf00; }
-
-#title-shield {
-  position: absolute; top: 0; left: 0; width: 100%; height: 60px;
-  background: #000; z-index: 20; opacity: 0; pointer-events: none;
-  transition: opacity 0.3s ease-in-out;
-}
+#title-shield { position: absolute; top: 0; left: 0; width: 100%; height: 60px; background: #000; z-index: 20; opacity: 0; pointer-events: none; transition: opacity 0.3s ease-in-out; }
 #title-shield.active { opacity: 1; pointer-events: auto; }
