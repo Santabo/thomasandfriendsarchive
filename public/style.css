@@ -104,6 +104,32 @@ h2 {
 }
 
 /* DVD 3D SECTION - FIXED SPINE DEPTH */
+/* Container for the collection needs relative positioning for the splash bg */
+#dvd-collection {
+  position: relative;
+}
+
+/* Splash Background Styling */
+#dvd-splash-bg {
+  position: absolute;
+  top: 0; 
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw; /* Stretch full width */
+  height: 100%;
+  max-width: 1400px;
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  z-index: 0; /* Behind grid */
+  pointer-events: none;
+  /* Fade out at the bottom to blend with page */
+  mask-image: linear-gradient(to bottom, black 20%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 100%);
+}
+
 .dvd-grid {
   display: flex;
   flex-wrap: wrap;
@@ -111,6 +137,8 @@ h2 {
   gap: 4rem; 
   padding: 2rem 1rem;
   perspective: 1200px;
+  position: relative;
+  z-index: 1; /* Above splash */
 }
 
 .dvd-item {
@@ -160,27 +188,23 @@ h2 {
   height: 100%;
   background: #222;
   
+  /* Use the custom spine texture */
+  background-image: url('https://i.ibb.co/ch5SXKnh/image.png');
+  background-size: cover;
+  background-position: center;
+  
   /* Pivot from the LEFT edge (0,0) */
   transform-origin: left;
-  /* Rotate 90deg positive: This swings the spine BACKWARDS into the Z-space (away from viewer) */
+  /* Rotate 90deg positive: This swings the spine BACKWARDS into the Z-space */
   transform: rotateY(90deg);
   
-  /* Visuals */
+  /* Hide the text since we are using the image */
+  color: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  writing-mode: vertical-rl;
-  font-size: 0.8rem;
-  font-weight: bold;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
   border-right: 1px solid rgba(255,255,255,0.1);
-  box-shadow: inset 0 0 15px rgba(0,0,0,0.7);
-  
-  /* Since we rotated 90deg, the "front" face of this element is facing right (inside the box).
-     To make text readable from the outside (left), we might need to flip the text, 
-     but vertical-rl usually handles standard reading well on spines. */
+  box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
 }
 
 /* DVD Info tooltip */
