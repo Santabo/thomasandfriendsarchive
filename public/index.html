@@ -29,7 +29,12 @@
 
     <header>
         <div class="container fade-in-up">
-            <h1>Thomas Archive</h1>
+            <!-- Title with Steam Effect -->
+            <div class="header-title-wrapper">
+                <h1>Thomas Archive</h1>
+                <div class="steam-puff"></div>
+                <div class="steam-puff delay-1"></div>
+            </div>
             <p>A comprehensive collection of episodes, specials, and fan creations</p>
             
             <section id="join-discord">
@@ -47,7 +52,16 @@
     <main>
         <!-- Episodes Section -->
         <section id="episodes" class="fade-in-up" style="animation-delay: 0.1s;">
-            <h2 id="episodes-heading">Episodes</h2>
+            <div class="section-header">
+                <h2 id="episodes-heading">Episodes</h2>
+                <!-- Search Bar -->
+                <div class="search-wrapper">
+                    <input type="text" id="episode-search" placeholder="Search for an episode..." aria-label="Search episodes">
+                    <span class="search-icon">🔍</span>
+                </div>
+            </div>
+            
+            <!-- The series selector will be injected here by JS -->
             <div id="episode-list"></div>
         </section>
 
@@ -56,9 +70,11 @@
             <!-- Splash Screen Background Container -->
             <div id="dvd-splash-bg"></div>
             
-            <h2>DVD Collection</h2>
-            <p style="margin-bottom: 2rem; color: #666;">Select a DVD case to play the full disc queue.</p>
-            <div class="dvd-grid"></div>
+            <div style="position:relative; z-index:2;">
+                <h2>DVD Collection</h2>
+                <p style="margin-bottom: 2rem; color: #666;">Select a DVD case to play the full disc queue.</p>
+                <div class="dvd-grid"></div>
+            </div>
         </section>
 
         <!-- Games -->
