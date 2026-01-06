@@ -5,450 +5,460 @@
   font-style: normal;
 }
 
-:root {
-    /* Brand Colors */
-    --thomas-blue: #005eb8;
-    --thomas-red: #d32f2f;
-    --thomas-gold: #ffbf00;
-    
-    /* Layout Colors */
-    --bg-light: #f2f7fc;
-    --text-main: #333;
-    
-    /* UI Elements */
-    --card-radius: 8px;
-    --shadow-soft: 0 4px 12px rgba(0,0,0,0.1);
-    --shadow-hover: 0 10px 20px rgba(0,0,0,0.15);
-}
-
+/* BASE RESET + BODY */
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
 body {
-  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background: var(--bg-light);
-  color: var(--text-main);
+  font-family: 'Flange BQ Bold', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f2f7fc;
+  color: #333;
   line-height: 1.6;
   overflow-x: hidden;
-  transition: background 0.3s, color 0.3s;
 }
 
-/* --- UTILITIES --- */
-.hidden { display: none !important; }
-
-/* --- NAVBAR --- */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.8rem 5vw;
-    background: linear-gradient(90deg, var(--thomas-blue), #004494);
-    color: white;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    border-bottom: 4px solid var(--thomas-gold);
+/* ANIMATIONS */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.logo {
-    font-family: 'Flange BQ Bold', sans-serif;
-    font-size: 1.6rem;
-    color: white;
-    text-shadow: 2px 2px 0px rgba(0,0,0,0.2);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+.fade-in-up {
+  opacity: 0;
+  animation: fadeInUp 0.8s ease-out forwards;
 }
 
-.nav-actions { display: flex; gap: 1rem; }
-
-.nav-btn {
-    background: rgba(255,255,255,0.2);
-    border: 1px solid rgba(255,255,255,0.4);
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: bold;
-    color: white;
-    transition: all 0.2s;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.9rem;
+/* HEADER */
+header {
+  background: linear-gradient(135deg, #007bff, #005eb8, #004494);
+  background-size: 200% 200%;
+  animation: gradientShift 8s ease infinite;
+  color: white;
+  padding: 3rem 1rem 2.5rem;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 10;
 }
-.nav-btn:hover { background: white; color: var(--thomas-blue); }
-.discord-btn { background: #5865F2; border-color: #5865F2; }
-.discord-btn:hover { background: #4752C4; color: white; }
-
-/* --- HERO SECTION --- */
-.hero-section {
-    position: relative;
-    height: 60vh;
-    min-height: 400px;
-    display: flex;
-    align-items: center;
-    color: white;
-    margin-bottom: 2rem;
-    overflow: hidden;
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-.hero-bg {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: url('https://i.ibb.co/0R6mFYXz/image.png') center/cover no-repeat;
-    z-index: 0;
-}
-/* Gradient overlay for text readability */
-.hero-bg::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(to right, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
+header h1 { 
+  font-size: 2.5rem; 
+  margin-bottom: 0.5rem; 
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
-.hero-content {
-    position: relative;
-    z-index: 1;
-    padding: 0 5vw;
-    max-width: 650px;
-}
+/* MAIN CONTENT */
+main { padding: 2rem 5vw; max-width: 1200px; margin: auto; }
 
-.hero-tag {
-    background: var(--thomas-gold);
-    color: #000;
-    font-weight: bold;
-    padding: 0.2rem 0.8rem;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    display: inline-block;
-    margin-bottom: 1rem;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-}
-
-.hero-content h1 {
-    font-family: 'Flange BQ Bold', sans-serif;
-    font-size: clamp(2.5rem, 5vw, 4rem);
-    line-height: 1.1;
-    margin-bottom: 1rem;
-    text-shadow: 2px 2px 10px rgba(0,0,0,0.8);
-}
-
-.hero-content p {
-    font-size: 1.15rem;
-    margin-bottom: 2rem;
-    opacity: 0.95;
-    text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
-}
-
-.hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; }
-
-.btn-primary, .btn-play, .btn-info {
-    padding: 0.8rem 2rem;
-    border: none;
-    border-radius: 30px;
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: transform 0.2s, background 0.2s;
-}
-
-.btn-play { background: var(--thomas-red); color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-.btn-play:hover { background: #b30000; transform: scale(1.05); }
-
-.btn-info { background: rgba(255,255,255,0.2); color: white; border: 2px solid white; backdrop-filter: blur(5px); }
-.btn-info:hover { background: white; color: black; }
-
-.btn-primary { background: var(--thomas-blue); color: white; }
-.btn-primary:hover { background: #004494; }
-
-/* --- CONTENT ROWS --- */
-.content-row {
-    padding: 2rem 5vw;
-    margin-bottom: 1rem;
-}
-
-.row-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-    gap: 1rem;
-}
-
+/* SECTIONS */
+section { margin-bottom: 4rem; }
 h2 {
-    font-family: 'Flange BQ Bold', sans-serif;
-    font-size: 1.8rem;
-    color: var(--thomas-blue);
-    margin: 0;
-    border-left: 5px solid var(--thomas-red);
-    padding-left: 1rem;
+  font-size: 1.8rem;
+  color: #005eb8;
+  margin: 1rem 0 1.5rem 0;
+  border-bottom: 4px solid #ffbf00;
+  display: inline-block;
+  padding-bottom: 0.25rem;
 }
 
-.search-wrapper { flex-grow: 1; max-width: 300px; }
-.search-wrapper input {
-    width: 100%;
-    padding: 0.6rem 1rem;
-    border: 2px solid #ddd;
-    border-radius: 20px;
-    font-size: 0.95rem;
-}
-.search-wrapper input:focus { border-color: var(--thomas-blue); outline: none; }
-
-/* SERIES TABS */
-.series-selector-wrapper {
-    position: sticky;
-    top: 60px; /* Below navbar */
-    background: rgba(242, 247, 252, 0.95);
-    backdrop-filter: blur(5px);
-    z-index: 90;
-    padding: 1rem 0;
-    margin-bottom: 1rem;
-    margin-top: -1rem; /* Pull up slightly */
+/* GAMES SECTION */
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  padding: 1rem 0;
 }
 
-.series-selector {
-    display: flex;
-    gap: 0.8rem;
-    overflow-x: auto;
-    padding: 0.5rem 5vw; /* Match page padding */
-    scrollbar-width: none; 
-}
-.series-selector::-webkit-scrollbar { display: none; }
-
-.selector-btn {
-    background: white;
-    border: 1px solid #ddd;
-    padding: 0.5rem 1.2rem;
-    border-radius: 20px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.2s;
-    font-weight: 600;
-    color: #555;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    flex-shrink: 0;
-}
-.selector-btn:hover { background: #fff8e1; border-color: var(--thomas-gold); }
-.selector-btn.active {
-    background: var(--thomas-blue);
-    color: white;
-    border-color: var(--thomas-blue);
-    box-shadow: 0 4px 8px rgba(0,94,184,0.3);
+.game-item {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+  text-align: center;
+  border: 1px solid rgba(0,0,0,0.05);
 }
 
-/* GRIDS */
-.season-content, .fan-content, .game-grid {
-    display: grid;
-    /* Smart grid that never crushes content */
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 1.5rem;
-    padding: 0.5rem 0;
+.game-item:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
 }
 
-/* Card Styling */
-.episode, .game-item {
-    position: relative;
-    border-radius: var(--card-radius);
-    overflow: hidden;
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-    background: white;
-    box-shadow: var(--shadow-soft);
-    border: 1px solid rgba(0,0,0,0.05);
+.game-item a { text-decoration: none; color: inherit; display: block; }
+
+.game-item img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
-.episode:hover, .game-item:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-hover);
-    z-index: 10;
+.game-item strong {
+  display: block;
+  padding: 1.2rem;
+  color: #005eb8;
+  font-size: 1.15rem;
+  background: #fff;
 }
 
-.episode img, .game-item img {
-    width: 100%;
-    aspect-ratio: 16/9;
-    object-fit: cover;
-    display: block;
-    background-color: #eee;
+/* DVD 3D SECTION */
+#dvd-collection { position: relative; }
+
+/* Splash Background Styling */
+#dvd-splash-bg {
+  position: absolute;
+  top: 0; 
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw; 
+  height: 100%;
+  max-width: 1400px;
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  z-index: 0; /* Behind grid */
+  pointer-events: none;
+  mask-image: linear-gradient(to bottom, black 20%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 100%);
 }
 
-.episode h3, .game-item strong {
-    padding: 1rem;
-    font-size: 1rem;
-    font-weight: 600;
-    margin: 0;
-    color: #333;
-}
-
-.card-overlay span {
-    display: block;
-    font-size: 0.8rem;
-    color: #666;
-    margin-top: 0.2rem;
-    padding: 0 1rem 1rem;
-}
-
-.episode-link-display { display: none; }
-
-/* DVD Grid */
 .dvd-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 4rem; /* Need space for rotation */
-    padding: 3rem 1rem;
-    perspective: 1200px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4rem; 
+  padding: 2rem 1rem;
+  perspective: 1200px;
+  position: relative;
+  z-index: 1; /* Above splash */
 }
-.dvd-item {
-    width: 200px;
-    height: 300px;
-    position: relative;
-    transform-style: preserve-3d;
-    transition: transform 0.4s;
-    transform: rotateY(30deg); /* Show spine by default */
-}
-.dvd-item:hover { transform: rotateY(0deg) translateZ(20px); z-index: 10; }
 
-.dvd-case { width: 100%; height: 100%; position: absolute; transform-style: preserve-3d; }
+.dvd-item {
+  width: 200px;
+  height: 300px;
+  position: relative;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  /* Default view: Angled to show spine */
+  transform: rotateY(30deg); 
+}
+
+.dvd-item:hover {
+  /* Face front on hover */
+  transform: rotateY(0deg) translateZ(20px) scale(1.05);
+  z-index: 10;
+}
+
+.dvd-case {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0; left: 0;
+  transform-style: preserve-3d;
+}
+
+/* Front Cover */
 .dvd-face.dvd-front {
-    position: absolute; width: 100%; height: 100%;
-    border-radius: 0 4px 4px 0; overflow: hidden;
-    box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 0 4px 4px 0;
+  overflow: hidden;
+  box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+  z-index: 2; /* Ensure front is visually on top of spine seam */
 }
 .dvd-face.dvd-front img { width: 100%; height: 100%; object-fit: cover; }
 
+/* The Spine */
 .dvd-spine {
-    position: absolute; top: 0; left: 0;
-    width: 28px; height: 100%; background: #222;
-    background-image: url('https://i.ibb.co/ch5SXKnh/image.png');
-    background-size: cover; background-position: center;
-    transform-origin: left; transform: rotateY(90deg);
-    box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+  position: absolute;
+  top: 0; 
+  left: 0; 
+  width: 28px;
+  height: 100%;
+  background: #222;
+  
+  /* Use the custom spine texture */
+  background-image: url('https://i.ibb.co/ch5SXKnh/image.png');
+  background-size: cover;
+  background-position: center;
+  
+  /* Pivot from the LEFT edge (0,0) */
+  transform-origin: left;
+  /* Rotate 90deg positive: This swings the spine BACKWARDS into the Z-space */
+  transform: rotateY(90deg);
+  
+  /* Hide the text since we are using the image */
+  color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid rgba(255,255,255,0.1);
+  box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
 }
 
-/* DVD Splash */
-#dvd-collection { position: relative; }
-#dvd-splash-bg {
-    position: absolute; top: -10%; left: 0; width: 100%; height: 120%;
-    background-size: cover; background-position: center top;
-    opacity: 0; transition: opacity 0.5s; pointer-events: none; z-index: 0;
+/* DVD Info tooltip */
+.dvd-info {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  width: 240px;
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s, transform 0.3s;
+  z-index: -1;
+}
+.dvd-item:hover .dvd-info {
+  opacity: 1;
+  transform: translateX(-50%) translateY(100%);
+  pointer-events: auto;
+  z-index: 20;
+}
+.dvd-info h3 { margin: 0 0 0.5rem 0; font-size: 1rem; color: #005eb8; }
+.tracklist { list-style: none; padding: 0; margin: 0; font-size: 0.8rem; color: #555; text-align: left; }
+.tracklist li { padding: 3px 0; border-bottom: 1px solid #eee; }
+
+/* EPISODE SECTION */
+.season {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.5rem;
+}
+.season-toggle {
+  background: #005eb8;
+  color: white;
+  padding: 1rem;
+  font-size: 1.2rem;
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.season-toggle:hover { background: #004a99; }
+
+.season-content, .fan-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+  padding: 1.5rem;
+  background: #f8faff;
 }
 
-/* Credits */
+.episode, .fan-item {
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  text-align: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+}
+.episode:hover, .fan-item:hover { 
+  transform: translateY(-4px); 
+  box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+.episode img, .fan-item img {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  display: block;
+}
+.episode h3, .fan-item h3 {
+  padding: 0.8rem 0.5rem;
+  font-size: 0.95rem;
+  color: #333;
+  margin: 0;
+}
+
+/* SERIES SELECTOR */
+.series-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+.selector-btn {
+  background: #ffcf00;
+  color: #222;
+  font-weight: bold;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: 'Flange BQ Bold', sans-serif;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.selector-btn:hover { background: #ffd700; transform: scale(1.05); }
+.selector-btn.active { 
+  background: #005eb8; 
+  color: white; 
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* DISCORD BAR */
+#join-discord {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(5px);
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.95rem;
+  margin-top: 1rem;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+#discord-avatars img { width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; margin-left: -5px; }
+#discord-avatars img:first-child { margin-left: 0; }
+
+#discord-invite {
+  background: #5865f2;
+  padding: 0.5rem 1.2rem;
+  border-radius: 20px;
+  font-weight: bold;
+  text-decoration: none;
+  color: white;
+  transition: background 0.3s ease, transform 0.2s;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+#discord-invite:hover { background: #4752c4; transform: translateY(-2px); }
+
+/* CREDITS */
 .credits-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-    justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
 }
-.credit-item { text-align: center; }
+.credit-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 120px;
+  text-align: center;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.credit-item:hover { transform: scale(1.1); }
+
 .credit-item img {
-    width: 80px; height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid var(--thomas-gold);
-    margin-bottom: 0.5rem;
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  border: 3px solid #005eb8;
+  margin-bottom: 0.8rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  background: white;
+  object-fit: cover;
 }
-.credit-item span { display: block; font-weight: bold; color: var(--thomas-blue); }
+.credit-item strong {
+  color: #333;
+  font-size: 0.9rem;
+}
 
-/* Footer */
+/* FOOTER */
 footer {
-    text-align: center;
-    padding: 3rem 1rem;
-    background: #e0e0e0;
-    color: #666;
-    margin-top: 4rem;
+  background: #e9ecef;
+  text-align: center;
+  padding: 2rem;
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 4rem;
 }
 
-/* --- MODAL (FIXED) --- */
-/* This was missing in previous version causing the player to be visible at bottom */
+/* MODAL */
 .modal {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.95);
-    z-index: 2000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+  background: rgba(0, 0, 0, 0.95);
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  flex-direction: column;
 }
-
-/* Specific class to hide it */
-.modal.hidden {
-    display: none !important;
-}
+.modal:not(.hidden) { display: flex; animation: fadeIn 0.3s; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 .modal-content {
-    position: relative;
-    width: 90%;
-    max-width: 960px;
-    aspect-ratio: 16 / 9;
-    background: #000;
-    border-radius: 8px;
-    box-shadow: 0 0 30px rgba(0,0,0,0.8);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+  position: relative;
+  width: 90%;
+  max-width: 960px;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 8px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.8);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
-
-.modal iframe {
-    width: 100%; height: 100%;
-    border: none;
-    flex-grow: 1;
-}
+.modal iframe { width: 100%; height: 100%; border: none; flex-grow: 1; z-index: 1; }
 
 #modal-controls {
-    display: none; /* Hidden by default, dvdPlayer.js shows it */
-    justify-content: center;
-    gap: 1.5rem;
-    margin-top: 15px;
-    width: 100%;
+  display: none;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 15px;
+  width: 100%;
 }
-
 .queue-btn {
-    background: var(--thomas-blue);
-    color: white;
-    border: 2px solid #004494;
-    padding: 0.8rem 2rem;
-    border-radius: 30px;
-    cursor: pointer;
-    font-weight: bold;
+  background: #005eb8;
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  border: 2px solid #004494;
+  transition: transform 0.2s;
 }
-.queue-btn:hover { background: #004494; }
-
-#modal-close {
-    position: absolute;
-    top: -40px; right: 0;
-    font-size: 2.5rem;
-    color: white;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    z-index: 25;
-    line-height: 1;
-}
+.queue-btn:hover { background: #004494; transform: scale(1.05); }
+.queue-btn:disabled { background: #444; border-color: #555; cursor: not-allowed; opacity: 0.6; transform: none; }
 
 #queue-status {
-    color: white;
-    text-align: center;
-    margin-bottom: 10px;
-    font-family: 'Flange BQ Bold', sans-serif;
-    font-size: 1.2rem;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 10px;
+  font-family: 'Flange BQ Bold', sans-serif;
+  font-size: 1.2rem;
 }
+#modal-close {
+  position: absolute;
+  top: -40px; right: 0;
+  font-size: 2.5rem;
+  color: white;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 25;
+  line-height: 1;
+  transition: transform 0.2s;
+}
+#modal-close:hover { transform: rotate(90deg); color: #ffbf00; }
 
 #title-shield {
-    position: absolute; top:0; left:0; width:100%; height:60px;
-    background:black; opacity:0; pointer-events:none;
-    transition:opacity 0.3s; z-index:20;
+  position: absolute; top: 0; left: 0; width: 100%; height: 60px;
+  background: #000; z-index: 20; opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease-in-out;
 }
-#title-shield.active { opacity:1; pointer-events:auto; }
-
-/* Responsive adjustments */
-@media (max-width: 600px) {
-    .navbar { flex-direction: column; gap: 1rem; padding: 1rem; }
-    .hero-content h1 { font-size: 2rem; }
-    .hero-section { min-height: 60vh; }
-}
+#title-shield.active { opacity: 1; pointer-events: auto; }
