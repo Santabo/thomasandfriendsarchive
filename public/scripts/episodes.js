@@ -11,20 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   const container = document.getElementById('episode-list');
-  // Removed .series-selector-wrapper look up since it doesn't exist in current layout
+  // Removed .series-selector-wrapper lookup as we are reverting to container.before()
   const modal = document.getElementById('video-modal');
   const iframe = document.getElementById('modal-video');
-
-  if (!modal || !iframe) {
-    console.error('Modal or iframe element not found in DOM!');
-    return;
-  }
-
-  const openEpisodeIdFromRedirect = sessionStorage.getItem('openEpisode');
-  if (openEpisodeIdFromRedirect) {
-    sessionStorage.removeItem('openEpisode');
-    window.__openEpisodeIdFromRedirect = openEpisodeIdFromRedirect;
-  }
+  const searchInput = document.getElementById('episode-search');
 
   // --- 1. GLOBAL EVENT DELEGATION (Fixes "No episodes play") ---
   document.body.addEventListener('click', (e) => {
@@ -134,6 +124,14 @@ document.addEventListener('DOMContentLoaded', () => {
         let title = ep.title || ep.uk_title || 'Unknown Episode';
         let cover = ep.cover || 'https://via.placeholder.com/300x169?text=No+Image';
         let url = ep.link || ep.video_url;
+        
+        // ADDED: Episode Number Display Logic
+        let epNumDisplay = '';
+        if (ep.episode_number) {
+            if (seasonKey === 'fan') epNumDisplay = `Fan Creation #${ep.episode_number}`;
+            else if (seasonKey === 'specials') epNumDisplay = `Special`;
+            else epNumDisplay = `Episode ${ep.episode_number}`;
+        }
 
         // Generate ID
         if(seasonKey.startsWith('season')) {
@@ -148,6 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <img src="${cover}" alt="${title}" loading="lazy" />
           </a>
           <h3>${title}</h3>
+          ${epNumDisplay ? `<p class="ep-num">${epNumDisplay}</p>` : ''}
         `;
         wrapper.appendChild(div);
       });
