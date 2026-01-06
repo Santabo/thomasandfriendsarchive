@@ -13,7 +13,6 @@
     
     /* Layout Colors */
     --bg-light: #f2f7fc;
-    --bg-dark: #121212; /* TV Mode BG */
     --text-main: #333;
     
     /* UI Elements */
@@ -32,6 +31,9 @@ body {
   overflow-x: hidden;
   transition: background 0.3s, color 0.3s;
 }
+
+/* --- UTILITIES --- */
+.hidden { display: none !important; }
 
 /* --- NAVBAR --- */
 .navbar {
@@ -237,7 +239,7 @@ h2 {
     box-shadow: 0 4px 8px rgba(0,94,184,0.3);
 }
 
-/* GRIDS - RESPONSIVE FIX */
+/* GRIDS */
 .season-content, .fan-content, .game-grid {
     display: grid;
     /* Smart grid that never crushes content */
@@ -267,9 +269,9 @@ h2 {
 .episode img, .game-item img {
     width: 100%;
     aspect-ratio: 16/9;
-    object-fit: cover; /* Prevents squashed images */
+    object-fit: cover;
     display: block;
-    background-color: #eee; /* Placeholder color */
+    background-color: #eee;
 }
 
 .episode h3, .game-item strong {
@@ -290,7 +292,7 @@ h2 {
 
 .episode-link-display { display: none; }
 
-/* DVD Grid - Fixed 3D Perspective */
+/* DVD Grid */
 .dvd-grid {
     display: flex;
     flex-wrap: wrap;
@@ -360,51 +362,88 @@ footer {
     margin-top: 4rem;
 }
 
-/* --- TV MODE / NETFLIX STYLE --- */
-body.tv-mode {
-    background: var(--bg-dark);
-    color: #e0e0e0;
-}
-
-body.tv-mode .navbar {
-    background: linear-gradient(180deg, rgba(0,0,0,0.9), transparent);
-    border-bottom: none;
-}
-body.tv-mode .series-selector-wrapper {
-    background: var(--bg-dark);
-}
-body.tv-mode .selector-btn {
-    background: #333; border-color: #444; color: #ccc;
-}
-body.tv-mode .selector-btn.active {
-    background: white; color: black;
-}
-
-/* Horizontal Scrolling for TV Mode */
-body.tv-mode .season-content, 
-body.tv-mode .fan-content, 
-body.tv-mode .game-grid {
+/* --- MODAL (FIXED) --- */
+/* This was missing in previous version causing the player to be visible at bottom */
+.modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.95);
+    z-index: 2000;
     display: flex;
-    overflow-x: auto;
-    padding-bottom: 2rem;
-    gap: 1.5rem;
-    /* Snap effect */
-    scroll-snap-type: x mandatory;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
-body.tv-mode .episode, 
-body.tv-mode .game-item {
-    min-width: 320px; /* Bigger cards for TV */
-    background: #1f1f1f;
-    border: none;
-    scroll-snap-align: start;
-}
-body.tv-mode .episode h3 { color: #ddd; }
-body.tv-mode h2 { color: white; border-color: var(--thomas-red); }
 
-/* Modal Styling */
-.modal { background: rgba(0,0,0,0.95); }
-.queue-btn { background: var(--thomas-blue); color: white; }
-#title-shield { position: absolute; top:0; left:0; width:100%; height:60px; background:black; opacity:0; pointer-events:none; transition:opacity 0.3s; z-index:20; }
+/* Specific class to hide it */
+.modal.hidden {
+    display: none !important;
+}
+
+.modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 960px;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border-radius: 8px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.8);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.modal iframe {
+    width: 100%; height: 100%;
+    border: none;
+    flex-grow: 1;
+}
+
+#modal-controls {
+    display: none; /* Hidden by default, dvdPlayer.js shows it */
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 15px;
+    width: 100%;
+}
+
+.queue-btn {
+    background: var(--thomas-blue);
+    color: white;
+    border: 2px solid #004494;
+    padding: 0.8rem 2rem;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.queue-btn:hover { background: #004494; }
+
+#modal-close {
+    position: absolute;
+    top: -40px; right: 0;
+    font-size: 2.5rem;
+    color: white;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 25;
+    line-height: 1;
+}
+
+#queue-status {
+    color: white;
+    text-align: center;
+    margin-bottom: 10px;
+    font-family: 'Flange BQ Bold', sans-serif;
+    font-size: 1.2rem;
+}
+
+#title-shield {
+    position: absolute; top:0; left:0; width:100%; height:60px;
+    background:black; opacity:0; pointer-events:none;
+    transition:opacity 0.3s; z-index:20;
+}
 #title-shield.active { opacity:1; pointer-events:auto; }
 
 /* Responsive adjustments */
