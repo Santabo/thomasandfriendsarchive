@@ -11,14 +11,22 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   const container = document.getElementById('episode-list');
-  const selectorWrapper = document.querySelector('.series-selector-wrapper');
+  // Removed .series-selector-wrapper look up since it doesn't exist in current layout
   const modal = document.getElementById('video-modal');
   const iframe = document.getElementById('modal-video');
-  const searchInput = document.getElementById('episode-search');
+
+  if (!modal || !iframe) {
+    console.error('Modal or iframe element not found in DOM!');
+    return;
+  }
+
+  const openEpisodeIdFromRedirect = sessionStorage.getItem('openEpisode');
+  if (openEpisodeIdFromRedirect) {
+    sessionStorage.removeItem('openEpisode');
+    window.__openEpisodeIdFromRedirect = openEpisodeIdFromRedirect;
+  }
 
   // --- 1. GLOBAL EVENT DELEGATION (Fixes "No episodes play") ---
-  // We listen on the body for clicks, then check if it was a video link.
-  // This works even if we rewrite the innerHTML of sections.
   document.body.addEventListener('click', (e) => {
       const link = e.target.closest('a.video-link');
       if (link) {
@@ -39,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     else if (key === 'specials') label = 'Specials';
     else if (key === 'jackandthepack') label = lang === 'en-gb' ? 'Jack & the Pack' : 'Jack & the Pack';
     else if (key === 'tugs') label = 'TUGS';
-    else label = `Series ${i + 1}`; // Ensure Series 1-24 get labels
+    else label = `Series ${i + 1}`; 
 
     const button = document.createElement('button');
     button.className = 'selector-btn';
@@ -50,9 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Tab Click Logic
     button.addEventListener('click', () => {
-        // Clear search
-        if(searchInput) searchInput.value = '';
-        
         // Update UI
         document.querySelectorAll('.selector-btn').forEach(b => b.classList.remove('active'));
         button.classList.add('active');
@@ -60,8 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Show/Hide Containers
         document.querySelectorAll('.season').forEach(s => {
             if(s.dataset.series === key) {
-                s.style.display = 'grid'; // Grid is default layout
-                // In TV mode, CSS overrides this to 'flex', so we just remove 'none'
+                s.style.display = 'grid'; 
                 s.classList.remove('hidden'); 
             } else {
                 s.style.display = 'none';
@@ -73,7 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
     selector.appendChild(button);
   });
   
-  if(selectorWrapper) selectorWrapper.appendChild(selector);
+  // Inject selector directly before container (Classic Layout)
+  container.before(selector);
 
   // --- 3. FETCH AND RENDER ---
   const fetchSeasonData = sections.map((key) => {
@@ -101,8 +106,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return { type: key, seasonKey: key, episodes: episodes };
         })
         .catch(err => {
-            console.warn(`Failed to load ${key}:`, err);
-            return { seasonKey: key, error: true }; // Return error object so we don't crash Promise.all
+            // console.warn(`Failed to load ${key}:`, err);
+            return { seasonKey: key, error: true }; 
         });
   });
 
@@ -114,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
       wrapper.className = 'season';
       wrapper.dataset.series = seasonKey;
       
-      // Default Visibility: Only Season 1 visible initially
+      // Default Visibility
       if (seasonKey !== 'season1') {
           wrapper.style.display = 'none';
           wrapper.classList.add('hidden');
@@ -122,10 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
           wrapper.style.display = 'grid';
       }
 
-      // We use the CSS class .season-content for grid styling
-      // Note: In new HTML structure, .season IS the container or contains it.
-      // Let's make .season the wrapper and put items directly in it, 
-      // matching the CSS .season-content selector.
       wrapper.classList.add('season-content'); 
 
       episodes.forEach((ep) => {
@@ -154,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
       container.appendChild(wrapper);
     });
     
-    // Check for Redirect from URL (Direct linking)
+    // Check for Redirect
     handleDirectUrlOpen();
   });
 
@@ -166,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
           if (url.includes('youtube.com') || url.includes('youtu.be')) {
               const vId = url.split('v=')[1] || url.split('/').pop();
-              const cleanVid = vId.split('?')[0]; // Remove existing query params
+              const cleanVid = vId.split('?')[0]; 
               embedUrl = `https://www.youtube.com/embed/${cleanVid}?autoplay=1&modestbranding=1&rel=0`;
           } else if (url.includes('drive.google.com')) {
               // Extract ID safely
@@ -188,7 +189,6 @@ document.addEventListener('DOMContentLoaded', () => {
       modal.classList.remove('hidden');
       modal.style.display = 'flex';
       
-      // Update Title Shield logic
       const shield = document.getElementById('title-shield');
       if(shield) {
           shield.classList.add('active');
@@ -196,44 +196,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
   }
 
-  // --- 5. SEARCH LOGIC ---
-  if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-        const term = e.target.value.toLowerCase();
-        
-        document.querySelectorAll('.season').forEach(season => {
-            if(term === '') {
-                // Restore active tab visibility
-                const activeBtn = document.querySelector('.selector-btn.active');
-                if (activeBtn && activeBtn.dataset.target === season.dataset.series) {
-                    season.style.display = 'grid';
-                } else {
-                    season.style.display = 'none';
-                }
-            } else {
-                // Search Mode: Show EVERYTHING that matches
-                const eps = season.querySelectorAll('.episode');
-                let hasMatch = false;
-                eps.forEach(ep => {
-                    const title = ep.querySelector('h3').textContent.toLowerCase();
-                    if(title.includes(term)) {
-                        ep.style.display = 'block';
-                        hasMatch = true;
-                    } else {
-                        ep.style.display = 'none';
-                    }
-                });
-                
-                // Show container if it has matches
-                season.style.display = hasMatch ? 'grid' : 'none';
-            }
-        });
-    });
-  }
-
   function handleDirectUrlOpen() {
-      // Basic logic to check URL params or path for specific episode
-      // Implement if needed based on your routing needs
+      // Direct link logic placeholder
   }
 
   // Close Logic
