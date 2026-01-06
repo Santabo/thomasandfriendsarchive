@@ -20,92 +20,105 @@
 <body>
     <!-- Terms Modal -->
     <div id="terms-modal" class="modal" role="dialog" aria-modal="true" style="display:none; z-index:9999;">
-        <div class="modal-content" style="max-width:500px; height:auto; padding:2rem; background:white; text-align:center;">
-            <h2 style="color:#005eb8;">Welcome Aboard! 🚂</h2>
+        <div class="modal-content" style="max-width:500px; padding:2rem; background:white; text-align:center;">
+            <h2 style="color:#005eb8;">Welcome Aboard</h2>
             <p style="color:#333; margin:1rem 0;">Before entering, you must agree to our <a href="/terms-of-use.html" style="color:#005eb8;">Terms of Use</a>.</p>
-            <button id="accept-terms" class="queue-btn">I Accept</button>
+            <button id="accept-terms" class="btn-primary">I Accept</button>
         </div>
     </div>
 
-    <!-- Universal Video Modal (Moved to top) -->
-    <div id="video-modal" class="modal hidden">
-        <div class="modal-content">
-            <button id="modal-close" aria-label="Close video modal">&times;</button>
-            <div id="title-shield"></div>
-            <div id="queue-status"></div>
-            <iframe id="modal-video" title="Video player" allow="autoplay; fullscreen" allowfullscreen></iframe>
-            <div id="modal-controls">
-                <button id="btn-prev" class="queue-btn">⏮ Prev</button>
-                <button id="btn-next" class="queue-btn">Next ⏭</button>
-            </div>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="logo">
+            <span class="icon">🚂</span> Thomas Archive
         </div>
-    </div>
-
-    <header>
-        <div class="container fade-in-up">
-            <h1>Thomas Archive</h1>
-            <p>A comprehensive collection of episodes, specials, and fan creations</p>
-            
-            <section id="join-discord">
+        <div class="nav-actions">
+            <section id="join-discord" style="padding:0; border:none; background:none;">
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <div id="discord-avatars"></div>
-                    <span id="discord-stats" style="font-size: 0.9rem; font-weight: bold;">Loading...</span>
-                </div>
-                <div style="display: flex; gap: 10px;">
-                    <a id="discord-invite" href="https://discord.gg/" target="_blank">🚂 Join Discord</a>
+                    <span id="discord-stats" style="font-size: 0.9rem; font-weight: bold; color:white;"></span>
+                    <a id="discord-invite" href="https://discord.gg/" target="_blank" class="nav-btn discord-btn">Join Discord</a>
                 </div>
             </section>
+        </div>
+    </nav>
+
+    <!-- Featured Hero Section -->
+    <header class="hero-section">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <span class="hero-tag">Featured Special</span>
+            <h1>The Adventure Begins</h1>
+            <p>Relive the magic of the very first stories. Thomas creates a splash on Sodor in this retelling of the classic origins.</p>
+            <div class="hero-buttons">
+                <!-- Using a known working video ID for the featured button -->
+                <button class="btn-play" onclick="openVideo('https://www.youtube.com/embed/dQw4w9WgXcQ')">▶ Play Now</button>
+                <button class="btn-info" onclick="document.getElementById('dvd-collection').scrollIntoView({behavior: 'smooth'})">Browse DVDs</button>
+            </div>
         </div>
     </header>
 
     <main>
         <!-- Episodes Section -->
-        <section id="episodes" class="fade-in-up" style="animation-delay: 0.1s;">
-            <h2 id="episodes-heading">Episodes</h2>
-            <!-- Logic handled by episodes.js -->
+        <section id="episodes" class="content-row">
+            <div class="row-header">
+                <h2>Episodes</h2>
+                <div class="search-wrapper">
+                    <input type="text" id="episode-search" placeholder="Find an episode..." aria-label="Search episodes">
+                </div>
+            </div>
+            
+            <!-- Series Tabs (Injected by JS) -->
+            <div class="series-selector-wrapper"></div>
+
+            <!-- Episodes List (Injected by JS) -->
             <div id="episode-list"></div>
         </section>
 
         <!-- DVD Collection -->
-        <section id="dvd-collection" class="fade-in-up" style="animation-delay: 0.2s;">
-            <!-- Splash Screen Background Container -->
+        <section id="dvd-collection" class="content-row">
             <div id="dvd-splash-bg"></div>
-            
-            <div style="position:relative; z-index:2;">
+            <div class="row-header" style="position:relative; z-index:2;">
                 <h2>DVD Collection</h2>
-                <p style="margin-bottom: 2rem; color: #666;">Select a DVD case to play the full disc queue.</p>
-                <div class="dvd-grid"></div>
             </div>
+            <div class="dvd-grid"></div>
         </section>
 
         <!-- Games -->
-        <section id="games" class="fade-in-up" style="animation-delay: 0.3s;">
-            <h2>Games</h2>
+        <section id="games" class="content-row">
+            <div class="row-header">
+                <h2>Interactive & Games</h2>
+            </div>
             <div class="game-grid">
                 <div class="game-item">
                     <a href="/games/design-your-engine.html">
                         <img src="https://i.ibb.co/RVTz5bL/Game-Promo-Sm-Design-Your-Train.jpg" alt="Design Your Engine" />
-                        <strong>Design Your Engine</strong>
+                        <div class="card-overlay">
+                            <strong>Design Your Engine</strong>
+                            <span>Create your own steam friend</span>
+                        </div>
                     </a>
                 </div>
             </div>
         </section>
 
         <!-- Credits -->
-        <section id="credits" class="fade-in-up" style="animation-delay: 0.4s;">
-            <h2>Special Thanks</h2>
+        <section id="credits" class="content-row">
+            <div class="row-header">
+                <h2>Community Credits</h2>
+            </div>
             <div class="credits-grid">
                 <div class="credit-item">
                     <img src="https://i.ibb.co/1f92j2FV/8c353d9155de9a11d9d86f7e6ad831e9.webp" alt="foxStorm1" loading="lazy">
-                    <strong>foxStorm1</strong>
+                    <span>foxStorm1</span>
                 </div>
                 <div class="credit-item">
                     <img src="https://i.ibb.co/zhXz8w1X/10f4845240de63414acf4b856b7a68b7.webp" alt="koreandub" loading="lazy">
-                    <strong>koreandub</strong>
+                    <span>koreandub</span>
                 </div>
                  <div class="credit-item">
                     <img src="https://i.ibb.co/jvsd53Kc/0af0796b865c1f13d7ca3c587034fb0c.webp" alt="talez_chip" loading="lazy">
-                    <strong>talez_chip</strong>
+                    <span>talez_chip</span>
                 </div>
             </div>
         </section>
@@ -120,13 +133,26 @@
         </div>
     </footer>
 
+    <!-- Universal Video Modal -->
+    <div id="video-modal" class="modal hidden">
+        <div class="modal-content">
+            <button id="modal-close" aria-label="Close video modal">&times;</button>
+            <div id="title-shield"></div>
+            <div id="queue-status"></div>
+            <iframe id="modal-video" title="Video player" allow="autoplay; fullscreen" allowfullscreen></iframe>
+            <div id="modal-controls">
+                <button id="btn-prev" class="queue-btn">⏮ Prev</button>
+                <button id="btn-next" class="queue-btn">Next ⏭</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="/scripts/geoRedirect.js"></script>
     <script src="/scripts/discordWidget.js" defer></script>
     <script src="/scripts/episodes.js" defer></script>
     <script src="/scripts/dvdPlayer.js" defer></script>
     <script src="/scripts/funnySounds.js" defer></script>
-    <!-- tvMode.js is intentionally excluded -->
     <script src="/scripts/main.js" defer></script>
 </body>
 </html>
