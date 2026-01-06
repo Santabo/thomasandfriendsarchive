@@ -20,9 +20,9 @@
 <body>
     <!-- Terms Modal -->
     <div id="terms-modal" class="modal" role="dialog" aria-modal="true" style="display:none; z-index:9999;">
-        <div class="modal-content" style="max-width:500px; height:auto; padding:2rem; background:white; text-align:center; color:#333;">
+        <div class="modal-content" style="max-width:500px; padding:2rem; background:white; text-align:center;">
             <h2 style="color:#005eb8;">Welcome Aboard</h2>
-            <p style="margin:1rem 0;">Before entering, you must agree to our <a href="/terms-of-use.html" style="color:#005eb8;">Terms of Use</a>.</p>
+            <p style="color:#333; margin:1rem 0;">Before entering, you must agree to our <a href="/terms-of-use.html" style="color:#005eb8;">Terms of Use</a>.</p>
             <button id="accept-terms" class="btn-primary">I Accept</button>
         </div>
     </div>
@@ -30,7 +30,8 @@
     <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="logo">
-            <span class="icon">🚂</span> Thomas Archive
+            <!-- Mobile Menu Toggle could go here -->
+            <span class="icon">🚂</span> <span class="logo-text">Thomas Archive</span>
         </div>
         <div class="nav-actions">
             <button id="tv-mode-btn" class="nav-btn" aria-label="Toggle TV Mode">
@@ -50,7 +51,7 @@
             <h1>The Adventure Begins</h1>
             <p>Relive the magic of the very first stories. Thomas creates a splash on Sodor in this retelling of the classic origins.</p>
             <div class="hero-buttons">
-                <!-- Using a known working video ID for the featured button -->
+                <!-- Direct onclick for reliability -->
                 <button class="btn-play" onclick="openVideo('https://www.youtube.com/embed/dQw4w9WgXcQ')">▶ Play Now</button>
                 <button class="btn-info" onclick="document.getElementById('dvd-collection').scrollIntoView({behavior: 'smooth'})">Browse DVDs</button>
             </div>
@@ -67,18 +68,17 @@
                 </div>
             </div>
             
-            <!-- Series Tabs injected by JS -->
-            <div class="series-selector-wrapper">
-                <!-- JS injects .series-selector here -->
-            </div>
+            <!-- Series Tabs (Injected by JS) -->
+            <div class="series-selector-wrapper"></div>
 
-            <!-- Episodes List injected by JS -->
-            <div id="episode-list" class="horizontal-scroller"></div>
+            <!-- Episodes List (Injected by JS) -->
+            <div id="episode-list"></div>
         </section>
 
         <!-- DVD Collection -->
         <section id="dvd-collection" class="content-row">
-            <div class="row-header">
+            <div id="dvd-splash-bg"></div>
+            <div class="row-header" style="position:relative; z-index:2;">
                 <h2>DVD Collection</h2>
             </div>
             <div class="dvd-grid"></div>
@@ -150,10 +150,11 @@
     <!-- Scripts -->
     <script src="/scripts/geoRedirect.js"></script>
     <script src="/scripts/discordWidget.js" defer></script>
+    <!-- Order matters: episodes needs to load before main if main calls it, but here they are independent -->
     <script src="/scripts/episodes.js" defer></script>
     <script src="/scripts/dvdPlayer.js" defer></script>
     <script src="/scripts/funnySounds.js" defer></script>
-    <script src="/scripts/tvMode.js" defer></script> <!-- New TV Logic -->
+    <script src="/scripts/tvMode.js" defer></script>
     <script src="/scripts/main.js" defer></script>
 </body>
 </html>
