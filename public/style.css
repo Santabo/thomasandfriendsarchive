@@ -6,13 +6,20 @@
 }
 
 :root {
-    --primary: #005eb8;
-    --accent: #ffbf00;
-    --bg-light: #f4f4f9;
-    --bg-dark: #141414; /* Netflix Black */
-    --text-light: #333;
-    --text-dark: #e5e5e5;
-    --card-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    /* Brand Colors */
+    --thomas-blue: #005eb8;
+    --thomas-red: #d32f2f;
+    --thomas-gold: #ffbf00;
+    
+    /* Layout Colors */
+    --bg-light: #f2f7fc;
+    --bg-dark: #121212; /* TV Mode BG */
+    --text-main: #333;
+    
+    /* UI Elements */
+    --card-radius: 8px;
+    --shadow-soft: 0 4px 12px rgba(0,0,0,0.1);
+    --shadow-hover: 0 10px 20px rgba(0,0,0,0.15);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -20,7 +27,7 @@
 body {
   font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   background: var(--bg-light);
-  color: var(--text-light);
+  color: var(--text-main);
   line-height: 1.6;
   overflow-x: hidden;
   transition: background 0.3s, color 0.3s;
@@ -31,19 +38,21 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 5vw;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
+    padding: 0.8rem 5vw;
+    background: linear-gradient(90deg, var(--thomas-blue), #004494);
+    color: white;
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    border-bottom: 4px solid var(--thomas-gold);
 }
 
 .logo {
     font-family: 'Flange BQ Bold', sans-serif;
-    font-size: 1.5rem;
-    color: var(--primary);
+    font-size: 1.6rem;
+    color: white;
+    text-shadow: 2px 2px 0px rgba(0,0,0,0.2);
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -52,40 +61,39 @@ body {
 .nav-actions { display: flex; gap: 1rem; }
 
 .nav-btn {
-    background: #eee;
-    border: none;
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.4);
     padding: 0.5rem 1rem;
     border-radius: 20px;
     cursor: pointer;
     font-weight: bold;
-    color: #333;
-    transition: transform 0.2s, background 0.2s;
+    color: white;
+    transition: all 0.2s;
     text-decoration: none;
     display: flex;
     align-items: center;
     gap: 0.5rem;
     font-size: 0.9rem;
 }
-.nav-btn:hover { background: #ddd; transform: scale(1.05); }
-.discord-btn { background: #5865F2; color: white; }
-.discord-btn:hover { background: #4752C4; }
+.nav-btn:hover { background: white; color: var(--thomas-blue); }
+.discord-btn { background: #5865F2; border-color: #5865F2; }
+.discord-btn:hover { background: #4752C4; color: white; }
 
 /* --- HERO SECTION --- */
 .hero-section {
     position: relative;
-    height: 70vh; /* Big impact */
-    min-height: 500px;
+    height: 60vh;
+    min-height: 400px;
     display: flex;
     align-items: center;
     color: white;
-    overflow: hidden;
     margin-bottom: 2rem;
+    overflow: hidden;
 }
 
 .hero-bg {
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
-    /* Use a nice Thomas image here */
     background: url('https://i.ibb.co/0R6mFYXz/image.png') center/cover no-repeat;
     z-index: 0;
 }
@@ -94,59 +102,64 @@ body {
     content: '';
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+    background: linear-gradient(to right, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
 }
 
 .hero-content {
     position: relative;
     z-index: 1;
     padding: 0 5vw;
-    max-width: 600px;
+    max-width: 650px;
 }
 
 .hero-tag {
-    background: var(--accent);
+    background: var(--thomas-gold);
     color: #000;
     font-weight: bold;
-    padding: 0.2rem 0.6rem;
+    padding: 0.2rem 0.8rem;
     border-radius: 4px;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     text-transform: uppercase;
     display: inline-block;
     margin-bottom: 1rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
 
 .hero-content h1 {
     font-family: 'Flange BQ Bold', sans-serif;
-    font-size: 3.5rem;
+    font-size: clamp(2.5rem, 5vw, 4rem);
     line-height: 1.1;
     margin-bottom: 1rem;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.8);
 }
 
 .hero-content p {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     margin-bottom: 2rem;
-    opacity: 0.9;
+    opacity: 0.95;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
 }
 
-.hero-buttons { display: flex; gap: 1rem; }
+.hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; }
 
 .btn-primary, .btn-play, .btn-info {
     padding: 0.8rem 2rem;
     border: none;
-    border-radius: 4px;
+    border-radius: 30px;
     font-weight: bold;
     cursor: pointer;
     font-size: 1rem;
-    transition: transform 0.2s;
+    transition: transform 0.2s, background 0.2s;
 }
 
-.btn-play { background: white; color: black; }
-.btn-play:hover { background: #ddd; transform: scale(1.05); }
+.btn-play { background: var(--thomas-red); color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+.btn-play:hover { background: #b30000; transform: scale(1.05); }
 
-.btn-info { background: rgba(109, 109, 110, 0.7); color: white; }
-.btn-info:hover { background: rgba(109, 109, 110, 0.9); }
+.btn-info { background: rgba(255,255,255,0.2); color: white; border: 2px solid white; backdrop-filter: blur(5px); }
+.btn-info:hover { background: white; color: black; }
+
+.btn-primary { background: var(--thomas-blue); color: white; }
+.btn-primary:hover { background: #004494; }
 
 /* --- CONTENT ROWS --- */
 .content-row {
@@ -159,30 +172,46 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
 h2 {
     font-family: 'Flange BQ Bold', sans-serif;
     font-size: 1.8rem;
-    color: var(--primary);
+    color: var(--thomas-blue);
+    margin: 0;
+    border-left: 5px solid var(--thomas-red);
+    padding-left: 1rem;
 }
 
+.search-wrapper { flex-grow: 1; max-width: 300px; }
 .search-wrapper input {
-    padding: 0.5rem 1rem;
-    border: 1px solid #ccc;
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border: 2px solid #ddd;
     border-radius: 20px;
-    font-size: 0.9rem;
-    width: 200px;
+    font-size: 0.95rem;
 }
+.search-wrapper input:focus { border-color: var(--thomas-blue); outline: none; }
 
 /* SERIES TABS */
+.series-selector-wrapper {
+    position: sticky;
+    top: 60px; /* Below navbar */
+    background: rgba(242, 247, 252, 0.95);
+    backdrop-filter: blur(5px);
+    z-index: 90;
+    padding: 1rem 0;
+    margin-bottom: 1rem;
+    margin-top: -1rem; /* Pull up slightly */
+}
+
 .series-selector {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.8rem;
     overflow-x: auto;
-    padding-bottom: 1rem;
-    margin-bottom: 1rem;
-    /* Hide Scrollbar */
+    padding: 0.5rem 5vw; /* Match page padding */
     scrollbar-width: none; 
 }
 .series-selector::-webkit-scrollbar { display: none; }
@@ -195,68 +224,115 @@ h2 {
     cursor: pointer;
     white-space: nowrap;
     transition: all 0.2s;
+    font-weight: 600;
+    color: #555;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    flex-shrink: 0;
 }
+.selector-btn:hover { background: #fff8e1; border-color: var(--thomas-gold); }
 .selector-btn.active {
-    background: var(--primary);
+    background: var(--thomas-blue);
     color: white;
-    border-color: var(--primary);
+    border-color: var(--thomas-blue);
+    box-shadow: 0 4px 8px rgba(0,94,184,0.3);
 }
 
-/* GRIDS & LISTS */
+/* GRIDS - RESPONSIVE FIX */
 .season-content, .fan-content, .game-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    /* Smart grid that never crushes content */
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 1.5rem;
+    padding: 0.5rem 0;
 }
 
 /* Card Styling */
 .episode, .game-item {
     position: relative;
-    border-radius: 8px;
+    border-radius: var(--card-radius);
     overflow: hidden;
     cursor: pointer;
     transition: transform 0.3s, box-shadow 0.3s;
     background: white;
-    box-shadow: var(--card-shadow);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid rgba(0,0,0,0.05);
 }
 
 .episode:hover, .game-item:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
     z-index: 10;
 }
 
 .episode img, .game-item img {
     width: 100%;
     aspect-ratio: 16/9;
-    object-fit: cover;
+    object-fit: cover; /* Prevents squashed images */
     display: block;
+    background-color: #eee; /* Placeholder color */
 }
 
 .episode h3, .game-item strong {
-    padding: 0.8rem;
-    font-size: 0.95rem;
+    padding: 1rem;
+    font-size: 1rem;
     font-weight: 600;
     margin: 0;
     color: #333;
 }
 
+.card-overlay span {
+    display: block;
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 0.2rem;
+    padding: 0 1rem 1rem;
+}
+
 .episode-link-display { display: none; }
 
-/* DVD Grid */
+/* DVD Grid - Fixed 3D Perspective */
 .dvd-grid {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 3rem;
-    padding: 2rem 0;
+    gap: 4rem; /* Need space for rotation */
+    padding: 3rem 1rem;
+    perspective: 1200px;
 }
-.dvd-item { width: 180px; height: 270px; cursor: pointer; transition: transform 0.3s; }
-.dvd-item:hover { transform: scale(1.05); }
-.dvd-case { width: 100%; height: 100%; position: relative; }
-.dvd-spine { display: none; } /* Hide spine in standard 2D view for cleaner look */
-.dvd-face img { width: 100%; height: 100%; object-fit: cover; border-radius: 4px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-.dvd-info { display: none; } /* Simplify for standard view */
+.dvd-item {
+    width: 200px;
+    height: 300px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.4s;
+    transform: rotateY(30deg); /* Show spine by default */
+}
+.dvd-item:hover { transform: rotateY(0deg) translateZ(20px); z-index: 10; }
+
+.dvd-case { width: 100%; height: 100%; position: absolute; transform-style: preserve-3d; }
+.dvd-face.dvd-front {
+    position: absolute; width: 100%; height: 100%;
+    border-radius: 0 4px 4px 0; overflow: hidden;
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+}
+.dvd-face.dvd-front img { width: 100%; height: 100%; object-fit: cover; }
+
+.dvd-spine {
+    position: absolute; top: 0; left: 0;
+    width: 28px; height: 100%; background: #222;
+    background-image: url('https://i.ibb.co/ch5SXKnh/image.png');
+    background-size: cover; background-position: center;
+    transform-origin: left; transform: rotateY(90deg);
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+}
+
+/* DVD Splash */
+#dvd-collection { position: relative; }
+#dvd-splash-bg {
+    position: absolute; top: -10%; left: 0; width: 100%; height: 120%;
+    background-size: cover; background-position: center top;
+    opacity: 0; transition: opacity 0.5s; pointer-events: none; z-index: 0;
+}
 
 /* Credits */
 .credits-grid {
@@ -270,38 +346,39 @@ h2 {
     width: 80px; height: 80px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid var(--primary);
+    border: 3px solid var(--thomas-gold);
     margin-bottom: 0.5rem;
 }
+.credit-item span { display: block; font-weight: bold; color: var(--thomas-blue); }
 
 /* Footer */
 footer {
     text-align: center;
-    padding: 3rem;
-    background: #eee;
+    padding: 3rem 1rem;
+    background: #e0e0e0;
     color: #666;
-    font-size: 0.9rem;
+    margin-top: 4rem;
 }
 
 /* --- TV MODE / NETFLIX STYLE --- */
 body.tv-mode {
     background: var(--bg-dark);
-    color: var(--text-dark);
+    color: #e0e0e0;
 }
 
 body.tv-mode .navbar {
-    background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, transparent 100%);
-    box-shadow: none;
-    color: white;
+    background: linear-gradient(180deg, rgba(0,0,0,0.9), transparent);
+    border-bottom: none;
 }
-body.tv-mode .logo { color: white; }
-body.tv-mode .nav-btn { background: rgba(255,255,255,0.2); color: white; }
-
-body.tv-mode .hero-bg::after {
-    background: linear-gradient(to top, var(--bg-dark) 0%, transparent 50%);
+body.tv-mode .series-selector-wrapper {
+    background: var(--bg-dark);
 }
-
-body.tv-mode h2 { color: white; }
+body.tv-mode .selector-btn {
+    background: #333; border-color: #444; color: #ccc;
+}
+body.tv-mode .selector-btn.active {
+    background: white; color: black;
+}
 
 /* Horizontal Scrolling for TV Mode */
 body.tv-mode .season-content, 
@@ -310,35 +387,29 @@ body.tv-mode .game-grid {
     display: flex;
     overflow-x: auto;
     padding-bottom: 2rem;
-    scroll-behavior: smooth;
+    gap: 1.5rem;
+    /* Snap effect */
+    scroll-snap-type: x mandatory;
 }
-body.tv-mode .season-content::-webkit-scrollbar { height: 8px; }
-body.tv-mode .season-content::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-
 body.tv-mode .episode, 
 body.tv-mode .game-item {
-    min-width: 300px; /* Larger cards */
+    min-width: 320px; /* Bigger cards for TV */
     background: #1f1f1f;
+    border: none;
+    scroll-snap-align: start;
 }
+body.tv-mode .episode h3 { color: #ddd; }
+body.tv-mode h2 { color: white; border-color: var(--thomas-red); }
 
-body.tv-mode .episode h3, 
-body.tv-mode .game-item strong {
-    color: #ddd;
-}
+/* Modal Styling */
+.modal { background: rgba(0,0,0,0.95); }
+.queue-btn { background: var(--thomas-blue); color: white; }
+#title-shield { position: absolute; top:0; left:0; width:100%; height:60px; background:black; opacity:0; pointer-events:none; transition:opacity 0.3s; z-index:20; }
+#title-shield.active { opacity:1; pointer-events:auto; }
 
-body.tv-mode .dvd-grid {
-    justify-content: flex-start;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-}
-
-/* Modal Dark Mode */
-.modal { background: rgba(0,0,0,0.98); }
-.queue-btn { background: #333; border-color: #555; }
-
-/* --- RESPONSIVE --- */
-@media (max-width: 768px) {
-    .hero-content h1 { font-size: 2.5rem; }
-    .nav-actions .btn-text { display: none; } /* Show icon only on mobile nav */
-    .dvd-grid { gap: 1rem; }
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .navbar { flex-direction: column; gap: 1rem; padding: 1rem; }
+    .hero-content h1 { font-size: 2rem; }
+    .hero-section { min-height: 60vh; }
 }
