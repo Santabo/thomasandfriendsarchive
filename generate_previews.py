@@ -1,14 +1,16 @@
-import json
-import os
+import argparse
 import html
+import json
+from pathlib import Path
 
 SITE_TITLE = "Thomas the Tank Engine Archive"
 SITE_DESC = "Complete collection of Thomas the Tank Engine episodes, specials, and fan-made content."
 SITE_FAVICON = "https://i.ibb.co/SDBYYshc/image-2025-07-09-212116843.png"
 
+
 def ensure_dir(path):
-    if not os.path.exists(path):
-        os.makedirs(path)
+    Path(path).mkdir(parents=True, exist_ok=True)
+
 
 def generate_redirect_html(ep_code, title, cover_url, season_num, episode_num, lang_code, country_name):
     title_esc = html.escape(title)
@@ -54,23 +56,29 @@ def generate_redirect_html(ep_code, title, cover_url, season_num, episode_num, l
 </html>
 """
 
+
 def process_language(lang_code, country_name):
-    data_dir = f"public/data/{lang_code}"
+    data_dir = Path(f"public/data/{lang_code}")
     output_base_dir = f"public/{lang_code}/episodes"
     output_jack_dir = f"public/{lang_code}/jackandthepack"
     output_specials_dir = f"public/{lang_code}/specials"
 
     print(f"\n🌍 Processing: {lang_code.upper()} ({country_name})")
 
+    if not data_dir.exists():
+        print(f"⚠️ Data directory not found for {lang_code}: {data_dir}")
+        return
+
     # Seasons
-    for filename in os.listdir(data_dir):
+    for file_path in sorted(data_dir.iterdir()):
+        filename = file_path.name
         if not filename.startswith("season") or not filename.endswith(".json"):
             continue
 
-        season_num = filename[len("season"):-len(".json")]
+        season_num = filename[len("season") : -len(".json")]
         season_str = season_num.zfill(2)
 
-        with open(os.path.join(data_dir, filename), "r", encoding="utf-8") as f:
+        with file_path.open("r", encoding="utf-8") as f:
             data = json.load(f)
 
         episodes = data.get(f"season{season_num}", {}).get("episodes", [])
@@ -92,18 +100,18 @@ def process_language(lang_code, country_name):
                 ep_code, title, cover, season_str, ep_num_str, lang_code, country_name
             )
 
-            output_dir = os.path.join(output_base_dir, season_str, ep_num_str)
+            output_dir = Path(output_base_dir) / season_str / ep_num_str
             ensure_dir(output_dir)
 
-            with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as out_file:
+            with (output_dir / "index.html").open("w", encoding="utf-8") as out_file:
                 out_file.write(html_content)
 
             print(f"✅ Generated episode {ep_code}: {title}")
 
     # Jack and the Pack
-    jack_path = os.path.join(data_dir, "jackandthepack.json")
-    if os.path.exists(jack_path):
-        with open(jack_path, "r", encoding="utf-8") as f:
+    jack_path = data_dir / "jackandthepack.json"
+    if jack_path.exists():
+        with jack_path.open("r", encoding="utf-8") as f:
             jack_data = json.load(f)
 
         episodes = jack_data.get("jackandthepack", {}).get("episodes", [])
@@ -121,21 +129,27 @@ def process_language(lang_code, country_name):
                 cover = ep.get("cover", "")
 
                 html_content = generate_redirect_html(
-                    ep_code, title, cover, "Jack & the Sodor Construction Company", ep_num_str, lang_code, country_name
+                    ep_code,
+                    title,
+                    cover,
+                    "Jack & the Sodor Construction Company",
+                    ep_num_str,
+                    lang_code,
+                    country_name,
                 )
 
-                output_dir = os.path.join(output_jack_dir, ep_num_str)
+                output_dir = Path(output_jack_dir) / ep_num_str
                 ensure_dir(output_dir)
 
-                with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as out_file:
+                with (output_dir / "index.html").open("w", encoding="utf-8") as out_file:
                     out_file.write(html_content)
 
                 print(f"✅ Generated JACK{ep_num_str}: {title}")
 
     # Specials
-    specials_path = os.path.join(data_dir, "specials.json")
-    if os.path.exists(specials_path):
-        with open(specials_path, "r", encoding="utf-8") as f:
+    specials_path = data_dir / "specials.json"
+    if specials_path.exists():
+        with specials_path.open("r", encoding="utf-8") as f:
             specials_data = json.load(f)
 
         specials = specials_data.get("specials", {}).get("episodes", [])
@@ -156,25 +170,26 @@ def process_language(lang_code, country_name):
                     ep_code, title, cover, "Specials", ep_num_str, lang_code, country_name
                 )
 
-                output_dir = os.path.join(output_specials_dir, ep_num_str)
+                output_dir = Path(output_specials_dir) / ep_num_str
                 ensure_dir(output_dir)
 
-                with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as out_file:
+                with (output_dir / "index.html").open("w", encoding="utf-8") as out_file:
                     out_file.write(html_content)
 
                 print(f"✅ Generated SPL{ep_num_str}: {title}")
 
+
 def process_tugs():
-    tugs_data_path = "public/data/tugs.json"
+    tugs_data_path = Path("public/data/tugs.json")
     output_tugs_dir = "public/tugs"
 
     print("\n🚢 Processing: TUGS")
 
-    if not os.path.exists(tugs_data_path):
+    if not tugs_data_path.exists():
         print("⚠️ TUGS data file not found")
         return
 
-    with open(tugs_data_path, "r", encoding="utf-8") as f:
+    with tugs_data_path.open("r", encoding="utf-8") as f:
         data = json.load(f)
 
     episodes = data.get("tugs", {}).get("episodes", [])
@@ -195,30 +210,49 @@ def process_tugs():
         # season_num can be a fixed string for TUGS since it is not a season/series
         season_num = "TUGS"
 
-        html_content = generate_redirect_html(
-            ep_code, title, cover, season_num, ep_num_str, "en-gb", "TUGS"
-        )
+        html_content = generate_redirect_html(ep_code, title, cover, season_num, ep_num_str, "en-gb", "TUGS")
 
-        output_dir = os.path.join(output_tugs_dir, ep_num_str)
+        output_dir = Path(output_tugs_dir) / ep_num_str
         ensure_dir(output_dir)
 
-        with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as out_file:
+        with (output_dir / "index.html").open("w", encoding="utf-8") as out_file:
             out_file.write(html_content)
 
         print(f"✅ Generated TG{ep_num_str}: {title}")
 
-def main():
-    languages = {
-        "en-gb": "UK",
-        "en-us": "US"
-    }
+
+def main(languages=None):
+    if languages is None:
+        languages = {
+            "en-gb": "UK",
+            "en-us": "US",
+        }
 
     for lang_code, country_name in languages.items():
         process_language(lang_code, country_name)
 
     process_tugs()
 
-    print("\n🎉 All redirect pages generated for all languages and TUGS!")
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Generate static preview redirect pages.")
+    parser.add_argument(
+        "--lang",
+        action="append",
+        choices=["en-gb", "en-us"],
+        help="Only process the specified language(s). May be passed multiple times.",
+    )
+    return parser.parse_args()
+
 
 if __name__ == "__main__":
-    main()
+    args = parse_args()
+    default_languages = {
+        "en-gb": "UK",
+        "en-us": "US",
+    }
+    if args.lang:
+        selected_languages = {code: default_languages[code] for code in args.lang}
+        main(selected_languages)
+    else:
+        main(default_languages)

@@ -41,7 +41,7 @@
   ],
   "headers": [
     {
-      "source": "/games/the-build-engine-game/The_Build_Engine_Game.swf",
+      "source": "/games/build-an-engine/The_Build_Engine_Game.swf",
       "headers": [
         {
           "key": "Content-Type",
@@ -68,4 +68,3 @@
     }
   ]
 }
-
