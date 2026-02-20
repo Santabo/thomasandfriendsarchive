@@ -2,27 +2,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const dvdContainer = document.querySelector('.dvd-grid');
     const splash = document.getElementById('dvd-splash-bg');
     const modal = document.getElementById('video-modal');
-    const modalContent = document.querySelector('#video-modal .modal-content');
     const iframe = document.getElementById('modal-video');
     const closeBtn = document.getElementById('modal-close');
     const statusDiv = document.getElementById('queue-status');
     const controlsDiv = document.getElementById('modal-controls');
     const btnNext = document.getElementById('btn-next');
     const btnPrev = document.getElementById('btn-prev');
-    const titleShield = document.getElementById('title-shield');
 
-    // Get Language from URL (default to en-gb)
     const lang = window.LANG_CODE || 'en-gb';
 
     let currentQueue = [];
     let currentTrackIndex = 0;
 
-    // --- SHIELD & TIMER VARIABLES ---
-    let shieldTimeout;
-    let isHoveringModal = false;
-    let isShieldNeededForTrack = false;
-
-    // Image loading state
     const LQIP_PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop stop-color='%23dce8f5'/%3E%3Cstop offset='1' stop-color='%23b8d0ea'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='16' height='9' fill='url(%23g)'/%3E%3C/svg%3E";
     const imageCache = new Map();
     let activeSplashHighSrc = '';
@@ -72,7 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
             };
         }
 
-        // Backward-compatible fallback for Dinos & Discoveries
         if (dvd.title?.toLowerCase().includes('dinos') && dvd.title?.toLowerCase().includes('discoveries')) {
             return {
                 low: LQIP_PLACEHOLDER,
@@ -91,12 +81,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         activeSplashHighSrc = high;
         splash.style.opacity = '0.7';
-
-        // show low-quality first
         splash.classList.add('is-low-res');
         splash.style.backgroundImage = `url('${low || LQIP_PLACEHOLDER}')`;
 
-        // upgrade to high quality once preloaded
         if (high) {
             preloadImage(high)
                 .then(() => {
@@ -104,9 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     splash.style.backgroundImage = `url('${high}')`;
                     splash.classList.remove('is-low-res');
                 })
-                .catch(() => {
-                    // keep low-res image if high-res fails
-                });
+                .catch(() => {});
         }
     }
 
@@ -116,7 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
         activeSplashHighSrc = '';
     }
 
-    // --- 1. FETCH AND RENDER DVDS ---
     fetch('/data/dvds.json')
         .then(response => {
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -132,7 +116,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const coverImage = getCoverImage(dvd);
                 const splashImages = getSplashImages(dvd);
 
-                // warm cache for smoother hover/covers
                 preloadImage(coverImage).catch(() => {});
                 preloadImage(splashImages.low).catch(() => {});
                 preloadImage(splashImages.high).catch(() => {});
@@ -146,9 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 dvdItem.innerHTML = `
                     <div class="dvd-case">
-                        <div class="dvd-spine" style="background-color: ${dvd.spine_color || '#333'};">
-                            ${dvd.title.toUpperCase()}
-                        </div>
+                        <div class="dvd-spine" style="background-color: ${dvd.spine_color || '#333'};" aria-hidden="true"></div>
                         <div class="dvd-face dvd-front">
                             <img class="dvd-cover" src="${LQIP_PLACEHOLDER}" alt="${dvd.title} Cover" loading="lazy" decoding="async">
                         </div>
@@ -173,7 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(err => console.error('Error loading DVDs:', err));
 
-    // --- 2. DATA RESOLUTION LOGIC ---
     async function prepareAndPlayDvd(dvd) {
         const seasonsToFetch = [...new Set((dvd.tracks || [])
             .filter(t => !t.is_direct_link && t.season_id)
@@ -196,7 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     return {
                         title: track.title,
                         url: track.url,
-                        hide_embed_title: track.hide_embed_title || false,
                     };
                 }
 
@@ -209,7 +188,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return {
                     title: track.title,
                     url: epData.link,
-                    hide_embed_title: false,
                 };
             }).filter(Boolean);
 
@@ -225,7 +203,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 3. PLAYER UI & CONTROLS ---
     function startPlayerUI() {
         if (controlsDiv) controlsDiv.style.display = 'flex';
         if (statusDiv) statusDiv.style.display = 'block';
@@ -250,10 +227,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.overflow = '';
         currentQueue = [];
 
-        clearTimeout(shieldTimeout);
-        if (titleShield) titleShield.classList.remove('active');
-        isShieldNeededForTrack = false;
-
         if (statusDiv) statusDiv.innerHTML = '';
         if (controlsDiv) controlsDiv.style.display = 'none';
     }
@@ -275,30 +248,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'ArrowLeft') window.prevTrack();
     });
 
-    if (modalContent && titleShield) {
-        modalContent.addEventListener('mouseenter', () => {
-            isHoveringModal = true;
-            if (isShieldNeededForTrack) {
-                clearTimeout(shieldTimeout);
-                titleShield.classList.add('active');
-            }
-        });
-
-        modalContent.addEventListener('mouseleave', () => {
-            isHoveringModal = false;
-            if (isShieldNeededForTrack) startShieldTimer();
-        });
-    }
-
-    function startShieldTimer() {
-        clearTimeout(shieldTimeout);
-        shieldTimeout = setTimeout(() => {
-            if (!isHoveringModal && titleShield) {
-                titleShield.classList.remove('active');
-            }
-        }, 3000);
-    }
-
     function formatVideoUrl(url) {
         if (!url) return '';
         if (url.includes('drive.google.com')) return url.replace('/view', '/preview');
@@ -312,19 +261,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.loadTrack = function() {
         if (currentQueue.length === 0) return;
         const track = currentQueue[currentTrackIndex];
-
-        clearTimeout(shieldTimeout);
-
-        if (titleShield) {
-            if (track.hide_embed_title) {
-                isShieldNeededForTrack = true;
-                titleShield.classList.add('active');
-                startShieldTimer();
-            } else {
-                isShieldNeededForTrack = false;
-                titleShield.classList.remove('active');
-            }
-        }
 
         if (iframe) iframe.src = formatVideoUrl(track.url);
 
