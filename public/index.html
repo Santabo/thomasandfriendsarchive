@@ -2,27 +2,43 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Thomas Archive | Watch & Explore</title>
-  <meta name="description" content="A comprehensive fan-made archive of Thomas & Friends episodes, specials, DVD menus, and more." />
+  <title>Thomas Archive | Watch &amp; Explore</title>
+  <meta name="description" content="A fan-made archive of Thomas &amp; Friends episodes, specials, DVD menus, and more." />
   <meta property="og:title" content="Thomas Archive" />
-  <meta property="og:description" content="Watch Thomas & Friends episodes, specials, and DVD collections." />
+  <meta property="og:description" content="Watch Thomas &amp; Friends episodes, specials, and DVD collections." />
   <meta property="og:image" content="https://i.ibb.co/SDBYYshc/image-2025-07-09-212116843.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="stylesheet" href="/style.css" />
   <link rel="icon" href="https://i.ibb.co/SDBYYshc/image-2025-07-09-212116843.png" type="image/png" />
+  <style>
+    /* Compatibility overrides for older browsers */
+    /* Wii U, older Android, etc. */
+    .series-selector { display: -webkit-box; display: -ms-flexbox; }
+    .dvd-grid        { display: -webkit-box; display: -ms-flexbox; }
+    .season-content  { display: -webkit-box; display: -ms-flexbox; }
+    /* Fallback for browsers without CSS Grid or modern flex */
+    @media all {
+      .season-content { -webkit-flex-wrap: wrap; -ms-flex-wrap: wrap; flex-wrap: wrap; }
+    }
+    /* Hide discord section until JS confirms it loaded */
+    #join-discord { display: none; }
+  </style>
   <script>
-    // Set language from URL path before anything renders
-    const _pm = window.location.pathname.match(/^\/([a-z]{2}-[a-z]{2})(\/|$)/i);
-    window.LANG_CODE = _pm ? _pm[1].toLowerCase() : 'en-gb';
+    /* Set language from URL before anything renders */
+    (function() {
+      var m = window.location.pathname.match(/^\/([a-z]{2}-[a-z]{2})(\/|$)/i);
+      window.LANG_CODE = m ? m[1].toLowerCase() : 'en-gb';
+    })();
   </script>
 </head>
 <body>
 
   <!-- Terms of Use Modal -->
   <div id="terms-modal" class="modal" role="dialog" aria-modal="true" style="display:none;z-index:9999;">
-    <div class="modal-content" style="max-width:500px;aspect-ratio:unset;padding:2rem;background:white;text-align:center;border-radius:16px;">
-      <h2 style="color:#005eb8;margin-bottom:0.8rem;">Welcome Aboard! 🚂</h2>
+    <div class="modal-content" style="max-width:500px;padding:2rem;background:white;text-align:center;border-radius:16px;">
+      <h2 style="color:#005eb8;margin-bottom:.8rem;">Welcome Aboard! &#x1F682;</h2>
       <p style="color:#444;margin:0 0 1.2rem;line-height:1.5;">
         Before entering, please agree to our
         <a href="/terms-of-use.html" style="color:#005eb8;">Terms of Use</a>.
@@ -38,8 +54,8 @@
       <iframe id="modal-video" title="Video player" allow="autoplay; fullscreen" allowfullscreen></iframe>
       <div id="queue-status"></div>
       <div id="modal-controls">
-        <button id="btn-prev" class="queue-btn">⏮ Prev</button>
-        <button id="btn-next" class="queue-btn">Next ⏭</button>
+        <button id="btn-prev" class="queue-btn">&#9194; Prev</button>
+        <button id="btn-next" class="queue-btn">Next &#9193;</button>
       </div>
     </div>
   </div>
@@ -52,13 +68,15 @@
         <div class="steam-puff delay-1"></div>
       </div>
       <p>A comprehensive collection of episodes, specials, and fan creations</p>
+
+      <!-- Hidden by default; shown only if Discord widget loads successfully -->
       <section id="join-discord">
-        <div style="display:flex;align-items:center;gap:10px;">
+        <div style="display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;gap:10px;">
           <div id="discord-avatars"></div>
-          <span id="discord-stats" style="font-size:.9rem;font-weight:bold;color:white;">Loading…</span>
+          <span id="discord-stats" style="font-size:.9rem;font-weight:bold;color:white;"></span>
         </div>
-        <div style="display:flex;gap:10px;">
-          <a id="discord-invite" href="https://discord.gg/" target="_blank" rel="noopener">🚂 Join Discord</a>
+        <div>
+          <a id="discord-invite" href="https://discord.gg/" target="_blank" rel="noopener noreferrer">&#x1F682; Join Discord</a>
         </div>
       </section>
     </div>
@@ -67,18 +85,18 @@
   <main>
 
     <!-- Episodes -->
-    <section id="episodes" class="fade-in-up" style="animation-delay:.1s;">
+    <section id="episodes" class="fade-in-up" style="-webkit-animation-delay:.1s;animation-delay:.1s;">
       <div class="section-header">
         <h2 id="episodes-heading">Episodes</h2>
         <div class="search-wrapper">
-          <input type="search" id="episode-search" placeholder="Search episodes…" aria-label="Search episodes" autocomplete="off">
+          <input type="search" id="episode-search" placeholder="Search episodes&#x2026;" aria-label="Search episodes" autocomplete="off" />
         </div>
       </div>
       <div id="episode-list"></div>
     </section>
 
     <!-- DVD Collection -->
-    <section id="dvd-collection" class="fade-in-up" style="animation-delay:.2s;">
+    <section id="dvd-collection" class="fade-in-up" style="-webkit-animation-delay:.2s;animation-delay:.2s;">
       <div id="dvd-splash-bg" aria-hidden="true"></div>
       <div style="position:relative;z-index:2;">
         <h2>DVD Collection</h2>
@@ -88,7 +106,7 @@
     </section>
 
     <!-- Games -->
-    <section id="games" class="fade-in-up" style="animation-delay:.3s;">
+    <section id="games" class="fade-in-up" style="-webkit-animation-delay:.3s;animation-delay:.3s;">
       <h2>Games</h2>
       <div class="game-grid" style="margin-top:1.2rem;">
         <div class="game-item">
@@ -100,27 +118,28 @@
       </div>
     </section>
 
-    <!-- Credits -->
-    <section id="credits" class="fade-in-up" style="animation-delay:.4s;">
+    <!-- Special Thanks - anonymous -->
+    <section id="credits" class="fade-in-up" style="-webkit-animation-delay:.4s;animation-delay:.4s;">
       <h2>Special Thanks</h2>
       <p style="margin:.5rem 0 1.5rem;color:#666;">
-        Huge thanks to the community members helping preserve, catalog, and share Thomas and TUGS media for fans worldwide.
+        A huge thank you to all community members who have helped preserve, catalog, and share Thomas &amp; Friends and TUGS media for fans worldwide.
+        Contributors have chosen to remain anonymous.
       </p>
       <div class="credits-grid">
         <div class="credit-item">
-          <img src="https://i.ibb.co/1f92j2FV/8c353d9155de9a11d9d86f7e6ad831e9.webp" alt="foxStorm1" loading="lazy">
-          <strong>foxStorm1</strong>
-          <small style="display:block;color:#666;margin-top:.3rem;">Archive sourcing &amp; quality checks</small>
+          <div class="credit-avatar" aria-hidden="true">&#x1F682;</div>
+          <strong>Archive Contributors</strong>
+          <small style="display:block;color:#666;margin-top:.3rem;">Sourcing &amp; quality checks</small>
         </div>
         <div class="credit-item">
-          <img src="https://i.ibb.co/zhXz8w1X/10f4845240de63414acf4b856b7a68b7.webp" alt="koreandub" loading="lazy">
-          <strong>koreandub</strong>
+          <div class="credit-avatar" aria-hidden="true">&#127758;</div>
+          <strong>Regional Preservers</strong>
           <small style="display:block;color:#666;margin-top:.3rem;">Regional media contributions</small>
         </div>
         <div class="credit-item">
-          <img src="https://i.ibb.co/jvsd53Kc/0af0796b865c1f13d7ca3c587034fb0c.webp" alt="talez_chip" loading="lazy">
-          <strong>talez_chip</strong>
-          <small style="display:block;color:#666;margin-top:.3rem;">Metadata cleanup &amp; indexing</small>
+          <div class="credit-avatar" aria-hidden="true">&#x1F4C2;</div>
+          <strong>Data Team</strong>
+          <small style="display:block;color:#666;margin-top:.3rem;">Metadata &amp; indexing</small>
         </div>
       </div>
     </section>
@@ -129,13 +148,13 @@
 
   <footer>
     <p>
-      &copy; 2026 Thomas Archive · Fan-made preservation project.<br>
-      Watch, archive, and enjoy responsibly ·
+      &copy; 2026 Thomas Archive &middot; Fan-made preservation project.<br />
+      Watch, archive, and enjoy responsibly &middot;
       <a href="/terms-of-use.html">Terms of Use</a>
     </p>
   </footer>
 
-  <!-- Scripts: order matters -->
+  <!-- Scripts - order matters; overlay before player -->
   <script src="/scripts/geoRedirect.js"></script>
   <script src="/scripts/dvdMenuOverlay.js" defer></script>
   <script src="/scripts/dvdPlayer.js" defer></script>
@@ -143,14 +162,18 @@
   <script src="/scripts/discordWidget.js" defer></script>
   <script src="/scripts/funnySounds.js" defer></script>
 
-  <!-- Terms acceptance logic -->
+  <!-- Terms acceptance - uses localStorage, falls back gracefully -->
   <script>
-    (function () {
-      const modal = document.getElementById('terms-modal');
-      const accepted = localStorage.getItem('ta-terms-accepted');
-      if (!accepted) { modal.style.display = 'flex'; }
-      document.getElementById('accept-terms').addEventListener('click', function () {
-        localStorage.setItem('ta-terms-accepted', '1');
+    (function() {
+      var modal = document.getElementById('terms-modal');
+      var accepted = false;
+      try { accepted = !!localStorage.getItem('ta-terms-accepted'); } catch(e) {}
+      if (!accepted) {
+        modal.style.display = 'flex';
+      }
+      var btn = document.getElementById('accept-terms');
+      if (btn) btn.addEventListener('click', function() {
+        try { localStorage.setItem('ta-terms-accepted', '1'); } catch(e) {}
         modal.style.display = 'none';
       });
     })();

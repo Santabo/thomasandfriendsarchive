@@ -352,3 +352,31 @@ footer a { color: var(--blue); }
   .dvd-item { width: 150px; height: 225px; }
   .season-content { grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); gap: 1rem; }
 }
+
+/* ── ANONYMOUS CREDIT AVATARS ─────────────────────── */
+.credit-avatar {
+  width: 82px; height: 82px;
+  border-radius: 50%;
+  border: 3px solid var(--blue);
+  margin-bottom: 0.7rem;
+  background: linear-gradient(135deg, #e8f0fb, #c8daff);
+  display: -webkit-box; display: -ms-flexbox; display: flex;
+  -webkit-box-align: center; -ms-flex-align: center; align-items: center;
+  -webkit-box-pack: center; -ms-flex-pack: center; justify-content: center;
+  font-size: 2.2rem;
+}
+
+/* ── OLD BROWSER FALLBACKS ────────────────────────── */
+/* For browsers without CSS custom properties */
+.selector-btn          { background: #ffbf00; }
+.selector-btn.active   { background: #005eb8; color: #fff; }
+.queue-btn             { background: #005eb8; }
+
+/* For browsers without aspect-ratio support */
+.modal-content { min-height: 200px; }
+
+/* No animation fallback */
+@media (prefers-reduced-motion: reduce) {
+  .fade-in-up, .steam-puff, header { animation: none !important; opacity: 1 !important; }
+  .dvd-item { transition: none !important; }
+}
