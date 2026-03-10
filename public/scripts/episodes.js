@@ -1,148 +1,108 @@
 document.addEventListener('DOMContentLoaded', () => {
   const lang = window.LANG_CODE || 'en-gb';
 
-  // Define ALL sections clearly
   const sections = [
-    ...Array.from({ length: 24 }, (_, i) => `season${i + 1}`), // season1 to season24
-    'jackandthepack',
-    'tugs',
-    'specials',
-    'fan'
+    ...Array.from({ length: 24 }, (_, i) => `season${i + 1}`),
+    'jackandthepack', 'tugs', 'specials', 'fan'
   ];
 
   const container = document.getElementById('episode-list');
-  // Removed .series-selector-wrapper lookup as we are reverting to container.before()
   const modal = document.getElementById('video-modal');
   const iframe = document.getElementById('modal-video');
   const searchInput = document.getElementById('episode-search');
 
-  // --- 1. GLOBAL EVENT DELEGATION (Fixes "No episodes play") ---
-  document.body.addEventListener('click', (e) => {
-      const link = e.target.closest('a.video-link');
-      if (link) {
-          e.preventDefault();
-          const url = link.dataset.url;
-          const epid = link.dataset.epid;
-          if (url) openVideoModal(url, epid);
-      }
+  // ── Global click delegation ──────────────────────────────────────────────
+  document.body.addEventListener('click', e => {
+    const link = e.target.closest('a.video-link');
+    if (link) { e.preventDefault(); openVideoModal(link.dataset.url, link.dataset.epid); }
   });
 
-  // --- 2. BUILD SERIES TABS ---
+  // ── Series tabs ──────────────────────────────────────────────────────────
   const selector = document.createElement('div');
   selector.className = 'series-selector';
-  
-  sections.forEach((key, i) => {
-    let label;
-    if (key === 'fan') label = 'Fan Creations';
-    else if (key === 'specials') label = 'Specials';
-    else if (key === 'jackandthepack') label = lang === 'en-gb' ? 'Jack & the Pack' : 'Jack & the Pack';
-    else if (key === 'tugs') label = 'TUGS';
-    else label = `Series ${i + 1}`; 
 
-    const button = document.createElement('button');
-    button.className = 'selector-btn';
-    button.textContent = label;
-    button.dataset.target = key;
-    // Default active is season1
-    if (key === 'season1') button.classList.add('active');
-    
-    // Tab Click Logic
-    button.addEventListener('click', () => {
-        // Update UI
-        document.querySelectorAll('.selector-btn').forEach(b => b.classList.remove('active'));
-        button.classList.add('active');
-        
-        // Show/Hide Containers
-        document.querySelectorAll('.season').forEach(s => {
-            if(s.dataset.series === key) {
-                s.style.display = 'grid'; 
-                s.classList.remove('hidden'); 
-            } else {
-                s.style.display = 'none';
-                s.classList.add('hidden');
-            }
-        });
+  sections.forEach((key, i) => {
+    let label = key === 'fan' ? 'Fan Creations'
+               : key === 'specials' ? 'Specials'
+               : key === 'jackandthepack' ? 'Jack & the Pack'
+               : key === 'tugs' ? 'TUGS'
+               : `Series ${i + 1}`;
+
+    const btn = document.createElement('button');
+    btn.className = 'selector-btn' + (key === 'season1' ? ' active' : '');
+    btn.textContent = label;
+    btn.dataset.target = key;
+
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.selector-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.season').forEach(s => {
+        const show = s.dataset.series === key;
+        s.style.display = show ? 'grid' : 'none';
+        s.classList.toggle('hidden', !show);
+      });
+      // Clear search when switching series
+      if (searchInput) searchInput.value = '';
     });
 
-    selector.appendChild(button);
+    selector.appendChild(btn);
   });
-  
-  // Inject selector directly before container (Classic Layout)
+
   container.before(selector);
 
-  // --- 3. FETCH AND RENDER ---
-  const fetchSeasonData = sections.map((key) => {
-    let url;
-    // Define Paths
-    if (key === 'fan') url = '/data/fanContent.json';
-    else if (key === 'specials') url = `/${lang}/data/specials.json`;
-    else if (key === 'tugs') url = '/data/tugs.json';
-    else url = `/${lang}/data/${key}.json`;
+  // ── Fetch + render ───────────────────────────────────────────────────────
+  Promise.all(sections.map(key => {
+    const url = key === 'fan'     ? '/data/fanContent.json'
+               : key === 'specials' ? `/${lang}/data/specials.json`
+               : key === 'tugs'    ? '/data/tugs.json'
+               : `/${lang}/data/${key}.json`;
 
     return fetch(url)
-        .then(res => {
-            if(!res.ok) throw new Error(`HTTP error ${res.status}`);
-            return res.json();
-        })
-        .then(data => {
-            let episodes = [];
-            // Normalize Data Structure
-            if(key === 'fan') episodes = data;
-            else if(key === 'specials') episodes = data.specials.episodes;
-            else if(key === 'tugs') episodes = data.tugs.episodes;
-            else if(data[key]) episodes = data[key].episodes;
-            else if(data.episodes) episodes = data.episodes; // Fallback
-            
-            return { type: key, seasonKey: key, episodes: episodes };
-        })
-        .catch(err => {
-            // console.warn(`Failed to load ${key}:`, err);
-            return { seasonKey: key, error: true }; 
-        });
-  });
-
-  Promise.all(fetchSeasonData).then(results => {
-    results.forEach(({ seasonKey, episodes, error }) => {
-      if (error || !episodes) return;
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(data => {
+        let episodes = [];
+        if (key === 'fan')      episodes = data;
+        else if (key === 'specials') episodes = data.specials?.episodes || [];
+        else if (key === 'tugs')     episodes = data.tugs?.episodes || [];
+        else if (data[key])          episodes = data[key].episodes || [];
+        else if (data.episodes)      episodes = data.episodes;
+        return { key, episodes };
+      })
+      .catch(() => ({ key, episodes: [] }));
+  })).then(results => {
+    results.forEach(({ key, episodes }) => {
+      if (!episodes.length) return;
 
       const wrapper = document.createElement('div');
-      wrapper.className = 'season';
-      wrapper.dataset.series = seasonKey;
-      
-      // Default Visibility
-      if (seasonKey !== 'season1') {
-          wrapper.style.display = 'none';
-          wrapper.classList.add('hidden');
-      } else {
-          wrapper.style.display = 'grid';
-      }
+      wrapper.className = 'season season-content';
+      wrapper.dataset.series = key;
+      wrapper.style.display = key === 'season1' ? 'grid' : 'none';
+      if (key !== 'season1') wrapper.classList.add('hidden');
 
-      wrapper.classList.add('season-content'); 
+      episodes.forEach(ep => {
+        // Support both title formats
+        const title = ep.title || ep.uk_title || ep.us_title || 'Unknown Episode';
+        const cover = ep.cover || 'https://via.placeholder.com/300x169?text=No+Image';
+        const url   = ep.link  || ep.video_url || '';
 
-      episodes.forEach((ep) => {
-        let epId = '00';
-        let title = ep.title || ep.uk_title || 'Unknown Episode';
-        let cover = ep.cover || 'https://via.placeholder.com/300x169?text=No+Image';
-        let url = ep.link || ep.video_url;
-        
-        // ADDED: Episode Number Display Logic
         let epNumDisplay = '';
         if (ep.episode_number) {
-            if (seasonKey === 'fan') epNumDisplay = `Fan Creation #${ep.episode_number}`;
-            else if (seasonKey === 'specials') epNumDisplay = `Special`;
-            else epNumDisplay = `Episode ${ep.episode_number}`;
+          if (key === 'fan') epNumDisplay = `Fan #${ep.episode_number}`;
+          else if (key === 'specials') epNumDisplay = 'Special';
+          else if (key === 'tugs') epNumDisplay = `Episode ${ep.episode_number}`;
+          else epNumDisplay = `Episode ${ep.episode_number}`;
         }
 
-        // Generate ID
-        if(seasonKey.startsWith('season')) {
-            const sNum = String(seasonKey.replace('season','')).padStart(2,'0');
-            epId = `${sNum}${String(ep.episode_number).padStart(2,'0')}`;
+        let epId = '00';
+        if (key.startsWith('season')) {
+          const sNum = String(key.replace('season', '')).padStart(2, '0');
+          epId = `${sNum}${String(ep.episode_number || '0').padStart(2, '0')}`;
         }
 
         const div = document.createElement('div');
         div.className = 'episode';
         div.innerHTML = `
-          <a class="video-link" data-url="${url}" data-epid="${epId}" href="#">
+          <a class="video-link" data-url="${url}" data-epid="${epId}" href="#" aria-label="Watch ${title}">
             <img src="${cover}" alt="${title}" loading="lazy" />
           </a>
           <h3>${title}</h3>
@@ -150,62 +110,81 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         wrapper.appendChild(div);
       });
-      
+
       container.appendChild(wrapper);
     });
-    
-    // Check for Redirect
-    handleDirectUrlOpen();
+
+    setupSearch();
   });
 
-  // --- 4. VIDEO PLAYER LOGIC ---
+  // ── Search ───────────────────────────────────────────────────────────────
+  function setupSearch() {
+    if (!searchInput) return;
+    let debounce;
+    searchInput.addEventListener('input', () => {
+      clearTimeout(debounce);
+      debounce = setTimeout(() => {
+        const q = searchInput.value.trim().toLowerCase();
+        if (!q) {
+          // Restore normal series tab view
+          const active = document.querySelector('.selector-btn.active')?.dataset.target;
+          document.querySelectorAll('.season').forEach(s => {
+            const show = s.dataset.series === active;
+            s.style.display = show ? 'grid' : 'none';
+            s.classList.toggle('hidden', !show);
+            s.querySelectorAll('.episode').forEach(e => e.style.display = '');
+          });
+          return;
+        }
+
+        // Show all series, filter episodes by title
+        document.querySelectorAll('.season').forEach(s => {
+          let hasMatch = false;
+          s.querySelectorAll('.episode').forEach(ep => {
+            const title = ep.querySelector('h3')?.textContent.toLowerCase() || '';
+            const visible = title.includes(q);
+            ep.style.display = visible ? '' : 'none';
+            if (visible) hasMatch = true;
+          });
+          s.style.display = hasMatch ? 'grid' : 'none';
+          s.classList.toggle('hidden', !hasMatch);
+        });
+      }, 200);
+    });
+  }
+
+  // ── Video modal ──────────────────────────────────────────────────────────
   function openVideoModal(url, epId) {
-      if (!modal || !iframe) return;
-      
-      let embedUrl = url;
-      try {
-          if (url.includes('youtube.com') || url.includes('youtu.be')) {
-              const vId = url.split('v=')[1] || url.split('/').pop();
-              const cleanVid = vId.split('?')[0]; 
-              embedUrl = `https://www.youtube.com/embed/${cleanVid}?autoplay=1&modestbranding=1&rel=0`;
-          } else if (url.includes('drive.google.com')) {
-              // Extract ID safely
-              let fId = '';
-              const match = url.match(/\/d\/(.+?)(\/|$)/);
-              if (match) fId = match[1];
-              else {
-                  const urlObj = new URL(url);
-                  fId = urlObj.searchParams.get('id');
-              }
-              
-              if(fId) embedUrl = `https://drive.google.com/file/d/${fId}/preview`;
-          }
-      } catch(e) {
-          console.error("URL Parse Error", e);
-      }
+    if (!modal || !iframe || !url) return;
 
-      iframe.src = embedUrl;
-      modal.classList.remove('hidden');
-      modal.style.display = 'flex';
-      
-      const shield = document.getElementById('title-shield');
-      if(shield) {
-          shield.classList.add('active');
-          setTimeout(() => shield.classList.remove('active'), 3000);
+    let embedUrl = url;
+    try {
+      if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        const vid = (url.split('v=')[1] || url.split('/').pop()).split('?')[0];
+        embedUrl = `https://www.youtube.com/embed/${vid}?autoplay=1&modestbranding=1&rel=0`;
+      } else if (url.includes('drive.google.com')) {
+        const match = url.match(/\/d\/(.+?)(\/|$)/);
+        const fid = match ? match[1] : new URL(url).searchParams.get('id');
+        if (fid) embedUrl = `https://drive.google.com/file/d/${fid}/preview`;
       }
+    } catch (e) { console.error('URL parse error', e); }
+
+    iframe.src = embedUrl;
+    modal.classList.remove('hidden');
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
   }
 
-  function handleDirectUrlOpen() {
-      // Direct link logic placeholder
-  }
+  const closeModal = () => {
+    iframe.src = '';
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+  };
 
-  // Close Logic
   document.getElementById('modal-close')?.addEventListener('click', closeModal);
-  modal.addEventListener('click', e => { if(e.target === modal) closeModal(); });
-
-  function closeModal() {
-      iframe.src = '';
-      modal.classList.add('hidden');
-      modal.style.display = 'none';
-  }
+  modal?.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) closeModal();
+  });
 });
