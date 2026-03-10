@@ -108,8 +108,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function startPlayerUI() { if(controlsDiv) controlsDiv.style.display='flex'; if(statusDiv) statusDiv.style.display='block'; openModal(); loadTrack(); }
-    function openModal() { if(!modal) return; modal.classList.remove('hidden'); modal.style.display='flex'; document.body.style.overflow='hidden'; }
-    function closeModal() { if(iframe) iframe.src=''; if(modal){modal.classList.add('hidden');modal.style.display='none';} document.body.style.overflow=''; currentQueue=[]; if(statusDiv) statusDiv.innerHTML=''; if(controlsDiv) controlsDiv.style.display='none'; }
+    function openModal() { if(!modal) return; modal.classList.remove('hidden'); modal.style.display='flex'; document.body.style.overflow='hidden'; const hint=document.getElementById('video-hint'); if(hint) hint.style.display=''; }
+    function closeModal() { if(iframe) iframe.src=''; if(modal){modal.classList.add('hidden');modal.style.display='none';} document.body.style.overflow=''; currentQueue=[]; if(statusDiv) statusDiv.innerHTML=''; if(controlsDiv) controlsDiv.style.display='none'; const hint=document.getElementById('video-hint'); if(hint) hint.style.display='none'; }
 
     if(closeBtn) closeBtn.addEventListener('click', closeModal);
     if(btnNext) btnNext.addEventListener('click', ()=>window.nextTrack());

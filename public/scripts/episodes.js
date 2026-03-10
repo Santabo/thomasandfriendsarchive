@@ -221,6 +221,8 @@ document.addEventListener('DOMContentLoaded', () => {
       } else if (url.includes('drive.google.com')) {
         const match = url.match(/\/d\/(.+?)(\/|$)/);
         const fid = match ? match[1] : new URL(url).searchParams.get('id');
+        // Drive preview iframes don't support autoplay via URL — browser policy blocks it.
+        // rm=minimal hides the Drive chrome/toolbar for a cleaner experience.
         if (fid) embedUrl = `https://drive.google.com/file/d/${fid}/preview?rm=minimal`;
       }
     } catch(e) { console.error('URL parse error', e); }
@@ -229,6 +231,9 @@ document.addEventListener('DOMContentLoaded', () => {
     modal.classList.remove('hidden');
     modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
+    // Show broken-video hint
+    const hint = document.getElementById('video-hint');
+    if (hint) hint.style.display = '';
   }
 
   const closeModal = () => {
@@ -236,6 +241,9 @@ document.addEventListener('DOMContentLoaded', () => {
     modal.classList.add('hidden');
     modal.style.display = 'none';
     document.body.style.overflow = '';
+    // Hide hint
+    const hint = document.getElementById('video-hint');
+    if (hint) hint.style.display = 'none';
   };
 
   document.getElementById('modal-close')?.addEventListener('click', closeModal);

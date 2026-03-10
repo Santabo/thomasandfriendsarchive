@@ -568,6 +568,41 @@ h2 {
   line-height: 1.55; font-size: 0.95rem;
 }
 
+/* ── VIDEO HINT (broken video notice) ────────────── */
+#video-hint {
+  display: none;
+  margin-top: 10px;
+  width: 100%;
+  max-width: 960px;
+  text-align: center;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.5;
+}
+#video-hint a {
+  color: #7b93f5;
+  text-decoration: underline;
+}
+#video-hint a:hover { color: #a0b0ff; }
+
+/* ── VIDEO HINT (broken video notice, shown inside modal overlay) ─── */
+#video-hint {
+  display: none;
+  margin-top: 0.7rem;
+  width: 100%;
+  max-width: 960px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.5;
+  pointer-events: auto;
+}
+#video-hint a {
+  color: rgba(140, 160, 255, 0.85);
+  text-decoration: underline;
+}
+#video-hint a:hover { color: #a8baff; }
+
 /* ── FOOTER ───────────────────────────────────────── */
 footer {
   background: var(--bg-alt);
