@@ -119,8 +119,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function fmtUrl(url) {
         if(!url) return '';
-        if(url.includes('drive.google.com')) return url.replace('/view','/preview');
-        if(url.includes('youtube.com')||url.includes('youtu.be')){ const sep=url.includes('?')? '&':'?'; return `${url}${sep}autoplay=1&modestbranding=1&rel=0`; }
+        if(url.includes('drive.google.com')) {
+            let u = url.replace('/view','/preview');
+            // Add autoplay — Google Drive preview supports ?rm=minimal&start=0
+            const sep = u.includes('?') ? '&' : '?';
+            return u + sep + 'rm=minimal';
+        }
+        if(url.includes('youtube.com')||url.includes('youtu.be')){ const sep=url.includes('?')? '&':'?'; return `${url}${sep}autoplay=1&modestbranding=1&rel=0&vq=hd1080`; }
         return url;
     }
 
