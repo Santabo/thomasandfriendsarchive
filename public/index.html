@@ -13,15 +13,10 @@
   <link rel="stylesheet" href="/style.css" />
   <link rel="icon" href="https://i.ibb.co/SDBYYshc/image-2025-07-09-212116843.png" type="image/png" />
   <style>
-    /* Compatibility overrides for older browsers */
-    /* Wii U, older Android, etc. */
+    /* Compatibility overrides for older browsers (Wii U, older Android, etc.) */
     .series-selector { display: -webkit-box; display: -ms-flexbox; }
     .dvd-grid        { display: -webkit-box; display: -ms-flexbox; }
-    .season-content  { display: -webkit-box; display: -ms-flexbox; }
-    /* Fallback for browsers without CSS Grid or modern flex */
-    @media all {
-      .season-content { -webkit-flex-wrap: wrap; -ms-flex-wrap: wrap; flex-wrap: wrap; }
-    }
+    .season-content  { display: -webkit-box; display: -ms-flexbox; -webkit-flex-wrap: wrap; -ms-flex-wrap: wrap; flex-wrap: wrap; }
     /* Hide discord section until JS confirms it loaded */
     #join-discord { display: none; }
   </style>
@@ -35,80 +30,75 @@
 </head>
 <body>
 
-  <!-- Terms of Use Modal -->
-  <div id="terms-modal" class="modal" role="dialog" aria-modal="true" style="display:none;z-index:9999;">
-    <div class="modal-content" style="max-width:500px;padding:2rem;background:white;text-align:center;border-radius:16px;">
-      <h2 style="color:#005eb8;margin-bottom:.8rem;">Welcome Aboard! &#x1F682;</h2>
-      <p style="color:#444;margin:0 0 1.2rem;line-height:1.5;">
+  <!-- ── Terms of Use Modal ────────────────────────── -->
+  <div id="terms-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="terms-title" style="display:none;z-index:9999;">
+    <div class="modal-content terms-modal-content">
+      <h2 id="terms-title">Welcome Aboard! &#x1F682;</h2>
+      <p class="terms-body">
         Before entering, please agree to our
-        <a href="/terms-of-use.html" style="color:#005eb8;">Terms of Use</a>.
+        <a href="/terms-of-use.html">Terms of Use</a>.
       </p>
-      <button id="accept-terms" class="queue-btn">I Accept</button>
+      <button id="accept-terms" class="btn btn-primary">I Accept</button>
     </div>
   </div>
 
-  <!-- Episode video modal -->
-  <div id="video-modal" class="modal hidden">
-    <div class="modal-content">
-      <button id="modal-close" aria-label="Close video">&times;</button>
+  <!-- ── Episode Video Modal ───────────────────────── -->
+  <div id="video-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Video player">
+    <div class="modal-content video-modal-content">
+      <button id="modal-close" class="modal-close-btn" aria-label="Close video">&times;</button>
       <iframe id="modal-video" title="Video player" allow="autoplay; fullscreen" allowfullscreen></iframe>
-      <div id="queue-status"></div>
+      <div id="queue-status" aria-live="polite"></div>
       <div id="modal-controls">
-        <button id="btn-prev" class="queue-btn">&#9194; Prev</button>
-        <button id="btn-next" class="queue-btn">Next &#9193;</button>
+        <button id="btn-prev" class="btn btn-secondary">&#9194; Prev</button>
+        <button id="btn-next" class="btn btn-secondary">Next &#9193;</button>
       </div>
     </div>
   </div>
 
+  <!-- ── Header ────────────────────────────────────── -->
   <header>
     <div class="container fade-in-up">
       <div class="header-title-wrapper">
         <h1>Thomas Archive</h1>
-        <div class="steam-puff"></div>
-        <div class="steam-puff delay-1"></div>
+        <div class="steam-puff" aria-hidden="true"></div>
+        <div class="steam-puff delay-1" aria-hidden="true"></div>
       </div>
-      <p>A comprehensive collection of episodes, specials, and fan creations</p>
+      <p class="header-tagline">A comprehensive collection of episodes, specials, and fan creations</p>
 
-      <!-- Hidden by default; shown only if Discord widget loads successfully -->
-      <section id="join-discord">
-        <div style="display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;gap:10px;">
+      <section id="join-discord" aria-label="Discord community">
+        <div class="discord-inner">
           <div id="discord-avatars"></div>
-          <span id="discord-stats" style="font-size:.9rem;font-weight:bold;color:white;"></span>
+          <span id="discord-stats"></span>
         </div>
-        <div>
-          <a id="discord-invite" href="https://discord.gg/" target="_blank" rel="noopener noreferrer">&#x1F682; Join Discord</a>
-        </div>
+        <a id="discord-invite" href="https://discord.gg/" target="_blank" rel="noopener noreferrer">&#x1F682; Join Discord</a>
       </section>
     </div>
   </header>
 
   <main>
 
-    <!-- Episodes -->
-    <section id="episodes" class="fade-in-up" style="-webkit-animation-delay:.1s;animation-delay:.1s;">
+    <!-- ── Episodes ──────────────────────────────── -->
+    <section id="episodes" class="fade-in-up" style="animation-delay:.1s">
       <div class="section-header">
         <h2 id="episodes-heading">Episodes</h2>
         <div class="search-wrapper">
-          <input type="search" id="episode-search" placeholder="Search episodes&#x2026;" aria-label="Search episodes" autocomplete="off" />
+          <input type="search" id="episode-search" placeholder="Search episodes…" aria-label="Search episodes" autocomplete="off" />
         </div>
       </div>
       <div id="episode-list"></div>
     </section>
 
-    <!-- DVD Collection -->
-    <section id="dvd-collection" class="fade-in-up" style="-webkit-animation-delay:.2s;animation-delay:.2s;">
-      <div id="dvd-splash-bg" aria-hidden="true"></div>
-      <div style="position:relative;z-index:2;">
-        <h2>DVD Collection</h2>
-        <p style="margin:.5rem 0 2rem;color:#666;">Select a DVD to launch the interactive menu.</p>
-        <div class="dvd-grid"></div>
-      </div>
+    <!-- ── DVD Collection ────────────────────────── -->
+    <section id="dvd-collection" class="fade-in-up" style="animation-delay:.2s">
+      <h2>DVD Collection</h2>
+      <p class="section-intro">Select a DVD to launch the interactive menu.</p>
+      <div class="dvd-grid"></div>
     </section>
 
-    <!-- Games -->
-    <section id="games" class="fade-in-up" style="-webkit-animation-delay:.3s;animation-delay:.3s;">
+    <!-- ── Games ─────────────────────────────────── -->
+    <section id="games" class="fade-in-up" style="animation-delay:.3s">
       <h2>Games</h2>
-      <div class="game-grid" style="margin-top:1.2rem;">
+      <div class="game-grid">
         <div class="game-item">
           <a href="/games/design-your-engine.html">
             <img src="https://i.ibb.co/RVTz5bL/Game-Promo-Sm-Design-Your-Train.jpg" alt="Design Your Engine" loading="lazy" />
@@ -118,28 +108,28 @@
       </div>
     </section>
 
-    <!-- Special Thanks - anonymous -->
-    <section id="credits" class="fade-in-up" style="-webkit-animation-delay:.4s;animation-delay:.4s;">
+    <!-- ── Special Thanks ────────────────────────── -->
+    <section id="credits" class="fade-in-up" style="animation-delay:.4s">
       <h2>Special Thanks</h2>
-      <p style="margin:.5rem 0 1.5rem;color:#666;">
-        A huge thank you to all community members who have helped preserve, catalog, and share Thomas &amp; Friends and TUGS media for fans worldwide.
-        Contributors have chosen to remain anonymous.
+      <p class="section-intro">
+        A huge thank you to all community members who have helped preserve, catalog, and share Thomas &amp; Friends
+        and TUGS media for fans worldwide. Contributors have chosen to remain anonymous.
       </p>
       <div class="credits-grid">
         <div class="credit-item">
           <div class="credit-avatar" aria-hidden="true">&#x1F682;</div>
           <strong>Archive Contributors</strong>
-          <small style="display:block;color:#666;margin-top:.3rem;">Sourcing &amp; quality checks</small>
+          <small class="credit-role">Sourcing &amp; quality checks</small>
         </div>
         <div class="credit-item">
           <div class="credit-avatar" aria-hidden="true">&#127758;</div>
           <strong>Regional Preservers</strong>
-          <small style="display:block;color:#666;margin-top:.3rem;">Regional media contributions</small>
+          <small class="credit-role">Regional media contributions</small>
         </div>
         <div class="credit-item">
           <div class="credit-avatar" aria-hidden="true">&#x1F4C2;</div>
           <strong>Data Team</strong>
-          <small style="display:block;color:#666;margin-top:.3rem;">Metadata &amp; indexing</small>
+          <small class="credit-role">Metadata &amp; indexing</small>
         </div>
       </div>
     </section>
@@ -154,7 +144,7 @@
     </p>
   </footer>
 
-  <!-- Scripts - order matters; overlay before player -->
+  <!-- Scripts – order matters; overlay must load before player -->
   <script src="/scripts/geoRedirect.js"></script>
   <script src="/scripts/dvdMenuOverlay.js" defer></script>
   <script src="/scripts/dvdPlayer.js" defer></script>
@@ -162,15 +152,13 @@
   <script src="/scripts/discordWidget.js" defer></script>
   <script src="/scripts/funnySounds.js" defer></script>
 
-  <!-- Terms acceptance - uses localStorage, falls back gracefully -->
+  <!-- Terms acceptance -->
   <script>
     (function() {
       var modal = document.getElementById('terms-modal');
       var accepted = false;
       try { accepted = !!localStorage.getItem('ta-terms-accepted'); } catch(e) {}
-      if (!accepted) {
-        modal.style.display = 'flex';
-      }
+      if (!accepted) modal.style.display = 'flex';
       var btn = document.getElementById('accept-terms');
       if (btn) btn.addEventListener('click', function() {
         try { localStorage.setItem('ta-terms-accepted', '1'); } catch(e) {}

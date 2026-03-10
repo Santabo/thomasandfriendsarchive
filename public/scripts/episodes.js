@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.classList.add('active');
       document.querySelectorAll('.season').forEach(s => {
         const show = s.dataset.series === key;
-        s.style.display = show ? 'grid' : 'none';
+        s.style.display = show ? '' : 'none';
         s.classList.toggle('hidden', !show);
       });
       // Clear search when switching series
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const wrapper = document.createElement('div');
       wrapper.className = 'season season-content';
       wrapper.dataset.series = key;
-      wrapper.style.display = key === 'season1' ? 'grid' : 'none';
+      wrapper.style.display = key === 'season1' ? '' : 'none';
       if (key !== 'season1') wrapper.classList.add('hidden');
 
       episodes.forEach(ep => {
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const active = document.querySelector('.selector-btn.active')?.dataset.target;
           document.querySelectorAll('.season').forEach(s => {
             const show = s.dataset.series === active;
-            s.style.display = show ? 'grid' : 'none';
+            s.style.display = show ? '' : 'none';
             s.classList.toggle('hidden', !show);
             s.querySelectorAll('.episode').forEach(e => e.style.display = '');
           });
@@ -138,17 +138,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Show all series, filter episodes by title
+        let totalMatches = 0;
         document.querySelectorAll('.season').forEach(s => {
           let hasMatch = false;
           s.querySelectorAll('.episode').forEach(ep => {
             const title = ep.querySelector('h3')?.textContent.toLowerCase() || '';
             const visible = title.includes(q);
             ep.style.display = visible ? '' : 'none';
-            if (visible) hasMatch = true;
+            if (visible) { hasMatch = true; totalMatches++; }
           });
-          s.style.display = hasMatch ? 'grid' : 'none';
+          s.style.display = hasMatch ? '' : 'none';
           s.classList.toggle('hidden', !hasMatch);
         });
+        // Empty state message
+        let noResults = document.getElementById('ep-no-results');
+        if (totalMatches === 0) {
+          if (!noResults) {
+            noResults = document.createElement('p');
+            noResults.id = 'ep-no-results';
+            noResults.style.cssText = 'color:var(--text-muted,#8c97a8);font-size:0.95rem;padding:1.5rem 0;';
+            container.appendChild(noResults);
+          }
+          noResults.textContent = 'No episodes found for \u201c' + q + '\u201d';
+          noResults.style.display = '';
+        } else if (noResults) {
+          noResults.style.display = 'none';
+        }
       }, 200);
     });
   }

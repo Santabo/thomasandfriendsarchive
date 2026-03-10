@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!resolved.length) { alert('Could not load episodes for this DVD.'); return; }
 
             if (dvd.menu && typeof window.openDvdMenuOverlay === 'function') {
-                window.openDvdMenuOverlay(dvd, resolved);
+                window.openDvdMenuOverlay(dvd, resolved, document.activeElement);
             } else {
                 currentQueue = resolved; currentTrackIndex = 0; startPlayerUI();
             }
