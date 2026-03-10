@@ -4,48 +4,35 @@
     "title": "Dinos & Discoveries",
     "spine_color": "#0d4e24",
     "regions": ["en-gb"],
+    "menu": {
+      "style": "dinos",
+      "background_image": "https://i.ibb.co/0R6mFYXz/image.png",
+      "title_line1": "DINOS",
+      "title_amp": "— & —",
+      "title_line2": "DISCOVERIES",
+      "hex_color": "#1a6fc4",
+      "bonus_tracks": [
+        {
+          "title": "Who's That Engine?",
+          "url": "https://www.youtube.com/embed/B13danUewg4?autoplay=1"
+        }
+      ]
+    },
     "covers": {
       "en-gb": "https://i.ibb.co/rRhbsmcC/image.png",
-      "en-us": "https://i.ibb.co/Y4nSRQgr/Dinosand-Discoveries.webp",
       "default": "https://i.ibb.co/rRhbsmcC/image.png"
     },
+    "splash_images": {
+      "low": "",
+      "high": "https://i.ibb.co/0R6mFYXz/image.png"
+    },
     "tracks": [
-      { 
-        "title": "Marion & The Dinosaurs", 
-        "season_id": "season18", 
-        "episode_number": 23 
-      },
-      { 
-        "title": "Millie & The Volcano", 
-        "season_id": "season18", 
-        "episode_number": 26 
-      },
-      { 
-        "title": "Timothy & The Rainbow Truck", 
-        "season_id": "season18", 
-        "episode_number": 22 
-      },
-      { 
-        "title": "Samson at the Scrap Yard", 
-        "season_id": "season18", 
-        "episode_number": 24 
-      },
-      { 
-        "title": "Emily Saves the World", 
-        "season_id": "season18", 
-        "episode_number": 21 
-      },
-      { 
-        "title": "Samson Sent for Scrap", 
-        "season_id": "season18", 
-        "episode_number": 25 
-      },
-      {
-        "title": "Bonus: Who's That Engine?",
-        "url": "https://www.youtube.com/embed/B13danUewg4?si=7NtBPqqphMXTTnXf",
-        "is_direct_link": true,
-        "hide_embed_title": true
-      }
+      { "title": "Marion & The Dinosaurs",       "season_id": "season18", "episode_number": 23 },
+      { "title": "Millie & The Volcano",          "season_id": "season18", "episode_number": 26 },
+      { "title": "Timothy & The Rainbow Truck",   "season_id": "season18", "episode_number": 22 },
+      { "title": "Samson at the Scrap Yard",      "season_id": "season18", "episode_number": 24 },
+      { "title": "Emily Saves the World",         "season_id": "season18", "episode_number": 21 },
+      { "title": "Samson Sent for Scrap",         "season_id": "season18", "episode_number": 25 }
     ]
   }
 ]

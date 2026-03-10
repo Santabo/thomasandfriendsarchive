@@ -341,3 +341,251 @@ footer { background: #e9ecef; text-align: center; padding: 2rem; font-size: 0.9r
 #queue-status { color: #fff; text-align: center; margin-top: 10px; font-family: 'Flange BQ Bold', sans-serif; font-size: 1.2rem; }
 #modal-close { position: absolute; top: -40px; right: 0; font-size: 2.5rem; color: white; background: transparent; border: none; cursor: pointer; z-index: 25; line-height: 1; transition: transform 0.2s; }
 #modal-close:hover { transform: rotate(90deg); color: #ffbf00; }
+
+/* ═══════════════════════════════════════════════
+   DVD MENU OVERLAY SYSTEM
+   ═══════════════════════════════════════════════ */
+
+#dvd-menu-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  z-index: 2000;
+  overflow: hidden;
+}
+#dvd-menu-overlay.dmo-active { display: block; }
+
+/* Background */
+#dmo-bg {
+  position: absolute; inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+#dmo-bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to right, rgba(0,0,0,0.2) 0%, transparent 45%);
+}
+
+/* Inner layout */
+#dmo-inner {
+  position: relative; z-index: 1;
+  width: 100%; height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* Close button */
+#dmo-close {
+  position: absolute;
+  top: 1.2rem; right: 1.2rem;
+  z-index: 10;
+  background: rgba(0,0,0,0.55);
+  border: 2px solid rgba(255,255,255,0.35);
+  border-radius: 50%;
+  width: 2.4rem; height: 2.4rem;
+  color: #fff; font-size: 1.1rem;
+  cursor: pointer; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, transform 0.2s;
+}
+#dmo-close:hover { background: rgba(180,0,0,0.7); transform: rotate(90deg); }
+
+/* RIGHT: menu panel */
+#dmo-menu-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-right: 5vw;
+  gap: 1vh;
+}
+
+/* Title block */
+#dmo-title-block {
+  text-align: center;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#dmo-brand {
+  font-family: 'Flange BQ Bold', sans-serif;
+  font-size: clamp(0.85rem, 1.8vw, 1.3rem);
+  letter-spacing: 0.12em;
+  color: #fff;
+  text-shadow: 2px 2px 0 #003399;
+}
+#dmo-title-line1, #dmo-title-line2 {
+  font-family: 'Flange BQ Bold', sans-serif;
+  font-size: clamp(2.5rem, 6.5vw, 5rem);
+  line-height: 0.92;
+  color: #1565d8;
+  -webkit-text-stroke: 3px #0a2a6e;
+  paint-order: stroke fill;
+  text-shadow: 4px 4px 0 rgba(0,0,0,0.4);
+  letter-spacing: 0.04em;
+}
+#dmo-title-amp {
+  font-family: 'Flange BQ Bold', sans-serif;
+  font-size: clamp(1rem, 2.2vw, 1.8rem);
+  color: #f5c518;
+  -webkit-text-stroke: 1px #a07010;
+  margin: -0.1em 0;
+}
+
+/* Hexagon */
+#dmo-hex-wrap {
+  position: relative;
+  width: clamp(200px, 26vw, 360px);
+}
+#dmo-hex-svg { width: 100%; display: block; }
+
+#dmo-hex-buttons {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 18% 12% 20%;
+  gap: 0;
+}
+
+.dmo-menu-item {
+  width: 100%;
+  background: none; border: none;
+  font-family: 'Flange BQ Bold', sans-serif;
+  font-size: clamp(0.7rem, 1.4vw, 1rem);
+  letter-spacing: 0.08em;
+  color: #fff;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+  cursor: pointer;
+  padding: 0.32em 0.5em;
+  text-transform: uppercase;
+  text-align: center;
+  user-select: none;
+  border-radius: 4px;
+  transition: color 0.15s, text-shadow 0.15s, transform 0.1s;
+}
+.dmo-menu-item:hover {
+  color: #f5c518;
+  text-shadow: 0 0 12px rgba(255,200,0,0.8), 1px 1px 3px rgba(0,0,0,0.8);
+  transform: scale(1.06);
+}
+.dmo-menu-item:active { transform: scale(0.97); }
+.dmo-menu-item.dmo-disabled { opacity: 0.45; cursor: default; pointer-events: none; }
+
+/* VIDEO AREA */
+#dmo-video-area {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 0.6rem;
+  background: rgba(0,0,0,0.92);
+}
+#dmo-iframe {
+  width: min(90vw, 160vh);
+  aspect-ratio: 16/9;
+  border: none; border-radius: 8px;
+  background: #000;
+}
+#dmo-track-status {
+  color: rgba(255,255,255,0.7);
+  font-size: 0.9rem; font-weight: bold;
+  font-family: 'Flange BQ Bold', sans-serif;
+  text-align: center;
+}
+#dmo-video-controls {
+  display: flex; gap: 1rem; align-items: center;
+}
+.dmo-ctrl {
+  background: rgba(255,255,255,0.12);
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 8px; color: #fff;
+  font-family: 'Flange BQ Bold', sans-serif;
+  font-size: 0.85rem;
+  padding: 0.5em 1.2em; cursor: pointer;
+  transition: background 0.15s;
+}
+.dmo-ctrl:hover { background: rgba(255,255,255,0.24); }
+.dmo-ctrl:disabled { opacity: 0.3; cursor: default; }
+#dmo-menu-btn { background: rgba(0,94,184,0.5); border-color: rgba(0,150,255,0.5); }
+#dmo-menu-btn:hover { background: rgba(0,94,184,0.8); }
+
+/* SUBSCREEN */
+#dmo-subscreen {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.88);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 5;
+}
+#dmo-subscreen-panel {
+  background: linear-gradient(160deg, #0d3a6e 0%, #0a2a50 100%);
+  border: 3px solid #5ac8fa;
+  border-radius: 16px;
+  padding: 2rem 2.5rem;
+  max-width: 560px; width: 90vw;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.8);
+}
+#dmo-subscreen-title {
+  font-family: 'Flange BQ Bold', sans-serif;
+  font-size: clamp(1.3rem, 3.5vw, 2.2rem);
+  color: #f5c518;
+  letter-spacing: 0.1em;
+  text-align: center;
+  margin-bottom: 1.2rem;
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.5);
+  border-bottom: none;
+}
+#dmo-subscreen-list {
+  list-style: none; padding: 0;
+  display: flex; flex-direction: column; gap: 0.45rem;
+}
+#dmo-subscreen-list li button {
+  width: 100%;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(90,200,250,0.3);
+  border-radius: 8px; color: #fff;
+  font-family: 'Flange BQ Bold', sans-serif;
+  font-size: clamp(0.8rem, 1.4vw, 0.95rem);
+  padding: 0.55em 1em;
+  cursor: pointer; text-align: left;
+  display: flex; align-items: center; gap: 0.7em;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+}
+#dmo-subscreen-list li button:hover {
+  background: rgba(90,200,250,0.18);
+  border-color: #5ac8fa;
+  transform: translateX(4px);
+}
+.dmo-ep-num {
+  font-size: 1.1em; color: #f5c518;
+  min-width: 1.8em; text-align: center;
+}
+#dmo-subscreen-back {
+  display: block; margin: 1.2rem auto 0;
+  background: rgba(255,255,255,0.1);
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 8px; color: #fff;
+  font-family: 'Flange BQ Bold', sans-serif;
+  font-size: 0.85rem;
+  padding: 0.5em 1.5em; cursor: pointer;
+  transition: background 0.15s; letter-spacing: 0.05em;
+}
+#dmo-subscreen-back:hover { background: rgba(255,255,255,0.2); }
+
+/* utility */
+.dmo-hidden { display: none !important; }
+
+/* DVD interactive menu badge */
+.dvd-menu-badge {
+  display: inline-block;
+  margin: 0.25rem 0 0.5rem;
+  background: #005eb8;
+  color: #fff;
+  font-size: 0.7rem;
+  padding: 0.2em 0.6em;
+  border-radius: 20px;
+  font-weight: bold;
+  letter-spacing: 0.04em;
+}
