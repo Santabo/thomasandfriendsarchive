@@ -63,14 +63,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const item = document.createElement('div');
                 item.className = 'dvd-item';
-                const badge = dvd.menu ? `<span class="dvd-menu-badge">🎬 Interactive Menu</span>` : '';
-                const tracks = (dvd.tracks || []).map((t, i) => `<li>${i+1}. ${t.title}</li>`).join('');
+                item.setAttribute('title', dvd.title);
+                item.setAttribute('aria-label', dvd.title + (dvd.menu ? ' — Interactive Menu' : ''));
                 item.innerHTML = `
                     <div class="dvd-case">
                         <div class="dvd-spine" style="background-color:${dvd.spine_color||'#333'}" aria-hidden="true"></div>
                         <div class="dvd-face dvd-front"><img class="dvd-cover" src="${LQIP}" alt="${dvd.title} Cover" loading="lazy" decoding="async"></div>
                     </div>
-                    <div class="dvd-info"><h3>${dvd.title}</h3>${badge}<ul class="tracklist">${tracks}</ul></div>`;
+                    <span class="dvd-label">${dvd.title}</span>`;
                 upgradeImg(item.querySelector('.dvd-cover'), cover);
                 item.addEventListener('mouseenter', () => showSplash(dvd));
                 item.addEventListener('mouseleave', hideSplash);
